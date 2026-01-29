@@ -1,0 +1,11 @@
+{
+    "/api": {
+        "target": "https://msa-be.dharmagroup.co.id",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/api": "/api"
+        }
+    }
+}

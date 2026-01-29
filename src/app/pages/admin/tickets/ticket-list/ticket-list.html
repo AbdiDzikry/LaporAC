@@ -1,0 +1,133 @@
+<div class="max-w-7xl mx-auto font-sans p-4 space-y-8">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">Tiket Laporan</h1>
+            <p class="text-gray-400 mt-2 text-lg">Pantau & kelola laporan kerusakan AC.</p>
+        </div>
+
+        <!-- Filter Toggle (Placeholder Concept) -->
+        <div class="flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm">
+            <button class="px-6 py-2 rounded-xl bg-gray-900 text-white font-bold text-sm shadow-md">Semua</button>
+            <button class="px-6 py-2 rounded-xl text-gray-400 font-bold text-sm hover:bg-gray-50">Open</button>
+            <button class="px-6 py-2 rounded-xl text-gray-400 font-bold text-sm hover:bg-gray-50">Resolved</button>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && tickets.length === 0"
+        class="bg-white rounded-[2.5rem] p-12 text-center shadow-sm border border-gray-100 flex flex-col items-center">
+        <div class="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center text-green-500 mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800">Semua Aman!</h3>
+        <p class="text-gray-400 mt-2">Tidak ada tiket laporan kerusakan saat ini.</p>
+    </div>
+
+    <!-- Ticket List Container -->
+    <div *ngIf="!loading && tickets.length > 0"
+        class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50/50 border-b border-gray-100 text-gray-400 text-xs uppercase tracking-wider">
+                        <th class="p-6 font-bold pl-8">ID & Waktu</th>
+                        <th class="p-6 font-bold">Aset / Unit</th>
+                        <th class="p-6 font-bold">Masalah</th>
+                        <th class="p-6 font-bold">Pelapor</th>
+                        <th class="p-6 font-bold">Status</th>
+                        <th class="p-6 font-bold text-right pr-8">Detail</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    <tr *ngFor="let ticket of tickets"
+                        class="group hover:bg-purple-50/30 transition-colors duration-200">
+
+                        <!-- ID & Time -->
+                        <td class="p-6 pl-8">
+                            <div class="font-bold text-gray-800">#{{ ticket.id.substring(0,6) }}</div>
+                            <div class="text-xs text-gray-400 font-medium mt-1">{{ ticket.created_at | date:'dd MMM,
+                                HH:mm' }}</div>
+                        </td>
+
+                        <!-- Asset -->
+                        <td class="p-6">
+                            <div class="flex items-center gap-3">
+                                <span class="text-blue-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="w-6 h-6">
+                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <div class="font-bold text-gray-800 text-sm">{{ ticket.assets?.name || 'Unknown' }}
+                                    </div>
+                                    <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wide">{{
+                                        ticket.assets?.location }}</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Issue -->
+                        <td class="p-6">
+                            <span
+                                class="inline-block px-2 py-1 rounded-md bg-gray-100 text-gray-500 text-[10px] font-bold uppercase tracking-wider mb-1">
+                                {{ ticket.issue_category }}
+                            </span>
+                            <p class="text-sm text-gray-600 line-clamp-1 max-w-[200px]" [title]="ticket.description">
+                                {{ ticket.description }}
+                            </p>
+                        </td>
+
+                        <!-- Reporter -->
+                        <td class="p-6">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-orange-300 to-red-300"></div>
+                                <span class="text-sm font-bold text-gray-600">{{ ticket.reporter_name }}</span>
+                            </div>
+                        </td>
+
+                        <!-- Status -->
+                        <td class="p-6">
+                            <span
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide"
+                                [ngClass]="{
+                                    'bg-red-100 text-red-600': ticket.status === 'open',
+                                    'bg-amber-100 text-amber-600': ticket.status === 'in_progress',
+                                    'bg-green-100 text-green-600': ticket.status === 'resolved'
+                                }">
+                                <span class="w-2 h-2 rounded-full animate-pulse" [ngClass]="{
+                                        'bg-red-500': ticket.status === 'open',
+                                        'bg-amber-500': ticket.status === 'in_progress',
+                                        'bg-green-500': ticket.status === 'resolved'
+                                    }"></span>
+                                {{ ticket.status.replace('_', ' ') }}
+                            </span>
+                        </td>
+
+                        <!-- Action -->
+                        <td class="p-6 text-right pr-8">
+                            <a [routerLink]="['/admin/tickets', ticket.id]"
+                                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-400 hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200 transition-all shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14"></path>
+                                    <path d="M12 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

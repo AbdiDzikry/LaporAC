@@ -1,0 +1,121 @@
+<div class="max-w-4xl mx-auto font-sans p-4">
+
+    <!-- Breadcrumb / Back -->
+    <a routerLink="/admin/assets"
+        class="inline-flex items-center gap-2 text-gray-400 hover:text-orange-500 font-bold mb-6 transition-colors">
+        <span>←</span> Kembali ke Daftar
+    </a>
+
+    <div
+        class="bg-white rounded-[2.5rem] shadow-xl shadow-gray-100/50 p-10 md:p-12 border border-gray-50 relative overflow-hidden">
+
+        <!-- Decorative Background -->
+        <div
+            class="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none">
+        </div>
+
+        <div class="relative z-10">
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-2">{{ isEditMode ? 'Edit Data AC' : 'Input Data AC Baru'
+                }}</h2>
+            <p class="text-gray-400 mb-8">Sesuaikan data dengan file Excel/CSV.</p>
+
+            <form [formGroup]="assetForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+                <!-- ROW 1: NO AC & RUANGAN (Matching CSV Cols 1 & 2) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-gray-700 ml-1">NO AC (SKU)</label>
+                        <input formControlName="sku" type="text" placeholder="Contoh: RA 001"
+                            class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-50 outline-none transition-all font-bold text-gray-800 placeholder-gray-300">
+                        <p class="text-[10px] text-gray-400 ml-1">Sesuai kolom "NO AC"</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-gray-700 ml-1">RUANGAN / LOKASI</label>
+                        <input formControlName="location" type="text" placeholder="Contoh: AUDITORIUM"
+                            class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-50 outline-none transition-all font-bold text-gray-800 placeholder-gray-300">
+                        <p class="text-[10px] text-gray-400 ml-1">Sesuai kolom "RUANGAN / LOKASI"</p>
+                    </div>
+                </div>
+
+                <!-- ROW 2: JENIS & PK (Matching CSV Cols 3 & 4) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-gray-700 ml-1">JENIS</label>
+                        <!-- Suggestion List based on CSV values -->
+                        <div class="relative">
+                            <input formControlName="brand" type="text" list="jenisOptions" placeholder="SPLITE / CASSET"
+                                class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-50 outline-none transition-all font-bold text-gray-800 placeholder-gray-300">
+                            <datalist id="jenisOptions">
+                                <option value="SPLITE">
+                                <option value="CASSET">
+                                <option value="STANDING">
+                            </datalist>
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-xl">❄️</div>
+                        </div>
+                        <p class="text-[10px] text-gray-400 ml-1">Sesuai kolom "JENIS" (ex: SPLITE, CASSET)</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-gray-700 ml-1">KAPASITAS (PK)</label>
+                        <input formControlName="pk" type="text" placeholder="2 PK"
+                            class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-50 outline-none transition-all font-bold text-gray-800 placeholder-gray-300">
+                        <p class="text-[10px] text-gray-400 ml-1">Sesuai kolom "PK"</p>
+                    </div>
+                </div>
+
+                <!-- Hidden Name Field (Auto Generated) but can show if needed -->
+                <div class="space-y-2 opacity-50 hover:opacity-100 transition-opacity">
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Nama Tampilan
+                        (Opsional)</label>
+                    <input formControlName="name" type="text" placeholder="(Auto-Generate: AC [Lokasi] [No AC])"
+                        class="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-100 text-sm font-medium text-gray-500">
+                </div>
+
+                <hr class="border-gray-100 my-4">
+
+                <!-- STATUS -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-gray-700 ml-1">Status Unit Saat Ini</label>
+                    <div class="grid grid-cols-3 gap-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" formControlName="status" value="good" class="peer sr-only">
+                            <div
+                                class="p-4 rounded-2xl bg-gray-50 border-2 border-transparent peer-checked:bg-green-50 peer-checked:border-green-500 peer-checked:text-green-700 text-center transition-all font-bold text-gray-500 hover:bg-gray-100">
+                                ✅ Normal
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" formControlName="status" value="maintenance" class="peer sr-only">
+                            <div
+                                class="p-4 rounded-2xl bg-gray-50 border-2 border-transparent peer-checked:bg-yellow-50 peer-checked:border-yellow-500 peer-checked:text-yellow-700 text-center transition-all font-bold text-gray-500 hover:bg-gray-100">
+                                🛠️ Maintenance
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" formControlName="status" value="broken" class="peer sr-only">
+                            <div
+                                class="p-4 rounded-2xl bg-gray-50 border-2 border-transparent peer-checked:bg-red-50 peer-checked:border-red-500 peer-checked:text-red-700 text-center transition-all font-bold text-gray-500 hover:bg-gray-100">
+                                ❌ Rusak
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="pt-8 flex items-center justify-end gap-4">
+                    <a routerLink="/admin/assets"
+                        class="px-6 py-3 rounded-2xl text-gray-500 font-bold hover:bg-gray-50 transition-colors">
+                        Batal
+                    </a>
+                    <button type="submit" [disabled]="loading"
+                        class="px-8 py-3 rounded-2xl bg-gray-900 text-white font-bold hover:bg-gray-800 disabled:opacity-50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex items-center gap-2">
+                        <span *ngIf="loading" class="animate-spin">⏳</span>
+                        <span>{{ loading ? 'Menyimpan...' : 'Simpan Data' }}</span>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

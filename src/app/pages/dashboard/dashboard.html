@@ -1,0 +1,234 @@
+<!-- Bento Grid Dashboard Wrapper -->
+<div class="max-w-7xl mx-auto space-y-8 font-sans">
+
+    <!-- Header Section -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">Halo, Admin 👋</h1>
+            <p class="text-gray-400 mt-2 text-lg font-medium">Monitoring kesehatan aset hari ini.</p>
+        </div>
+        <div class="text-right hidden md:block">
+            <p class="text-sm font-bold text-gray-400 uppercase tracking-widest">{{ today | date:'EEEE, d MMMM' }}</p>
+        </div>
+    </div>
+
+    <!-- BENTO GRID CONTAINER -->
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-[minmax(180px,auto)]">
+
+        <!-- CARD 1: PRIMARY STAT (Peach/Orange Theme) - Span 2 Cols -->
+        <div
+            class="md:col-span-2 bg-[#FF9F6F] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-[0_20px_40px_-15px_rgba(255,159,111,0.5)] group hover:scale-[1.01] transition-transform duration-300">
+            <div class="relative z-10 flex flex-col h-full justify-between">
+                <div>
+                    <h2 class="text-lg font-bold opacity-90 mb-1">Total Aset AC</h2>
+                    <p class="text-orange-100 text-sm">Unit terdaftar dalam sistem</p>
+                </div>
+                <div class="flex items-end gap-4">
+                    <div class="text-7xl font-bold tracking-tighter leading-none">{{ analytics.totalAssets }}</div>
+                    <div
+                        class="mb-2 bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-bold border border-white/30">
+                        +2 Unit Baru
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decor -->
+            <div
+                class="absolute -right-12 -bottom-24 w-64 h-64 bg-white/20 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700">
+            </div>
+            <div class="absolute top-12 right-12 w-32 h-32 border-[16px] border-white/10 rounded-full"></div>
+        </div>
+
+        <!-- CARD 2: OPEN TICKETS (Alert White Theme) -->
+        <div
+            class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition-all duration-300 group relative overflow-hidden">
+            <div
+                class="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-bl-[2.5rem] -mr-4 -mt-4 z-0 transition-transform group-hover:scale-110">
+            </div>
+
+            <div class="relative z-10">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="w-14 h-14 rounded-2xl bg-red-100/50 flex items-center justify-center text-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                            </path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-5xl font-bold text-gray-800 tracking-tight">{{ analytics.openTickets }}</h3>
+                    <p class="text-gray-400 font-bold text-sm mt-2 uppercase tracking-wide">Perlu Tindakan</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3: MAINTENANCE COST (Soft Blue Theme) -->
+        <div
+            class="bg-[#E0E7FF] rounded-[2.5rem] p-8 shadow-sm flex flex-col justify-between relative overflow-hidden hover:scale-[1.02] transition-transform duration-300">
+            <div class="relative z-10">
+                <div class="flex items-center gap-3 mb-6">
+                    <div
+                        class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-indigo-500 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <span class="text-indigo-900/60 font-bold text-xs uppercase tracking-wider">YTD Cost</span>
+                </div>
+                <h3 class="text-3xl font-extrabold text-indigo-900 leading-tight">
+                    {{ analytics.maintenanceCost | currency:'IDR':'symbol':'1.0-0' }}
+                </h3>
+                <p class="text-indigo-400 text-xs font-bold mt-2">Total pengeluaran tahun ini</p>
+            </div>
+            <!-- Decor -->
+            <div
+                class="absolute -right-8 top-1/2 -translate-y-1/2 text-[10rem] opacity-[0.03] rotate-12 select-none font-sans font-black">
+                Rp
+            </div>
+        </div>
+
+        <!-- CARD 4: RECENT ACTIVITY (Tall - Row Span 2) -->
+        <div
+            class="md:col-span-2 lg:col-span-2 lg:row-span-2 bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-100 flex flex-col">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800">Aktivitas Terbaru</h3>
+                    <p class="text-gray-400 text-sm">Update status tiket teknisi</p>
+                </div>
+                <a routerLink="/admin/tickets"
+                    class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar">
+                <div *ngIf="analytics.recentTickets.length === 0"
+                    class="h-full flex flex-col items-center justify-center text-gray-400 py-10">
+                    <div class="mb-4 opacity-50 text-gray-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="w-24 h-24">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                    </div>
+                    <p>Tidak ada tiket aktif saat ini.</p>
+                </div>
+
+                <div *ngFor="let ticket of analytics.recentTickets"
+                    class="group flex items-start gap-5 p-5 rounded-3xl bg-gray-50/50 hover:bg-white border border-transparent hover:border-gray-100 hover:shadow-lg transition-all duration-300 cursor-pointer">
+
+                    <!-- Icon based on intent -->
+                    <div class="w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-sm"
+                        [ngClass]="{
+                            'bg-red-100 text-red-500': ticket.status === 'open',
+                            'bg-amber-100 text-amber-500': ticket.status === 'in_progress',
+                            'bg-green-100 text-green-500': ticket.status === 'resolved'
+                        }">
+
+                        <!-- Open: Exclamation -->
+                        <svg *ngIf="ticket.status === 'open'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="w-6 h-6">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+
+                        <!-- In Progress: Wrench -->
+                        <svg *ngIf="ticket.status === 'in_progress'" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                            <path
+                                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                            </path>
+                        </svg>
+
+                        <!-- Resolved: Check -->
+                        <svg *ngIf="ticket.status === 'resolved'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="w-6 h-6">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+
+                    <div class="flex-1 min-w-0 pt-1">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-bold text-gray-900 text-base truncate">{{ ticket.assets?.brand }} {{
+                                ticket.assets?.model }}</h4>
+                            <span class="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider"
+                                [ngClass]="{
+                                'bg-red-100 text-red-600': ticket.status === 'open',
+                                'bg-amber-100 text-amber-600': ticket.status === 'in_progress',
+                                'bg-green-100 text-green-600': ticket.status === 'resolved'
+                            }">{{ ticket.status.replace('_', ' ') }}</span>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-1 line-clamp-2">{{ ticket.issue_description }}</p>
+                        <p class="text-xs text-gray-400 mt-3 font-medium flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="w-3.5 h-3.5">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg> {{ ticket.created_at | date:'medium' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 5: RESOLVED STAT (Soft Purple) -->
+        <div
+            class="bg-[#F3E8FF] rounded-[2.5rem] p-8 shadow-sm flex flex-col items-center justify-center relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+            <div class="relative z-10 text-center">
+                <div class="mb-4 group-hover:-translate-y-2 transition-transform duration-500 text-purple-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-16 h-16">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                        </polygon>
+                    </svg>
+                </div>
+                <div class="text-4xl font-extrabold text-purple-900">{{ analytics.resolvedTickets }}</div>
+                <div class="text-xs font-bold text-purple-400 uppercase tracking-widest mt-2">Masalah Selesai</div>
+            </div>
+            <div
+                class="absolute inset-0 bg-white/30 skew-y-12 translate-y-20 group-hover:translate-y-10 transition-transform duration-700">
+            </div>
+        </div>
+
+        <!-- CARD 6: QUICK ACTION (Dark CTA) -->
+        <a routerLink="/admin/assets/new"
+            class="bg-gray-900 rounded-[2.5rem] p-8 shadow-xl flex flex-col justify-between items-start cursor-pointer hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 group relative overflow-hidden">
+            <div
+                class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-white group-hover:text-gray-900 transition-colors duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+            </div>
+            <div>
+                <p class="text-white font-bold text-lg">Tambah Aset</p>
+                <p class="text-gray-400 text-sm mt-1">Setup unit baru</p>
+            </div>
+
+            <!-- Glow effect -->
+            <div
+                class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl group-hover:bg-blue-500/30 transition-colors">
+            </div>
+        </a>
+
+    </div>
+</div>

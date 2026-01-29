@@ -1,0 +1,97 @@
+<div class="print-container flex items-center justify-center min-h-screen bg-gray-100 p-8">
+    <div *ngIf="asset"
+        class="sticker-card bg-white w-[600px] h-[400px] p-0 shadow-2xl relative print:shadow-none flex flex-row font-sans overflow-hidden border-2 border-gray-200">
+
+        <!-- LEFT SECTION: QR CODE -->
+        <div
+            class="w-2/5 bg-gradient-to-br from-gray-50 to-gray-100 p-6 flex flex-col items-center justify-center border-r-2 border-gray-200">
+            <!-- BRANDING -->
+            <div class="mb-3 text-center">
+                <div class="flex items-center justify-center gap-1.5 mb-1.5">
+                    <div class="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                            viewBox="0 0 256 256">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="font-black text-gray-900 text-lg leading-none tracking-tight">DHARMA AC</h1>
+                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Asset Management</p>
+            </div>
+
+            <!-- QR CODE -->
+            <div class="bg-white p-3 rounded-2xl shadow-lg border-2 border-dashed border-gray-300">
+                <qrcode [qrdata]="qrData" [width]="180" [errorCorrectionLevel]="'M'" [margin]="0"></qrcode>
+            </div>
+
+            <p class="text-[11px] font-bold text-gray-500 mt-3 text-center">Scan untuk Lapor</p>
+        </div>
+
+        <!-- RIGHT SECTION: ASSET INFO -->
+        <div class="w-3/5 p-6 flex flex-col justify-between">
+            <!-- HEADER -->
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-1.5 h-6 bg-blue-600 rounded-full"></div>
+                    <h2 class="text-xl font-black text-gray-800 uppercase tracking-tight">Informasi Aset</h2>
+                </div>
+                <p class="text-xs font-medium text-gray-500 mb-4">Jika terjadi kendala pada unit ini, silakan scan QR
+                    code</p>
+            </div>
+
+            <!-- ASSET DETAILS -->
+            <div class="space-y-3 flex-1">
+                <div class="bg-blue-50 rounded-xl p-3 border-l-4 border-blue-600">
+                    <span class="text-[9px] font-bold text-blue-600 uppercase tracking-wider block mb-0.5">Asset ID
+                        (SKU)</span>
+                    <span class="font-mono font-black text-blue-900 text-xl">{{ asset.sku || 'N/A' }}</span>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-3 border-l-4 border-gray-400">
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block mb-0.5">Unit / Nama
+                        Aset</span>
+                    <span class="font-bold text-gray-800 text-base leading-tight">{{ asset.name || 'Tidak ada nama'
+                        }}</span>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-3 border-l-4 border-gray-400">
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block mb-0.5">Lokasi</span>
+                    <span class="font-bold text-gray-800 text-base leading-tight">{{ asset.location || 'Tidak ada
+                        lokasi' }}</span>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="flex justify-between items-center pt-3 border-t border-gray-200">
+                <span class="text-[9px] font-bold text-gray-400">PT Dharma Polimetal Tbk</span>
+                <span class="text-[9px] font-mono text-gray-300">© {{ asset.created_at | date:'yyyy' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75">
+        Loading data...
+    </div>
+</div>
+
+<!-- Control Buttons (Hide on Print) -->
+<div class="fixed bottom-8 right-8 flex gap-4 print:hidden">
+    <button (click)="downloadPNG()"
+        class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full shadow-lg flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Download PNG
+    </button>
+    <button (click)="print()"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-lg flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+        </svg>
+        Print Sticker
+    </button>
+</div>

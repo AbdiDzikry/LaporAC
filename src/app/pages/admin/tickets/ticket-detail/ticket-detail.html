@@ -1,0 +1,84 @@
+<div class="container mx-auto px-4 py-8">
+    <button (click)="goBack()" class="mb-4 text-gray-600 hover:text-gray-900 font-bold flex items-center gap-1">
+        &larr; Kembali
+    </button>
+
+    <div *ngIf="loading" class="text-center py-8">Loading...</div>
+
+    <div *ngIf="ticket && !loading" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Left Column: Ticket Info (Read Only) -->
+        <div class="col-span-2 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold mb-4 border-b pb-2">Detail Laporan #{{ ticket.id }}</h2>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-gray-500 text-xs uppercase font-bold">Tanggal Lapor</label>
+                    <p class="text-gray-900">{{ ticket.created_at | date:'dd MMM yyyy HH:mm' }}</p>
+                </div>
+                <div>
+                    <label class="block text-gray-500 text-xs uppercase font-bold">Pelapor</label>
+                    <p class="text-gray-900">{{ ticket.reporter_name }} <span class="text-gray-400 text-xs">({{
+                            ticket.reporter_nik }})</span></p>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-500 text-xs uppercase font-bold">Aset / Unit AC</label>
+                <div class="bg-gray-50 p-3 rounded mt-1 border">
+                    <p class="font-bold">{{ ticket.assets?.name }}</p>
+                    <p class="text-sm text-gray-600">Lokasi: {{ ticket.assets?.location }} | SKU: {{ ticket.assets?.sku
+                        }}</p>
+                    <p class="text-sm text-gray-600">Merk: {{ ticket.assets?.brand }} | PK: {{ ticket.assets?.pk }}</p>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-500 text-xs uppercase font-bold">Masalah Dilaporkan</label>
+                <p class="text-lg font-medium text-red-600 capitalize">{{ ticket.issue_category }}</p>
+                <p class="text-gray-700 mt-1 bg-red-50 p-3 rounded">{{ ticket.description }}</p>
+            </div>
+
+            <div *ngIf="ticket.photo_url" class="mb-4">
+                <label class="block text-gray-500 text-xs uppercase font-bold mb-2">Foto Bukti</label>
+                <img [src]="ticket.photo_url" class="max-w-xs rounded shadow" alt="Bukti Laporan">
+            </div>
+        </div>
+
+        <!-- Right Column: Action / Update Form -->
+        <div class="col-span-1 bg-white rounded-lg shadow-md p-6 h-fit">
+            <h3 class="text-lg font-bold mb-4 border-b pb-2">Update Status & Penanganan</h3>
+
+            <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Status Tiket</label>
+                    <select formControlName="status"
+                        class="block w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="open">Open (Baru)</option>
+                        <option value="in_progress">In Progress (Sedang Dikerjakan)</option>
+                        <option value="resolved">Resolved (Selesai Perbaikan)</option>
+                        <option value="closed">Closed (Tutup Tiket)</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Catatan Penanganan</label>
+                    <textarea formControlName="resolution_notes" rows="4"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
+                        placeholder="Tulis detail perbaikan yang dilakukan..."></textarea>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Biaya Perbaikan (Rp)</label>
+                    <input formControlName="repair_cost" type="number"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500">
+                </div>
+
+                <button [disabled]="saving"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+                    type="submit">
+                    {{ saving ? 'Menyimpan...' : 'Simpan Perubahan' }}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

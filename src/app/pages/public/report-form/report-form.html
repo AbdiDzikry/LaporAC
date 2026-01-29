@@ -1,0 +1,130 @@
+<div class="min-h-screen bg-[#F0F2F5] flex flex-col items-center justify-center p-4 font-sans relative overflow-hidden">
+
+    <!-- Decorative Blobs -->
+    <div
+        class="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 translate-x-1/2 -translate-y-1/2 animate-blob">
+    </div>
+    <div
+        class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 -translate-x-1/2 translate-y-1/2 animate-blob animation-delay-2000">
+    </div>
+
+    <div
+        class="w-full max-w-lg bg-white/80 backdrop-blur-xl border border-white/50 shadow-2xl rounded-[2.5rem] overflow-hidden relative z-10">
+
+        <!-- Header -->
+        <div class="px-8 py-10 bg-gradient-to-br from-teal-500 to-blue-600 text-center relative overflow-hidden">
+            <div class="relative z-10">
+                <div
+                    class="w-16 h-16 bg-white/20 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-4 backdrop-blur-sm shadow-inner">
+                    🔧
+                </div>
+                <h2 class="text-3xl font-extrabold text-white tracking-tight">Lapor Kerusakan</h2>
+                <p class="text-teal-100 mt-2 font-medium">Bantu kami menjaga kenyamanan ruangan Anda.</p>
+            </div>
+
+            <!-- Header Decor -->
+            <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+            <div class="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
+        </div>
+
+        <div class="p-8 md:p-10">
+            <!-- Asset Info Card -->
+            <div *ngIf="asset"
+                class="mb-8 bg-blue-50/50 border border-blue-100 p-5 rounded-3xl flex items-center gap-4 animate-fade-in-up">
+                <div
+                    class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-2xl shadow-sm flex-shrink-0">
+                    ❄️
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-1">Unit Terdeteksi</p>
+                    <p class="text-lg font-bold text-gray-800 leading-tight">{{ asset.name }}</p>
+                    <p class="text-sm text-gray-500 font-mono mt-0.5">{{ asset.sku }} • {{ asset.location }}</p>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div *ngIf="!asset && !loading && sku"
+                class="mb-8 bg-red-50 border border-red-100 p-5 rounded-3xl text-center animate-shake">
+                <div class="text-3xl mb-2">🤔</div>
+                <p class="text-red-600 font-bold">Aset tidak ditemukan</p>
+                <p class="text-red-400 text-sm">ID: {{ sku }} tidak terdaftar di sistem.</p>
+            </div>
+
+            <!-- Form -->
+            <form [formGroup]="reportForm" (ngSubmit)="onSubmit()" *ngIf="asset" class="space-y-6">
+
+                <!-- NIK Input -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Identitas
+                        Pelapor</label>
+                    <div class="flex gap-2">
+                        <input formControlName="nik" type="text" placeholder="Masukkan NIK"
+                            class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-teal-200 focus:ring-4 focus:ring-teal-50 outline-none transition-all font-bold text-gray-700 placeholder-gray-300"
+                            (blur)="checkNik()">
+                        <button type="button" (click)="checkNik()"
+                            class="px-5 py-3 rounded-2xl bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 transition-colors">
+                            Cek
+                        </button>
+                    </div>
+                    <div *ngIf="employeeName"
+                        class="flex items-center gap-2 px-2 text-green-600 font-bold text-sm animate-fade-in">
+                        <span>✅</span> Halo, {{ employeeName }}!
+                    </div>
+                </div>
+
+                <!-- Issue Category -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Kendala</label>
+                    <div class="relative">
+                        <select formControlName="issue_category"
+                            class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-teal-200 focus:ring-4 focus:ring-teal-50 outline-none transition-all font-bold text-gray-700 appearance-none cursor-pointer">
+                            <option value="" disabled selected>Pilih Masalah...</option>
+                            <option value="panas">🔥 AC Tidak Dingin / Panas</option>
+                            <option value="bocor">💧 AC Bocor Air</option>
+                            <option value="berisik">🔊 AC Berisik / Bunyi Aneh</option>
+                            <option value="mati">💀 AC Mati Total</option>
+                            <option value="bau">🤢 AC Mengeluarkan Bau</option>
+                            <option value="lainnya">📝 Lainnya</option>
+                        </select>
+                        <div
+                            class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-400">
+                            ▼</div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Detail
+                        Tambahan</label>
+                    <textarea formControlName="description" rows="3"
+                        class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-teal-200 focus:ring-4 focus:ring-teal-50 outline-none transition-all font-medium text-gray-700 placeholder-gray-300 resize-none"
+                        placeholder="Ceritakan lebih detail kondisinya..."></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button [disabled]="loading || reportForm.invalid"
+                        class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-lg flex justify-center items-center gap-2 group">
+                        <span *ngIf="loading"
+                            class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                        <span *ngIf="!loading">Kirim Laporan</span>
+                        <span *ngIf="!loading" class="group-hover:translate-x-1 transition-transform">🚀</span>
+                    </button>
+                    <p class="text-center text-xs text-gray-400 mt-4">Laporan akan langsung masuk ke tim teknisi.</p>
+                </div>
+
+            </form>
+
+            <!-- Pre-scan State -->
+            <div *ngIf="!sku && !loading" class="text-center py-10">
+                <div
+                    class="w-20 h-20 bg-gray-100 rounded-3xl mx-auto flex items-center justify-center text-4xl mb-4 grayscale opacity-50">
+                    📷</div>
+                <h3 class="text-gray-800 font-bold text-lg">Scan QR Code Dulu</h3>
+                <p class="text-gray-400 mt-2 text-sm px-8">Silakan scan QR Code yang tertempel di unit AC fisik untuk
+                    melaporkan kerusakan.</p>
+            </div>
+
+        </div>
+    </div>
+</div>
