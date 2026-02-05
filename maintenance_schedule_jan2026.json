@@ -1,0 +1,1160 @@
+{
+  "company": "PT DHARMA POLIMETAL Tbk",
+  "period": "JANUARI 2026",
+  "schedule": [
+    {
+      "NO": "1",
+      "RUANGAN_LOKASI": "AUDITORIUM",
+      "NO_AC": "RA 001",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        16
+      ]
+    },
+    {
+      "NO": "2",
+      "RUANGAN_LOKASI": "AUDITORIUM",
+      "NO_AC": "RA 002",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        16
+      ]
+    },
+    {
+      "NO": "3",
+      "RUANGAN_LOKASI": "AUDITORIUM",
+      "NO_AC": "RA 003",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        16
+      ]
+    },
+    {
+      "NO": "4",
+      "RUANGAN_LOKASI": "AUDITORIUM",
+      "NO_AC": "RA 004",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        16
+      ]
+    },
+    {
+      "NO": "5",
+      "RUANGAN_LOKASI": "AUDITORIUM",
+      "NO_AC": "RA 005",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        16
+      ]
+    },
+    {
+      "NO": "6",
+      "RUANGAN_LOKASI": "AUDITORIUM",
+      "NO_AC": "RA 006",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        16
+      ]
+    },
+    {
+      "NO": "7",
+      "RUANGAN_LOKASI": "AUDITORIUM",
+      "NO_AC": "RA 007",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        16
+      ]
+    },
+    {
+      "NO": "8",
+      "RUANGAN_LOKASI": "AUDITORIUM",
+      "NO_AC": "RA 008",
+      "JENIS": "CASSET",
+      "PK": "4 PK",
+      "JADWAL_SERVICE": [
+        16
+      ]
+    },
+    {
+      "NO": "9",
+      "RUANGAN_LOKASI": "AUDITORIUM",
+      "NO_AC": "RA 009",
+      "JENIS": "CASSET",
+      "PK": "4 PK",
+      "JADWAL_SERVICE": [
+        17
+      ]
+    },
+    {
+      "NO": "10",
+      "RUANGAN_LOKASI": "AUDITORIUM",
+      "NO_AC": "RA 010",
+      "JENIS": "CASSET",
+      "PK": "4 PK",
+      "JADWAL_SERVICE": [
+        17
+      ]
+    },
+    {
+      "NO": "11",
+      "RUANGAN_LOKASI": "AUDITORIUM",
+      "NO_AC": "RA 011",
+      "JENIS": "CASSET",
+      "PK": "4 PK",
+      "JADWAL_SERVICE": [
+        17
+      ]
+    },
+    {
+      "NO": "12",
+      "RUANGAN_LOKASI": "R. TRAINING",
+      "NO_AC": "RA 014",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        17
+      ]
+    },
+    {
+      "NO": "13",
+      "RUANGAN_LOKASI": "R. TRAINING",
+      "NO_AC": "RA 015",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        17
+      ]
+    },
+    {
+      "NO": "14",
+      "RUANGAN_LOKASI": "R. ARJUNO",
+      "NO_AC": "RA 016",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        17
+      ]
+    },
+    {
+      "NO": "15",
+      "RUANGAN_LOKASI": "R. MERBABU",
+      "NO_AC": "RA 017",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        17
+      ]
+    },
+    {
+      "NO": "16",
+      "RUANGAN_LOKASI": "R. MERBABU",
+      "NO_AC": "RA 018",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        17
+      ]
+    },
+    {
+      "NO": "17",
+      "RUANGAN_LOKASI": "SEKCOR",
+      "NO_AC": "RA 042",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        24
+      ]
+    },
+    {
+      "NO": "18",
+      "RUANGAN_LOKASI": "SEKERTARIS",
+      "NO_AC": "RA 043",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        24
+      ]
+    },
+    {
+      "NO": "19",
+      "RUANGAN_LOKASI": "DIREKTUR 1",
+      "NO_AC": "RA 044",
+      "JENIS": "CASSET",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        24
+      ]
+    },
+    {
+      "NO": "20",
+      "RUANGAN_LOKASI": "DIREKTUR 2",
+      "NO_AC": "RA 045",
+      "JENIS": "CASSET",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        24
+      ]
+    },
+    {
+      "NO": "21",
+      "RUANGAN_LOKASI": "DIREKTUR 3",
+      "NO_AC": "RA 046",
+      "JENIS": "CASSET",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        24
+      ]
+    },
+    {
+      "NO": "22",
+      "RUANGAN_LOKASI": "DIREKTUR 4",
+      "NO_AC": "RA 047",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        24
+      ]
+    },
+    {
+      "NO": "23",
+      "RUANGAN_LOKASI": "PRESDIR",
+      "NO_AC": "RA048",
+      "JENIS": "CASSET",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        24
+      ]
+    },
+    {
+      "NO": "24",
+      "RUANGAN_LOKASI": "R. MEETING EXC",
+      "NO_AC": "RA 049",
+      "JENIS": "CASSET",
+      "PK": "3 PK",
+      "JADWAL_SERVICE": [
+        24
+      ]
+    },
+    {
+      "NO": "25",
+      "RUANGAN_LOKASI": "R. MEETING EXC",
+      "NO_AC": "RA 050",
+      "JENIS": "CASSET",
+      "PK": "3 PK",
+      "JADWAL_SERVICE": [
+        24
+      ]
+    },
+    {
+      "NO": "26",
+      "RUANGAN_LOKASI": "R. MEETING EXC",
+      "NO_AC": "RA 051",
+      "JENIS": "CASSET",
+      "PK": "3 PK",
+      "JADWAL_SERVICE": [
+        24
+      ]
+    },
+    {
+      "NO": "27",
+      "RUANGAN_LOKASI": "R. SPSI",
+      "NO_AC": "RB002",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        28
+      ]
+    },
+    {
+      "NO": "28",
+      "RUANGAN_LOKASI": "R. KLINIK",
+      "NO_AC": "RB003",
+      "JENIS": "CASSET",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        28
+      ]
+    },
+    {
+      "NO": "29",
+      "RUANGAN_LOKASI": "R. KERINCI",
+      "NO_AC": "RB004",
+      "JENIS": "CASSET",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        28
+      ]
+    },
+    {
+      "NO": "30",
+      "RUANGAN_LOKASI": "R. LAKTASI",
+      "NO_AC": "RB005",
+      "JENIS": "CASSET",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        28
+      ]
+    },
+    {
+      "NO": "NO",
+      "RUANGAN_LOKASI": "RUANGAN / LOKASI",
+      "NO_AC": "NO AC",
+      "JENIS": "JENIS",
+      "PK": "PK",
+      "JADWAL_SERVICE": []
+    },
+    {
+      "NO": "31",
+      "RUANGAN_LOKASI": "R. KELUD",
+      "NO_AC": "RB006",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        28
+      ]
+    },
+    {
+      "NO": "32",
+      "RUANGAN_LOKASI": "R. PAPANDAYAN",
+      "NO_AC": "RB007",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        28
+      ]
+    },
+    {
+      "NO": "33",
+      "RUANGAN_LOKASI": "R. GYM",
+      "NO_AC": "RB008",
+      "JENIS": "CASSET",
+      "PK": "3 PK",
+      "JADWAL_SERVICE": [
+        28
+      ]
+    },
+    {
+      "NO": "34",
+      "RUANGAN_LOKASI": "R. PERSONALIA",
+      "NO_AC": "RB009",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        28
+      ]
+    },
+    {
+      "NO": "35",
+      "RUANGAN_LOKASI": "R. INVOICE",
+      "NO_AC": "RB010",
+      "JENIS": "SPLITE",
+      "PK": "1,5",
+      "JADWAL_SERVICE": [
+        13
+      ]
+    },
+    {
+      "NO": "36",
+      "RUANGAN_LOKASI": "LOBBY UTAMA",
+      "NO_AC": "RB011",
+      "JENIS": "CASSET",
+      "PK": "3 PK",
+      "JADWAL_SERVICE": [
+        13
+      ]
+    },
+    {
+      "NO": "37",
+      "RUANGAN_LOKASI": "R. RINJANI",
+      "NO_AC": "RB012",
+      "JENIS": "CASSET",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        13
+      ]
+    },
+    {
+      "NO": "38",
+      "RUANGAN_LOKASI": "R. SEMERU",
+      "NO_AC": "RB013",
+      "JENIS": "CASSET",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        13
+      ]
+    },
+    {
+      "NO": "39",
+      "RUANGAN_LOKASI": "R. SEMERU",
+      "NO_AC": "RB014",
+      "JENIS": "CASSET",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        13
+      ]
+    },
+    {
+      "NO": "40",
+      "RUANGAN_LOKASI": "R. MERAPI",
+      "NO_AC": "RB021",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        13
+      ]
+    },
+    {
+      "NO": "41",
+      "RUANGAN_LOKASI": "R. CEREMAI",
+      "NO_AC": "RB022",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        13
+      ]
+    },
+    {
+      "NO": "42",
+      "RUANGAN_LOKASI": "R. GALUNGGUNG",
+      "NO_AC": "RB023",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        13
+      ]
+    },
+    {
+      "NO": "43",
+      "RUANGAN_LOKASI": "R. GUDANG PURCH",
+      "NO_AC": "RB024",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        15
+      ]
+    },
+    {
+      "NO": "44",
+      "RUANGAN_LOKASI": "POS 2",
+      "NO_AC": "RB025",
+      "JENIS": "SPLITE",
+      "PK": "1.5 PK",
+      "JADWAL_SERVICE": [
+        15
+      ]
+    },
+    {
+      "NO": "45",
+      "RUANGAN_LOKASI": "MAINTENANCE",
+      "NO_AC": "GB001",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        15
+      ]
+    },
+    {
+      "NO": "46",
+      "RUANGAN_LOKASI": "MAINTENANCE",
+      "NO_AC": "GB002",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        15
+      ]
+    },
+    {
+      "NO": "47",
+      "RUANGAN_LOKASI": "ASSET MANAGEMENT",
+      "NO_AC": "GB003",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        15
+      ]
+    },
+    {
+      "NO": "48",
+      "RUANGAN_LOKASI": "GUDANG ATK",
+      "NO_AC": "GB004",
+      "JENIS": "SPLITE",
+      "PK": "1,5 PK",
+      "JADWAL_SERVICE": [
+        15
+      ]
+    },
+    {
+      "NO": "49",
+      "RUANGAN_LOKASI": "DOJO",
+      "NO_AC": "GB005",
+      "JENIS": "CASSET",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        15
+      ]
+    },
+    {
+      "NO": "50",
+      "RUANGAN_LOKASI": "DOJO",
+      "NO_AC": "GB006",
+      "JENIS": "CASSET",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        15
+      ]
+    },
+    {
+      "NO": "51",
+      "RUANGAN_LOKASI": "DOJO",
+      "NO_AC": "GB007",
+      "JENIS": "SPLITE",
+      "PK": "1,5 PK",
+      "JADWAL_SERVICE": [
+        20
+      ]
+    },
+    {
+      "NO": "52",
+      "RUANGAN_LOKASI": "DOJO",
+      "NO_AC": "GB008",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        20
+      ]
+    },
+    {
+      "NO": "53",
+      "RUANGAN_LOKASI": "KOPERASI",
+      "NO_AC": "GB009",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        20
+      ]
+    },
+    {
+      "NO": "54",
+      "RUANGAN_LOKASI": "KOPERASI",
+      "NO_AC": "GB010",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        20
+      ]
+    },
+    {
+      "NO": "55",
+      "RUANGAN_LOKASI": "MANUFACTUR",
+      "NO_AC": "GB011",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        20
+      ]
+    },
+    {
+      "NO": "56",
+      "RUANGAN_LOKASI": "MANUFACTUR",
+      "NO_AC": "GB012",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        20
+      ]
+    },
+    {
+      "NO": "57",
+      "RUANGAN_LOKASI": "MANUFACTUR",
+      "NO_AC": "GB013",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        20
+      ]
+    },
+    {
+      "NO": "58",
+      "RUANGAN_LOKASI": "MANUFACTUR",
+      "NO_AC": "GB014",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        20
+      ]
+    },
+    {
+      "NO": "59",
+      "RUANGAN_LOKASI": "R. QA",
+      "NO_AC": "GB015",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        22
+      ]
+    },
+    {
+      "NO": "60",
+      "RUANGAN_LOKASI": "R. QA",
+      "NO_AC": "GB016",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        22
+      ]
+    },
+    {
+      "NO": "61",
+      "RUANGAN_LOKASI": "R. QA",
+      "NO_AC": "GB017",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        22
+      ]
+    },
+    {
+      "NO": "62",
+      "RUANGAN_LOKASI": "R. QA",
+      "NO_AC": "GB018",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        22
+      ]
+    },
+    {
+      "NO": "NO",
+      "RUANGAN_LOKASI": "RUANGAN / LOKASI",
+      "NO_AC": "NO AC",
+      "JENIS": "JENIS",
+      "PK": "PK",
+      "JADWAL_SERVICE": []
+    },
+    {
+      "NO": "63",
+      "RUANGAN_LOKASI": "R. LAB METALURGI",
+      "NO_AC": "GB025",
+      "JENIS": "SPLITE",
+      "PK": "1,5 PK",
+      "JADWAL_SERVICE": [
+        22
+      ]
+    },
+    {
+      "NO": "64",
+      "RUANGAN_LOKASI": "R. LAB METALURGI",
+      "NO_AC": "GB026",
+      "JENIS": "SPLITE",
+      "PK": "1,5 PK",
+      "JADWAL_SERVICE": [
+        22
+      ]
+    },
+    {
+      "NO": "65",
+      "RUANGAN_LOKASI": "R. ENG 2W",
+      "NO_AC": "GB028",
+      "JENIS": "SPLITE",
+      "PK": "1,5 PK",
+      "JADWAL_SERVICE": [
+        22
+      ]
+    },
+    {
+      "NO": "66",
+      "RUANGAN_LOKASI": "R. ENG 2W",
+      "NO_AC": "GB031",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        22
+      ]
+    },
+    {
+      "NO": "67",
+      "RUANGAN_LOKASI": "R. ENG 2W",
+      "NO_AC": "GB032",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        27
+      ]
+    },
+    {
+      "NO": "68",
+      "RUANGAN_LOKASI": "OFFICE 4W",
+      "NO_AC": "GB034",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        27
+      ]
+    },
+    {
+      "NO": "69",
+      "RUANGAN_LOKASI": "OFFICE 4W",
+      "NO_AC": "GB035",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        27
+      ]
+    },
+    {
+      "NO": "70",
+      "RUANGAN_LOKASI": "OFFICE 4 W",
+      "NO_AC": "GB036",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        27
+      ]
+    },
+    {
+      "NO": "71",
+      "RUANGAN_LOKASI": "DOJO MTC",
+      "NO_AC": "GB038",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        27
+      ]
+    },
+    {
+      "NO": "72",
+      "RUANGAN_LOKASI": "DOJO ",
+      "NO_AC": "GB039",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        27
+      ]
+    },
+    {
+      "NO": "73",
+      "RUANGAN_LOKASI": "OFFICE QUALITY BARU",
+      "NO_AC": "GB040",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        27
+      ]
+    },
+    {
+      "NO": "74",
+      "RUANGAN_LOKASI": "OFFICE QUALITY BARU",
+      "NO_AC": "GB041",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        27
+      ]
+    },
+    {
+      "NO": "75",
+      "RUANGAN_LOKASI": "OFFICE QUALITY BARU",
+      "NO_AC": "GB042",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        29
+      ]
+    },
+    {
+      "NO": "76",
+      "RUANGAN_LOKASI": "OFFICE QUALITY BARU",
+      "NO_AC": "GB043",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        29
+      ]
+    },
+    {
+      "NO": "77",
+      "RUANGAN_LOKASI": "R. CHEMICAL ( CED )",
+      "NO_AC": "GC007",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        29
+      ]
+    },
+    {
+      "NO": "78",
+      "RUANGAN_LOKASI": "R. INCOMING ( CED )",
+      "NO_AC": "GC008",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        29
+      ]
+    },
+    {
+      "NO": "79",
+      "RUANGAN_LOKASI": "KOPERASI GEDUNG BARU",
+      "NO_AC": "GC011",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        29
+      ]
+    },
+    {
+      "NO": "80",
+      "RUANGAN_LOKASI": "R. OBEYA ( ENG 4W )",
+      "NO_AC": "GD002",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        29
+      ]
+    },
+    {
+      "NO": "81",
+      "RUANGAN_LOKASI": "SERVER ENG 4W",
+      "NO_AC": "GD003",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        29
+      ]
+    },
+    {
+      "NO": "82",
+      "RUANGAN_LOKASI": "R. OBEYA ( ENG 4W )",
+      "NO_AC": "GD004",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        29
+      ]
+    },
+    {
+      "NO": "83",
+      "RUANGAN_LOKASI": "R. OFFICE ENG 4W",
+      "NO_AC": "GD005",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        9
+      ]
+    },
+    {
+      "NO": "84",
+      "RUANGAN_LOKASI": "DESIGN ENG 4W",
+      "NO_AC": "GD006",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        9
+      ]
+    },
+    {
+      "NO": "85",
+      "RUANGAN_LOKASI": "PP MEMBER ENG 4W",
+      "NO_AC": "GD007",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        9
+      ]
+    },
+    {
+      "NO": "86",
+      "RUANGAN_LOKASI": "R. ENG 4W",
+      "NO_AC": "GD011",
+      "JENIS": "SPLITE",
+      "PK": "1,5 PK",
+      "JADWAL_SERVICE": [
+        9
+      ]
+    },
+    {
+      "NO": "87",
+      "RUANGAN_LOKASI": "R. ENG 4W",
+      "NO_AC": "GD012",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        9
+      ]
+    },
+    {
+      "NO": "88",
+      "RUANGAN_LOKASI": "R. ENG 4W",
+      "NO_AC": "GD013",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        9
+      ]
+    },
+    {
+      "NO": "89",
+      "RUANGAN_LOKASI": "R. ENG 4W",
+      "NO_AC": "GD014",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        9
+      ]
+    },
+    {
+      "NO": "90",
+      "RUANGAN_LOKASI": "R. PE FAST",
+      "NO_AC": "GD015",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        9
+      ]
+    },
+    {
+      "NO": "91",
+      "RUANGAN_LOKASI": "R. OFFICE FAST DOKING",
+      "NO_AC": "GD017",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        14
+      ]
+    },
+    {
+      "NO": "92",
+      "RUANGAN_LOKASI": "R. OFFICE FAST DOKING",
+      "NO_AC": "GD018",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        14
+      ]
+    },
+    {
+      "NO": "93",
+      "RUANGAN_LOKASI": "R. OFFICE FAST DOKING",
+      "NO_AC": "GD019",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        14
+      ]
+    },
+    {
+      "NO": "NO",
+      "RUANGAN_LOKASI": "RUANGAN / LOKASI",
+      "NO_AC": "NO AC",
+      "JENIS": "JENIS",
+      "PK": "PK",
+      "JADWAL_SERVICE": []
+    },
+    {
+      "NO": "94",
+      "RUANGAN_LOKASI": "R. OFFICE FAST DOKING",
+      "NO_AC": "GD020",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        14
+      ]
+    },
+    {
+      "NO": "95",
+      "RUANGAN_LOKASI": "R. PANEL CHILLER BATRE PAC",
+      "NO_AC": "GD030",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        14
+      ]
+    },
+    {
+      "NO": "96",
+      "RUANGAN_LOKASI": "PENDINGIN DUCTING HT 01",
+      "NO_AC": "GD031",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        14
+      ]
+    },
+    {
+      "NO": "97",
+      "RUANGAN_LOKASI": "R. OFFICE AZP",
+      "NO_AC": "GE001",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        7
+      ]
+    },
+    {
+      "NO": "98",
+      "RUANGAN_LOKASI": "R. OFFICE AZP",
+      "NO_AC": "GE002",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        7
+      ]
+    },
+    {
+      "NO": "99",
+      "RUANGAN_LOKASI": "PANEL AZP",
+      "NO_AC": "GE003",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        7
+      ]
+    },
+    {
+      "NO": "100",
+      "RUANGAN_LOKASI": "OFFICE LAB AZP",
+      "NO_AC": "GE004",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        7
+      ]
+    },
+    {
+      "NO": "101",
+      "RUANGAN_LOKASI": "OFFICE AZP",
+      "NO_AC": "GE005",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        7
+      ]
+    },
+    {
+      "NO": "102",
+      "RUANGAN_LOKASI": "OFFICE HYUNDAI",
+      "NO_AC": "GF001",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        7
+      ]
+    },
+    {
+      "NO": "103",
+      "RUANGAN_LOKASI": "OFFICE HYUNDAI",
+      "NO_AC": "GF002",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        7
+      ]
+    },
+    {
+      "NO": "104",
+      "RUANGAN_LOKASI": "OFFICE HYUNDAI",
+      "NO_AC": "GF003",
+      "JENIS": "SPLITE",
+      "PK": "1 PK",
+      "JADWAL_SERVICE": [
+        7
+      ]
+    },
+    {
+      "NO": "105",
+      "RUANGAN_LOKASI": "OFFICE D 03",
+      "NO_AC": "GG001",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        14
+      ]
+    },
+    {
+      "NO": "106",
+      "RUANGAN_LOKASI": "OFFICE D 03",
+      "NO_AC": "GG002",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        14
+      ]
+    },
+    {
+      "NO": "107",
+      "RUANGAN_LOKASI": "OFFICE ATAS",
+      "NO_AC": "3W001",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        19
+      ]
+    },
+    {
+      "NO": "108",
+      "RUANGAN_LOKASI": "OFFICE ATAS",
+      "NO_AC": "3W002",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        19
+      ]
+    },
+    {
+      "NO": "109",
+      "RUANGAN_LOKASI": "OFFICE ATAS",
+      "NO_AC": "3W003",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        19
+      ]
+    },
+    {
+      "NO": "110",
+      "RUANGAN_LOKASI": "OFFICE ATAS",
+      "NO_AC": "3W004",
+      "JENIS": "SPLITE",
+      "PK": "2 PK",
+      "JADWAL_SERVICE": [
+        19
+      ]
+    },
+    {
+      "NO": "111",
+      "RUANGAN_LOKASI": "GEDUNG C",
+      "NO_AC": "AICOOL1",
+      "JENIS": null,
+      "PK": "15 PK",
+      "JADWAL_SERVICE": [
+        19
+      ]
+    },
+    {
+      "NO": "112",
+      "RUANGAN_LOKASI": "GEDUNG C",
+      "NO_AC": "AICOOL2",
+      "JENIS": null,
+      "PK": "15 PK",
+      "JADWAL_SERVICE": [
+        19
+      ]
+    },
+    {
+      "NO": "113",
+      "RUANGAN_LOKASI": "GEDUNG C",
+      "NO_AC": "AICOOL3",
+      "JENIS": null,
+      "PK": "15 PK",
+      "JADWAL_SERVICE": [
+        19
+      ]
+    }
+  ]
+}
