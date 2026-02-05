@@ -1,0 +1,83 @@
+<div class="max-w-4xl mx-auto p-6 space-y-8 font-sans">
+
+    <!-- HEADER -->
+    <div class="flex items-center justify-between">
+        <div>
+            <div class="flex items-center gap-2 mb-2">
+                <a routerLink="/admin/maintenance"
+                    class="text-blue-600 hover:text-blue-700 font-bold text-sm flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M19 12H5m7 7-7-7 7-7" />
+                    </svg>
+                    Kembali
+                </a>
+                <span class="text-gray-300">|</span>
+                <span class="text-gray-400 text-sm font-bold uppercase tracking-widest">Maintenance Detail</span>
+            </div>
+            <h1 class="text-3xl font-black text-gray-900 tracking-tight" *ngIf="workOrder?.assets">
+                {{ workOrder?.assets?.name }}
+            </h1>
+        </div>
+
+        <div *ngIf="workOrder" class="px-4 py-2 rounded-xl border text-sm font-bold uppercase tracking-widest"
+            [ngClass]="{
+                'bg-blue-50 text-blue-700 border-blue-200': workOrder.status === 'scheduled',
+                'bg-yellow-50 text-yellow-700 border-yellow-200': workOrder.status === 'in_progress',
+                'bg-green-50 text-green-700 border-green-200': workOrder.status === 'completed',
+                'bg-red-50 text-red-700 border-red-200': workOrder.status === 'missed'
+             }">
+            {{ workOrder.status.replace('_', ' ') }}
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="bg-white rounded-[2.5rem] border border-gray-200 shadow-sm p-8" *ngIf="workOrder">
+
+        <form [formGroup]="metaForm" class="space-y-6">
+
+            <!-- Asset Info -->
+            <div class="grid grid-cols-2 gap-6 p-6 bg-gray-50 rounded-2xl border border-gray-100">
+                <div>
+                    <label
+                        class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Lokasi</label>
+                    <p class="font-bold text-gray-900">{{ workOrder.assets?.location }}</p>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Kode Aset
+                        (SKU)</label>
+                    <p class="font-bold text-gray-900">{{ workOrder.assets?.sku }}</p>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">Catatan Teknisi</label>
+                <textarea formControlName="technician_notes" rows="4"
+                    class="w-full px-4 py-3 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-gray-700 placeholder-gray-400 resize-none"
+                    placeholder="Masukkan catatan maintenance..."></textarea>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center justify-end gap-4 pt-4 border-t border-gray-100">
+                <button (click)="saveChanges(true)" [disabled]="saving || workOrder.status === 'completed'"
+                    class="px-6 py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold shadow-lg shadow-green-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                    <svg *ngIf="!saving" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                        stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <div *ngIf="saving"
+                        class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Selesai & Complete
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="flex flex-col items-center justify-center py-20 text-gray-400">
+        <div class="w-10 h-10 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+        <p class="font-bold text-sm">Memuat detail...</p>
+    </div>
+</div>
