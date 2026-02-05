@@ -52,14 +52,16 @@ try {
         assets.push(`('${safeName}', '${safeSku}', '${safeLoc}', '${safePk}', '${safeBrand}', 'good')`);
 
         // Check for Schedules (Cols 5 to 35)
-        // Col 5 = Day 1, Col 6 = Day 2... Col 35 = Day 31
+        // Col 5 = Day 1, Col 6 = Day 2...
         for (let day = 1; day <= 31; day++) {
             const colIndex = 4 + day; // 5 is day 1
             if (cols[colIndex] && cols[colIndex].toLowerCase().includes('v')) {
-                // Found a schedule
+                // Found a schedule in Jan 2026
                 const dateStr = `2026-01-${day.toString().padStart(2, '0')}`;
-                // We use a subquery for ID to ensure we get the right asset
-                schedules.push(`((SELECT id FROM public.assets WHERE sku = '${safeSku}'), '${dateStr}', 'pending')`);
+
+                // Use 'scheduled' so it shows up in the system even if date is past (for history)
+                // Use subquery for ID to ensure we get the right asset
+                schedules.push(`((SELECT id FROM public.assets WHERE sku = '${safeSku}' LIMIT 1), '${dateStr}', 'scheduled')`);
             }
         }
     });
