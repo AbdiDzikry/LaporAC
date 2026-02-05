@@ -8,6 +8,8 @@ import { ReportFormComponent } from './pages/public/report-form/report-form';
 import { TicketListComponent } from './pages/admin/tickets/ticket-list/ticket-list';
 import { TicketDetailComponent } from './pages/admin/tickets/ticket-detail/ticket-detail';
 import { AnalyticsComponent } from './pages/admin/analytics/analytics';
+import { UserListComponent } from './pages/admin/users/user-list/user-list';
+import { LogsComponent } from './pages/admin/logs/logs';
 import { roleGuard } from './guards/role/role-guard';
 import { AdminLayout } from './components/admin-layout/admin-layout';
 
@@ -26,6 +28,12 @@ export const routes: Routes = [
         children: [
             { path: 'dashboard', component: DashboardComponent },
             { path: 'admin/analytics', component: AnalyticsComponent },
+            {
+                path: 'admin/maintenance',
+                loadChildren: () => import('./pages/admin/maintenance/maintenance.routes').then(m => m.MAINTENANCE_ROUTES)
+            },
+            { path: 'admin/users', component: UserListComponent },
+            { path: 'admin/logs', component: LogsComponent },
             { path: 'admin/assets', component: AssetListComponent },
             { path: 'admin/assets/new', component: AssetFormComponent },
             { path: 'admin/assets/edit/:id', component: AssetFormComponent },

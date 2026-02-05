@@ -9,7 +9,7 @@ export const roleGuard: CanActivateFn = async (route, state) => {
   // Check if authenticated
   const session = await supabase.session;
   if (!session.data.session) {
-    router.navigate(['/login']);
+    router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
     return false;
   }
 

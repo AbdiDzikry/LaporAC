@@ -21,7 +21,7 @@ export class EmployeeService {
 
   getEmployees(): Observable<any> {
     const headers = new HttpHeaders({
-      'x-api-key ': this.apiKey // Using the key with space as provided
+      'x-api-key': this.apiKey
     });
 
     return this.http.get(this.apiUrl, { headers });

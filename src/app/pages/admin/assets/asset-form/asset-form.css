@@ -1,0 +1,31 @@
+/* Custom Material Datepicker Styling */
+.custom-datepicker {
+    font-family: inherit;
+}
+
+.custom-datepicker .mat-mdc-text-field-wrapper {
+    background-color: rgb(249 250 251);
+    border-radius: 1rem;
+    padding: 0.5rem 1rem;
+}
+
+.custom-datepicker .mat-mdc-form-field-focus-overlay {
+    background-color: white;
+}
+
+.custom-datepicker .mdc-text-field--outlined .mdc-notched-outline {
+    border-color: transparent;
+}
+
+.custom-datepicker .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline {
+    border-color: rgb(191 219 254);
+}
+
+.custom-datepicker .mdc-text-field--outlined.mdc-text-field--focused .mdc-notched-outline {
+    border-color: rgb(147 197 253);
+    border-width: 2px;
+}
+
+.custom-datepicker .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+}

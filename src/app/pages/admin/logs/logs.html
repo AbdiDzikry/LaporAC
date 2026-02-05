@@ -1,0 +1,64 @@
+<div class="h-screen flex flex-col font-sans bg-gray-50/30">
+    <div class="p-6 md:p-8 space-y-6 flex-1 overflow-y-auto">
+
+        <!-- HEADER -->
+        <div>
+            <h1 class="text-2xl font-black text-gray-900 tracking-tight">System Audit Logs</h1>
+            <p class="text-sm text-gray-500 mt-1 font-medium">Rekaman aktivitas penting dalam sistem untuk keamanan dan
+                audit.</p>
+        </div>
+
+        <!-- LOGS TABLE -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+
+            <div *ngIf="loading" class="p-12 text-center text-gray-400">
+                <div class="w-8 h-8 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mx-auto mb-3">
+                </div>
+                Initializing Log Stream...
+            </div>
+
+            <div *ngIf="!loading && logs.length === 0" class="p-12 text-center text-gray-400 font-bold text-sm">
+                No activity recorded yet.
+            </div>
+
+            <div *ngIf="!loading && logs.length > 0" class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr
+                            class="bg-gray-50/50 border-b border-gray-100 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                            <th class="p-4 pl-6 w-32">Timestamp</th>
+                            <th class="p-4 w-48">Actor</th>
+                            <th class="p-4 w-32">Action</th>
+                            <th class="p-4 w-32">Target</th>
+                            <th class="p-4">Details (Snapshot)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 text-xs font-mono">
+                        <tr *ngFor="let log of logs" class="hover:bg-gray-50 transition-colors">
+                            <td class="p-4 pl-6 whitespace-nowrap text-gray-500">
+                                {{ log.created_at | date:'dd MMM HH:mm:ss' }}
+                            </td>
+                            <td class="p-4">
+                                <span class="font-bold text-gray-700 block">{{ log.profiles?.full_name || 'System /
+                                    Unknown' }}</span>
+                                <span class="text-[10px] text-gray-400">{{ log.profiles?.email }}</span>
+                            </td>
+                            <td class="p-4 font-bold" [ngClass]="getActionColor(log.action)">
+                                {{ log.action }}
+                            </td>
+                            <td class="p-4 text-gray-600">
+                                {{ log.target_table }}:{{ log.target_id }}
+                            </td>
+                            <td class="p-4">
+                                <pre
+                                    class="bg-gray-50 p-2 rounded border border-gray-100 text-[10px] text-gray-600 overflow-x-auto max-w-md">{{ log.details | json }}</pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+</div>

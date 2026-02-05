@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SupabaseService } from '../../../services/supabase/supabase';
-import { Router } from '@angular/router';
+import { AuditService } from '../../../services/audit/audit'; // Import AuditService
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,9 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private supabase: SupabaseService,
-    private router: Router
+    private audit: AuditService, // Inject AuditService
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -45,7 +48,14 @@ export class LoginComponent {
       }
 
       if (data.session) {
-        this.router.navigate(['/dashboard']);
+        // Log Login Action
+        if (data.user) {
+          await this.audit.logAction('LOGIN', 'auth', data.user.id, { email: this.loginForm.value.email });
+        }
+
+        // Smart Redirect
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+        this.router.navigateByUrl(returnUrl);
       }
     } catch (error: any) {
       this.errorMsg = error.message || 'Login failed';

@@ -7,11 +7,29 @@
             <p class="text-gray-400 mt-2 text-lg">Pantau & kelola laporan kerusakan AC.</p>
         </div>
 
-        <!-- Filter Toggle (Placeholder Concept) -->
-        <div class="flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm">
-            <button class="px-6 py-2 rounded-xl bg-gray-900 text-white font-bold text-sm shadow-md">Semua</button>
-            <button class="px-6 py-2 rounded-xl text-gray-400 font-bold text-sm hover:bg-gray-50">Open</button>
-            <button class="px-6 py-2 rounded-xl text-gray-400 font-bold text-sm hover:bg-gray-50">Resolved</button>
+        <!-- Filter Toggle -->
+        <div class="flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm overflow-x-auto">
+            <button (click)="setTab('all')"
+                class="px-5 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap"
+                [ngClass]="activeTab === 'all' ? 'bg-gray-900 text-white shadow-md' : 'text-gray-400 hover:bg-gray-50'">
+                Semua
+            </button>
+            <button (click)="setTab('pending')"
+                class="px-5 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2"
+                [ngClass]="activeTab === 'pending' ? 'bg-blue-100 text-blue-700 shadow-sm ring-1 ring-blue-200' : 'text-gray-400 hover:bg-gray-50'">
+                <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                Butuh Validasi
+            </button>
+            <button (click)="setTab('open')"
+                class="px-5 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap"
+                [ngClass]="activeTab === 'open' ? 'bg-white text-gray-800 border border-gray-200 shadow-sm' : 'text-gray-400 hover:bg-gray-50'">
+                Open / Proses
+            </button>
+            <button (click)="setTab('resolved')"
+                class="px-5 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap"
+                [ngClass]="activeTab === 'resolved' ? 'bg-white text-gray-800 border border-gray-200 shadow-sm' : 'text-gray-400 hover:bg-gray-50'">
+                Riwayat
+            </button>
         </div>
     </div>
 
@@ -45,12 +63,12 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
-                    <tr *ngFor="let ticket of tickets"
+                    <tr *ngFor="let ticket of filteredTickets"
                         class="group hover:bg-purple-50/30 transition-colors duration-200">
 
                         <!-- ID & Time -->
                         <td class="p-6 pl-8">
-                            <div class="font-bold text-gray-800">#{{ ticket.id.substring(0,6) }}</div>
+                            <div class="font-bold text-gray-800">#{{ ticket.id }}</div>
                             <div class="text-xs text-gray-400 font-medium mt-1">{{ ticket.created_at | date:'dd MMM,
                                 HH:mm' }}</div>
                         </td>
@@ -96,26 +114,39 @@
                         </td>
 
                         <!-- Status -->
+                        <!-- Status -->
                         <td class="p-6">
                             <span
-                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide"
-                                [ngClass]="{
-                                    'bg-red-100 text-red-600': ticket.status === 'open',
-                                    'bg-amber-100 text-amber-600': ticket.status === 'in_progress',
-                                    'bg-green-100 text-green-600': ticket.status === 'resolved'
-                                }">
-                                <span class="w-2 h-2 rounded-full animate-pulse" [ngClass]="{
-                                        'bg-red-500': ticket.status === 'open',
-                                        'bg-amber-500': ticket.status === 'in_progress',
-                                        'bg-green-500': ticket.status === 'resolved'
-                                    }"></span>
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide border"
+                                [ngClass]="getStatusClass(ticket.status)">
+                                <span class="w-2 h-2 rounded-full animate-pulse bg-current"></span>
                                 {{ ticket.status.replace('_', ' ') }}
                             </span>
                         </td>
 
                         <!-- Action -->
                         <td class="p-6 text-right pr-8">
-                            <a [routerLink]="['/admin/tickets', ticket.id]"
+                            <!-- Helper Actions for Pending Validation -->
+                            <div *ngIf="ticket.status === 'pending_validation'"
+                                class="flex items-center justify-end gap-2">
+                                <button (click)="validateTicket(ticket, true)" title="Validasi (Teruskan ke Teknisi)"
+                                    class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm hover:shadow-md transition-all">
+                                    Valid
+                                </button>
+                                <button (click)="validateTicket(ticket, false)" title="Tolak (False Alarm)"
+                                    class="p-2 rounded-xl border border-gray-200 text-red-500 hover:bg-red-50 hover:border-red-200 transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Standard Detail Button -->
+                            <a *ngIf="ticket.status !== 'pending_validation'"
+                                [routerLink]="['/admin/tickets', ticket.id]"
                                 class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-400 hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200 transition-all shadow-sm">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

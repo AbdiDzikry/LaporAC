@@ -1,2 +1,11 @@
-TS2305: Module '"./pages/admin/analytics/analytics"' has no exported member 'AnalyticsComponent'.
-src/app/app.routes.ts:10:9
+Current Month: Feb 5, 2026
+
+Schedules Loaded: 120
+
+Sample Schedule: { "id": "c3e3a111-8a15-486e-81fc-b98adbd80698", "asset_id": 109, "scheduled_date": "2026-01-07", "status": "scheduled", "technician_name": null, "notes": null, "created_at": "2026-01-29T15:58:25.723174+00:00", "updated_at": "2026-01-29T15:58:25.723174+00:00", "assets": { "sku": "GF001", "name": "AC OFFICE HYUNDAI GF001", "location": "OFFICE HYUNDAI", "maintenance_interval_days": 90 } }
+
+First Timeline Day: Sunday, February 1, 2026
+
+Unique Assets Count: 113
+
+Unique Asset Sample: { "sku": "GF001", "name": "AC OFFICE HYUNDAI GF001", "location": "OFFICE HYUNDAI", "maintenance_interval_days": 90, "id": 109 }

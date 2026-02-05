@@ -2,67 +2,118 @@
 
     <!-- Breadcrumb / Back -->
     <a routerLink="/admin/assets"
-        class="inline-flex items-center gap-2 text-gray-400 hover:text-orange-500 font-bold mb-6 transition-colors">
-        <span>←</span> Kembali ke Daftar
+        class="inline-flex items-center gap-2 text-gray-500 hover:text-blue-700 font-semibold mb-6 transition-colors text-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+            stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        Kembali ke Daftar Aset
     </a>
 
-    <div
-        class="bg-white rounded-[2.5rem] shadow-xl shadow-gray-100/50 p-10 md:p-12 border border-gray-50 relative overflow-hidden">
-
-        <!-- Decorative Background -->
-        <div
-            class="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none">
+    <!-- Header Card -->
+    <div class="bg-white rounded-3xl p-8 md:p-12 border border-gray-100 shadow-sm relative overflow-hidden mb-10">
+        <div class="relative z-10 text-center max-w-2xl mx-auto">
+            <h2 class="text-3xl font-black text-gray-900 mb-2">{{ isEditMode ? 'Perbarui Data Aset' : 'Registrasi Aset
+                Baru' }}</h2>
+            <p class="text-gray-500 font-medium whitespace-pre-wrap">Pastikan data yang dimasukkan sesuai dengan catatan
+                fisik unit di lapangan untuk akurasi inventaris.</p>
         </div>
+    </div>
 
+    <div class="bg-white rounded-3xl border border-gray-100 p-8 md:p-12 shadow-sm relative">
         <div class="relative z-10">
-            <h2 class="text-3xl font-extrabold text-gray-900 mb-2">{{ isEditMode ? 'Edit Data AC' : 'Input Data AC Baru'
-                }}</h2>
-            <p class="text-gray-400 mb-8">Sesuaikan data dengan file Excel/CSV.</p>
-
+            <div class="flex items-center gap-3 mb-10 pb-6 border-b border-gray-50">
+                <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
+                <h3 class="text-xl font-extrabold text-gray-900">Informasi Teknis AC</h3>
+            </div>
             <form [formGroup]="assetForm" (ngSubmit)="onSubmit()" class="space-y-6">
 
-                <!-- ROW 1: NO AC & RUANGAN (Matching CSV Cols 1 & 2) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- ROW 1: SKU & LOCATION -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-2">
-                        <label class="text-sm font-bold text-gray-700 ml-1">NO AC (SKU)</label>
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nomor Aset
+                            (SKU)</label>
                         <input formControlName="sku" type="text" placeholder="Contoh: RA 001"
-                            class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-50 outline-none transition-all font-bold text-gray-800 placeholder-gray-300">
-                        <p class="text-[10px] text-gray-400 ml-1">Sesuai kolom "NO AC"</p>
+                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-sm font-bold text-gray-700 ml-1">RUANGAN / LOKASI</label>
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Ruangan /
+                            Lokasi</label>
                         <input formControlName="location" type="text" placeholder="Contoh: AUDITORIUM"
-                            class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-50 outline-none transition-all font-bold text-gray-800 placeholder-gray-300">
-                        <p class="text-[10px] text-gray-400 ml-1">Sesuai kolom "RUANGAN / LOKASI"</p>
+                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
                     </div>
                 </div>
 
-                <!-- ROW 2: JENIS & PK (Matching CSV Cols 3 & 4) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- ROW 2: JENIS & KAPASITAS -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-2">
-                        <label class="text-sm font-bold text-gray-700 ml-1">JENIS</label>
-                        <!-- Suggestion List based on CSV values -->
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Jenis
+                            Unit</label>
                         <div class="relative">
                             <input formControlName="brand" type="text" list="jenisOptions" placeholder="SPLITE / CASSET"
-                                class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-50 outline-none transition-all font-bold text-gray-800 placeholder-gray-300">
+                                class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
                             <datalist id="jenisOptions">
                                 <option value="SPLITE">
                                 <option value="CASSET">
                                 <option value="STANDING">
                             </datalist>
-                            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-xl">❄️</div>
                         </div>
-                        <p class="text-[10px] text-gray-400 ml-1">Sesuai kolom "JENIS" (ex: SPLITE, CASSET)</p>
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-sm font-bold text-gray-700 ml-1">KAPASITAS (PK)</label>
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Kapasitas
+                            (PK)</label>
                         <input formControlName="pk" type="text" placeholder="2 PK"
-                            class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-50 outline-none transition-all font-bold text-gray-800 placeholder-gray-300">
-                        <p class="text-[10px] text-gray-400 ml-1">Sesuai kolom "PK"</p>
+                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
                     </div>
                 </div>
+
+                <!-- ROW 3: PURCHASE & VENDOR -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nama
+                            Vendor</label>
+                        <input formControlName="vendor_name" type="text" placeholder="CV. AC Sejahtera"
+                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Harga Beli
+                            (Rp)</label>
+                        <input formControlName="purchase_price" type="number" placeholder="4500000"
+                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
+                    </div>
+                </div>
+
+                <!-- ROW 4: WARRANTY DATE -->
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Habis Masa
+                        Garansi</label>
+                    <mat-form-field appearance="outline" class="w-full custom-datepicker">
+                        <mat-label>Pilih Tanggal</mat-label>
+                        <input matInput [matDatepicker]="warrantyPicker" formControlName="warranty_expiry_date">
+                        <mat-datepicker-toggle matIconSuffix [for]="warrantyPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #warrantyPicker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Masa Pakai
+                            (Tahun)</label>
+                        <input formControlName="useful_life_years" type="number" placeholder="5"
+                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
+                        <p class="text-[10px] text-gray-400 pl-1">*Untuk perhitungan depresiasi aset.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nilai Sisa /
+                            Residu (Rp)</label>
+                        <input formControlName="residual_value" type="number" placeholder="500000"
+                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
+                    </div>
+                </div>
+
+                <hr class="border-gray-100 my-4">
 
                 <!-- Hidden Name Field (Auto Generated) but can show if needed -->
                 <div class="space-y-2 opacity-50 hover:opacity-100 transition-opacity">
@@ -74,44 +125,87 @@
 
                 <hr class="border-gray-100 my-4">
 
-                <!-- STATUS -->
-                <div class="space-y-2">
-                    <label class="text-sm font-bold text-gray-700 ml-1">Status Unit Saat Ini</label>
-                    <div class="grid grid-cols-3 gap-4">
-                        <label class="cursor-pointer">
+                <div class="space-y-4">
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Status
+                        Operasional</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <label class="cursor-pointer group">
                             <input type="radio" formControlName="status" value="good" class="peer sr-only">
                             <div
-                                class="p-4 rounded-2xl bg-gray-50 border-2 border-transparent peer-checked:bg-green-50 peer-checked:border-green-500 peer-checked:text-green-700 text-center transition-all font-bold text-gray-500 hover:bg-gray-100">
-                                ✅ Normal
+                                class="px-5 py-4 rounded-xl border-2 border-gray-100 bg-white peer-checked:border-green-600 flex items-center justify-between transition-all group-hover:border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-2 h-2 rounded-full bg-gray-200 peer-checked:bg-green-600 transition-colors">
+                                    </div>
+                                    <span
+                                        class="text-sm font-extrabold text-gray-500 peer-checked:text-green-600">Normal</span>
+                                </div>
+                                <div
+                                    class="w-5 h-5 rounded-full border-2 border-gray-200 group-hover:border-gray-300 peer-checked:border-green-600 peer-checked:border-[6px] transition-all">
+                                </div>
                             </div>
                         </label>
-                        <label class="cursor-pointer">
+                        <label class="cursor-pointer group">
                             <input type="radio" formControlName="status" value="maintenance" class="peer sr-only">
                             <div
-                                class="p-4 rounded-2xl bg-gray-50 border-2 border-transparent peer-checked:bg-yellow-50 peer-checked:border-yellow-500 peer-checked:text-yellow-700 text-center transition-all font-bold text-gray-500 hover:bg-gray-100">
-                                🛠️ Maintenance
+                                class="px-5 py-4 rounded-xl border-2 border-gray-100 bg-white peer-checked:border-amber-500 flex items-center justify-between transition-all group-hover:border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-2 h-2 rounded-full bg-gray-200 peer-checked:bg-amber-500 transition-colors">
+                                    </div>
+                                    <span
+                                        class="text-sm font-extrabold text-gray-500 peer-checked:text-amber-500">Service</span>
+                                </div>
+                                <div
+                                    class="w-5 h-5 rounded-full border-2 border-gray-200 group-hover:border-gray-300 peer-checked:border-amber-500 peer-checked:border-[6px] transition-all">
+                                </div>
                             </div>
                         </label>
-                        <label class="cursor-pointer">
+                        <label class="cursor-pointer group">
                             <input type="radio" formControlName="status" value="broken" class="peer sr-only">
                             <div
-                                class="p-4 rounded-2xl bg-gray-50 border-2 border-transparent peer-checked:bg-red-50 peer-checked:border-red-500 peer-checked:text-red-700 text-center transition-all font-bold text-gray-500 hover:bg-gray-100">
-                                ❌ Rusak
+                                class="px-5 py-4 rounded-xl border-2 border-gray-100 bg-white peer-checked:border-red-600 flex items-center justify-between transition-all group-hover:border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-2 h-2 rounded-full bg-gray-200 peer-checked:bg-red-600 transition-colors">
+                                    </div>
+                                    <span
+                                        class="text-sm font-extrabold text-gray-500 peer-checked:text-red-600">Rusak</span>
+                                </div>
+                                <div
+                                    class="w-5 h-5 rounded-full border-2 border-gray-200 group-hover:border-gray-300 peer-checked:border-red-600 peer-checked:border-[6px] transition-all">
+                                </div>
                             </div>
                         </label>
                     </div>
                 </div>
 
-                <!-- Actions -->
-                <div class="pt-8 flex items-center justify-end gap-4">
+                <hr class="border-gray-100 my-4">
+
+                <!-- MAINTENANCE SCHEDULE -->
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">Jadwal Maintenance
+                        Rutin</label>
+                    <mat-form-field appearance="outline" class="w-full custom-datepicker">
+                        <mat-label>Pilih Tanggal</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="next_maintenance_date">
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                    <p class="text-[10px] text-gray-400">Status akan otomatis berubah pada tanggal yang ditentukan.</p>
+                </div>
+
+                <div class="pt-8 flex items-center justify-end gap-4 border-t border-gray-50">
                     <a routerLink="/admin/assets"
-                        class="px-6 py-3 rounded-2xl text-gray-500 font-bold hover:bg-gray-50 transition-colors">
-                        Batal
+                        class="px-6 py-3 rounded-xl text-gray-400 font-bold hover:text-gray-600 transition-all text-sm">
+                        Batalkan
                     </a>
                     <button type="submit" [disabled]="loading"
-                        class="px-8 py-3 rounded-2xl bg-gray-900 text-white font-bold hover:bg-gray-800 disabled:opacity-50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex items-center gap-2">
-                        <span *ngIf="loading" class="animate-spin">⏳</span>
-                        <span>{{ loading ? 'Menyimpan...' : 'Simpan Data' }}</span>
+                        class="px-10 py-3 rounded-xl border-2 border-blue-700 text-blue-700 font-bold hover:bg-blue-50 disabled:opacity-50 transition-all text-sm flex items-center gap-2">
+                        <span *ngIf="loading"
+                            class="w-4 h-4 border-2 border-blue-700/30 border-t-blue-700 rounded-full animate-spin"></span>
+                        <span>{{ loading ? 'Sedang Menyimpan...' : (isEditMode ? 'Perbarui Aset' : 'Daftarkan Aset')
+                            }}</span>
                     </button>
                 </div>
 

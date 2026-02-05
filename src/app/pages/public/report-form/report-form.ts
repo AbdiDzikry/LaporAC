@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AssetService, Asset } from '../../../services/asset/asset';
 import { TicketService } from '../../../services/ticket/ticket';
 import { EmployeeService } from '../../../services/employee/employee';
+import { ToastService } from '../../../services/toast/toast'; // Import
 
 @Component({
   selector: 'app-report-form',
@@ -26,7 +27,8 @@ export class ReportFormComponent implements OnInit {
     private router: Router,
     private assetService: AssetService,
     private ticketService: TicketService,
-    private employeeService: EmployeeService
+    private employeeService: EmployeeService,
+    private toast: ToastService // Inject
   ) {
     this.reportForm = this.fb.group({
       nik: ['', Validators.required],
@@ -99,14 +101,14 @@ export class ReportFormComponent implements OnInit {
         reporter_name: this.employeeName || 'Unknown',
         issue_category: this.reportForm.value.issue_category,
         description: this.reportForm.value.description,
-        status: 'open'
+        status: 'pending_validation'
       });
-      alert('Laporan berhasil dikirim!');
+      this.toast.show('Laporan berhasil dikirim!', 'success');
       this.reportForm.reset();
       this.employeeName = null;
     } catch (error) {
       console.error(error);
-      alert('Gagal mengirim laporan.');
+      this.toast.show('Gagal mengirim laporan.', 'error');
     } finally {
       this.loading = false;
     }

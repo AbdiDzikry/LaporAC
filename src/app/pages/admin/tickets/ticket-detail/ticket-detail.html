@@ -10,15 +10,23 @@
         <div class="col-span-2 bg-white rounded-lg shadow-md p-6">
             <h2 class="text-xl font-bold mb-4 border-b pb-2">Detail Laporan #{{ ticket.id }}</h2>
 
-            <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="grid grid-cols-2 gap-6 mb-8">
                 <div>
-                    <label class="block text-gray-500 text-xs uppercase font-bold">Tanggal Lapor</label>
-                    <p class="text-gray-900">{{ ticket.created_at | date:'dd MMM yyyy HH:mm' }}</p>
+                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Tanggal
+                        Lapor</label>
+                    <p class="text-gray-900 font-bold text-sm">{{ ticket.created_at | date:'dd MMM yyyy, HH:mm' }}</p>
                 </div>
                 <div>
-                    <label class="block text-gray-500 text-xs uppercase font-bold">Pelapor</label>
-                    <p class="text-gray-900">{{ ticket.reporter_name }} <span class="text-gray-400 text-xs">({{
-                            ticket.reporter_nik }})</span></p>
+                    <label
+                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Pelapor</label>
+                    <div class="flex items-center gap-2">
+                        <div
+                            class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold">
+                            {{ ticket.reporter_name?.charAt(0) }}
+                        </div>
+                        <p class="text-gray-900 font-bold text-sm">{{ ticket.reporter_name }}</p>
+                    </div>
+                    <p class="text-gray-400 text-xs font-medium ml-8">{{ ticket.reporter_nik }}</p>
                 </div>
             </div>
 
@@ -48,37 +56,129 @@
         <div class="col-span-1 bg-white rounded-lg shadow-md p-6 h-fit">
             <h3 class="text-lg font-bold mb-4 border-b pb-2">Update Status & Penanganan</h3>
 
-            <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Status Tiket</label>
-                    <select formControlName="status"
-                        class="block w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-                        <option value="open">Open (Baru)</option>
-                        <option value="in_progress">In Progress (Sedang Dikerjakan)</option>
-                        <option value="resolved">Resolved (Selesai Perbaikan)</option>
-                        <option value="closed">Closed (Tutup Tiket)</option>
+            <!-- WORKFLOW ACTIONS (Dynamic based on Status) -->
+            <div class="space-y-6">
+                <!-- Status Indicator -->
+                <div class="p-4 rounded-xl border-2" [ngClass]="{
+                    'border-blue-100 bg-blue-50': ticket.status === 'open',
+                    'border-purple-100 bg-purple-50': ticket.status === 'assigned',
+                    'border-amber-100 bg-amber-50': ticket.status === 'in_progress',
+                    'border-cyan-100 bg-cyan-50': ticket.status === 'pending_verification',
+                    'border-green-100 bg-green-50': ticket.status === 'resolved' || ticket.status === 'closed'
+                }">
+                    <label class="block text-[10px] font-black uppercase tracking-widest mb-1" [ngClass]="{
+                        'text-blue-600': ticket.status === 'open',
+                        'text-purple-600': ticket.status === 'assigned',
+                        'text-amber-600': ticket.status === 'in_progress',
+                        'text-cyan-600': ticket.status === 'pending_verification',
+                        'text-green-600': ticket.status === 'resolved' || ticket.status === 'closed'
+                    }">Status Tiket</label>
+                    <p class="text-2xl font-black capitalize" [ngClass]="{
+                        'text-blue-800': ticket.status === 'open',
+                        'text-purple-800': ticket.status === 'assigned',
+                        'text-amber-800': ticket.status === 'in_progress',
+                        'text-cyan-800': ticket.status === 'pending_verification',
+                        'text-green-800': ticket.status === 'resolved' || ticket.status === 'closed'
+                    }">{{ ticket.status.replace('_', ' ') }}</p>
+                </div>
+
+                <!-- 1. ADMIN ACTION: ASSIGN TECHNICIAN (If Status Open) -->
+                <div *ngIf="ticket.status === 'open'" class="space-y-3">
+                    <p class="text-sm text-gray-500 font-medium">Tiket belum ditangani. Silakan tugaskan teknisi.</p>
+                    <!-- Mock Technician Selection for now -->
+                    <select #techSelect class="w-full p-3 rounded-xl border border-gray-200 bg-white font-bold text-sm">
+                        <option value="" disabled selected>Pilih Teknisi...</option>
+                        <option *ngFor="let tech of technicians" [value]="tech.id">{{ tech.full_name || tech.email }}
+                        </option>
                     </select>
+                    <div *ngIf="technicians.length === 0" class="text-xs text-red-500 font-medium">
+                        Belum ada teknisi terdaftar. <a routerLink="/admin/users" class="underline">Kelola User</a>
+                    </div>
+                    <button (click)="assignTicket(techSelect.value)" [disabled]="saving || !techSelect.value"
+                        class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition-all shadow-sm disabled:opacity-50 disabled:bg-gray-300">
+                        Tugaskan Teknisi
+                    </button>
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Catatan Penanganan</label>
-                    <textarea formControlName="resolution_notes" rows="4"
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
-                        placeholder="Tulis detail perbaikan yang dilakukan..."></textarea>
+                <!-- 2. TECHNICIAN ACTION: START WORK (If Status Assigned) -->
+                <div *ngIf="ticket.status === 'assigned'" class="space-y-3">
+                    <div class="flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-xl">
+                        <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">👷</div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-500 uppercase">Teknisi Bertugas</p>
+                            <p class="font-bold text-sm text-gray-900">Budi Santoso</p>
+                        </div>
+                    </div>
+                    <button (click)="startWork()" [disabled]="saving"
+                        class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition-all shadow-sm">
+                        Mulai Pengerjaan (Check-In)
+                    </button>
                 </div>
 
-                <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Biaya Perbaikan (Rp)</label>
-                    <input formControlName="repair_cost" type="number"
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500">
+                <!-- 3. TECHNICIAN ACTION: COMPLETE & SUBMIT (If Status In Progress) -->
+                <div *ngIf="ticket.status === 'in_progress'" class="space-y-4">
+                    <p class="text-sm font-bold text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-100">
+                        ⏳ Sedang dalam pengerjaan sejak {{ ticket.started_at | date:'shortTime' }}
+                    </p>
+
+                    <form [formGroup]="ticketForm" (ngSubmit)="submitVerification()" class="space-y-4">
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Catatan
+                                Perbaikan</label>
+                            <textarea formControlName="resolution_notes" rows="3"
+                                class="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none text-sm font-medium"
+                                placeholder="Jelaskan tindakan perbaikan..."></textarea>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Biaya
+                                (Rp)</label>
+                            <input formControlName="repair_cost" type="number"
+                                class="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none text-sm font-bold">
+                        </div>
+                        <button type="submit" [disabled]="saving"
+                            class="w-full py-3 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold transition-all shadow-sm">
+                            Selesai & Minta Verifikasi
+                        </button>
+                    </form>
                 </div>
 
-                <button [disabled]="saving"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
-                    type="submit">
-                    {{ saving ? 'Menyimpan...' : 'Simpan Perubahan' }}
-                </button>
-            </form>
+                <!-- 4. ADMIN ACTION: VERIFY & CLOSE (If Pending Verification) -->
+                <div *ngIf="ticket.status === 'pending_verification'" class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-2">
+                        <p class="text-xs font-bold text-gray-400 uppercase">Laporan Teknisi</p>
+                        <p class="text-sm font-medium text-gray-800">"{{ ticket.resolution_notes }}"</p>
+                        <p class="text-xs font-bold text-gray-500 mt-2">Biaya: {{ ticket.repair_cost | currency:'IDR' }}
+                        </p>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button
+                            class="flex-1 py-3 rounded-xl border-2 border-red-100 text-red-600 font-bold hover:bg-red-50">
+                            Tolak / Revisi
+                        </button>
+                        <button (click)="verifyTicket()" [disabled]="saving"
+                            class="flex-[2] py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold shadow-sm">
+                            Verifikasi & Tutup Tiket
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 5. COMPLETED (ReadOnly) -->
+                <div *ngIf="ticket.status === 'resolved' || ticket.status === 'closed'" class="text-center py-6">
+                    <div
+                        class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="currentColor"
+                            stroke-width="3" viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">Tiket Selesai</h3>
+                    <p class="text-sm text-gray-500">Diverifikasi oleh Admin pada {{ ticket.verified_at | date:'medium'
+                        }}</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

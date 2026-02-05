@@ -3,245 +3,175 @@
     <!-- HEADER -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-            <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">Data Aset AC</h1>
-            <p class="text-gray-400 mt-2 text-lg">Kelola {{ allAssets.length }} unit pendingin ruangan.</p>
+            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Data Aset AC</h1>
+            <p class="text-sm text-gray-500 mt-1">Kelola {{ allAssets.length }} unit pendingin ruangan terdaftar.</p>
         </div>
 
         <div class="flex items-center gap-3">
-            <!-- VIEW SWITCHER -->
-            <div class="bg-gray-100 p-1 rounded-xl flex items-center font-bold text-sm">
+            <!-- VIEW SWITCHER - Outline Style -->
+            <div class="border border-gray-200 p-1 rounded-xl flex items-center text-xs font-bold bg-white">
                 <button (click)="viewMode = 'list'"
-                    class="px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2"
-                    [ngClass]="viewMode === 'list' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
-                        viewBox="0 0 256 256">
-                        <path d="M224,128a56,56,0,1,1-56-56A56.06,56.06,0,0,1,224,128Z" opacity="0.2"></path>
-                        <path
-                            d="M88,112a8,8,0,0,1,0,16H48a8,8,0,0,1,0-16Zm0,48a8,8,0,0,1,0,16H48a8,8,0,0,1,0-16Zm128,16H136a8,8,0,0,0,0,16h80a8,8,0,0,0,0-16Zm0-48H136a8,8,0,0,0,0,16h80a8,8,0,0,0,0-16ZM216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM88,80a8,8,0,0,1,0,16H48a8,8,0,0,1,0-16Zm128,0H136a8,8,0,0,0,0,16h80a8,8,0,0,0,0-16Z"
-                            fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="16"></path>
+                    class="px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2"
+                    [ngClass]="viewMode === 'list' ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-sm' : 'text-gray-400 hover:text-gray-600'">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
                     </svg>
                     List
                 </button>
                 <button (click)="viewMode = 'visual'"
-                    class="px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2"
-                    [ngClass]="viewMode === 'visual' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
-                        viewBox="0 0 256 256">
-                        <path d="M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z" opacity="0.2"></path>
-                        <circle cx="128" cy="128" r="96" fill="none" stroke="currentColor" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="16"></circle>
-                        <line x1="32" y1="128" x2="224" y2="128" fill="none" stroke="currentColor"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line>
-                        <line x1="128" y1="32" x2="128" y2="224" fill="none" stroke="currentColor"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line>
+                    class="px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2"
+                    [ngClass]="viewMode === 'visual' ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-sm' : 'text-gray-400 hover:text-gray-600'">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="12" y1="3" x2="12" y2="21"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
                     </svg>
-                    Visual Map
+                    Visual
                 </button>
             </div>
 
             <a routerLink="/admin/assets/new"
-                class="hidden md:flex bg-gray-900 hover:bg-gray-800 text-white px-5 py-3 rounded-xl font-bold items-center gap-2 transition-all shadow-lg group">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"
-                    class="group-hover:rotate-90 transition-transform">
-                    <path
-                        d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z">
-                    </path>
+                class="flex border-2 border-blue-700 text-blue-700 hover:bg-blue-50 px-5 py-2.5 rounded-xl font-bold items-center gap-2 transition-all shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                    stroke-width="3" viewBox="0 0 24 24">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
-                Baru
+                Tambah Aset
             </a>
         </div>
     </div>
 
     <!-- ADVANCED FILTER BAR -->
-    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
             <!-- Search -->
-            <div class="lg:col-span-1 relative group">
-                <div
-                    class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                        viewBox="0 0 256 256">
-                        <path
-                            d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
-                            fill="none" class="hidden"></path>
-                        <path
-                            d="M112,40a72,72,0,1,0,72,72A72.08,72.08,0,0,0,112,40Zm0,128a56,56,0,1,1,56-56A56.06,56.06,0,0,1,112,168Z"
-                            opacity="0.2"></path>
-                        <circle cx="112" cy="112" r="72" fill="none" stroke="currentColor" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="16"></circle>
-                        <line x1="169.6" y1="169.6" x2="224" y2="224" fill="none" stroke="currentColor"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line>
+            <div class="lg:col-span-1 relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                 </div>
                 <input type="text" placeholder="Cari No Aset / SKU..." (input)="setName($event)"
-                    class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-gray-50 border-transparent focus:bg-white focus:border-blue-200 focus:ring-4 focus:ring-blue-50 outline-none transition-all font-bold text-gray-700 placeholder:text-gray-400">
+                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-medium text-gray-700">
             </div>
 
-            <!-- Location Filter (Custom Dropdown) -->
-            <div class="lg:col-span-1 relative group">
-                <div
-                    class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                        viewBox="0 0 256 256">
-                        <path
-                            d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
-                            fill="none" class="hidden"></path>
-                        <path
-                            d="M112,40a72,72,0,1,0,72,72A72.08,72.08,0,0,0,112,40Zm0,128a56,56,0,1,1,56-56A56.06,56.06,0,0,1,112,168Z"
-                            opacity="0.2"></path>
-                        <circle cx="112" cy="112" r="72" fill="none" stroke="currentColor" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="16"></circle>
-                        <line x1="169.6" y1="169.6" x2="224" y2="224" fill="none" stroke="currentColor"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line>
-                    </svg>
-                </div>
-                <input type="text" placeholder="Cari No Aset / SKU..." (input)="setName($event)"
-                    class="w-full pl-11 pr-4 py-3 rounded-2xl bg-gray-50 border-transparent focus:bg-white focus:border-blue-200 focus:ring-4 focus:ring-blue-50 outline-none transition-all font-bold text-gray-700 placeholder:text-gray-400">
-            </div>
-
-            <!-- Location Filter (Custom Dropdown) -->
-            <div class="flex-1 relative group">
+            <!-- Location Filter -->
+            <div class="relative group">
                 <button (click)="toggleLocationDropdown(); $event.stopPropagation()" type="button"
-                    class="w-full pl-11 pr-10 py-3 rounded-2xl bg-gray-50 border-transparent focus:bg-white focus:border-blue-200 focus:ring-4 focus:ring-blue-50 outline-none transition-all font-bold text-gray-700 text-left flex items-center justify-between hover:bg-white">
-                    <div
-                        class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                            viewBox="0 0 256 256">
-                            <path
-                                d="M128,64a40,40,0,1,0,40,40A40,40,0,0,0,128,64Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,128Z"
-                                opacity="0.2"></path>
-                            <circle cx="128" cy="104" r="32" fill="none" stroke="currentColor" stroke-linecap="round"
-                                stroke-linejoin="round" stroke-width="16"></circle>
-                            <path d="M208,104c0,72-80,128-80,128S48,176,48,104a80,80,0,0,1,160,0Z" fill="none"
-                                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16">
-                            </path>
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-gray-50 flex items-center justify-between transition-all outline-none">
+                    <div class="flex items-center gap-2 text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
                         </svg>
+                        <span class="text-sm font-bold text-gray-700 truncate">{{ selectedLocation === 'Semua' ?
+                            'Semua Lokasi' : selectedLocation }}</span>
                     </div>
-                    <span class="pl-8">{{ selectedLocation === 'Semua' ? 'Lokasi' : selectedLocation }}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                        class="transition-transform" [class.rotate-180]="locationDropdownOpen">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" class="text-gray-400">
                         <path d="M6 9l6 6 6-6" />
                     </svg>
                 </button>
 
-                <!-- Dropdown Menu -->
+                <!-- Location Filter Dropdown -->
                 <div *ngIf="locationDropdownOpen" (click)="$event.stopPropagation()"
-                    class="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 max-h-64 overflow-y-auto">
+                    class="absolute z-50 mt-2 w-full bg-white rounded-xl shadow-xl border border-gray-100 py-1 max-h-64 overflow-y-auto">
                     <button (click)="selectLocation('Semua')" type="button"
-                        class="w-full px-4 py-2.5 text-left hover:bg-blue-50 transition-colors font-bold text-sm"
+                        class="w-full px-4 py-2 text-left hover:bg-blue-50 transition-colors text-sm font-bold"
                         [class.bg-blue-50]="selectedLocation === 'Semua'"
-                        [class.text-blue-600]="selectedLocation === 'Semua'"
-                        [class.text-gray-700]="selectedLocation !== 'Semua'">
+                        [class.text-blue-700]="selectedLocation === 'Semua'"
+                        [class.text-gray-600]="selectedLocation !== 'Semua'">
                         Semua Lokasi
                     </button>
                     <button *ngFor="let loc of locations" (click)="selectLocation(loc)" type="button"
-                        class="w-full px-4 py-2.5 text-left hover:bg-blue-50 transition-colors font-bold text-sm"
-                        [class.bg-blue-50]="selectedLocation === loc" [class.text-blue-600]="selectedLocation === loc"
-                        [class.text-gray-700]="selectedLocation !== loc">
+                        class="w-full px-4 py-2 text-left hover:bg-blue-50 transition-colors text-sm font-bold"
+                        [class.bg-blue-50]="selectedLocation === loc" [class.text-blue-700]="selectedLocation === loc"
+                        [class.text-gray-600]="selectedLocation !== loc">
                         {{ loc }}
                     </button>
                 </div>
             </div>
 
-            <!-- Brand Filter (Custom Dropdown) -->
-            <div class="w-full lg:w-48 relative group">
+            <!-- Brand Filter -->
+            <div class="relative group">
                 <button (click)="toggleBrandDropdown(); $event.stopPropagation()" type="button"
-                    class="w-full pl-11 pr-10 py-3 rounded-2xl bg-gray-50 border-transparent focus:bg-white focus:border-blue-200 focus:ring-4 focus:ring-blue-50 outline-none transition-all font-bold text-gray-700 text-left flex items-center justify-between hover:bg-white">
-                    <div
-                        class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                            viewBox="0 0 256 256">
-                            <path
-                                d="M128,32A96,96,0,1,0,224,128,96.11,96.11,0,0,0,128,32Zm0,160a64,64,0,1,1,64-64A64.07,64.07,0,0,1,128,192Z"
-                                opacity="0.2"></path>
-                            <circle cx="128" cy="128" r="96" fill="none" stroke="currentColor" stroke-linecap="round"
-                                stroke-linejoin="round" stroke-width="16"></circle>
-                            <path d="M128,72a56,56,0,1,0,56,56" fill="none" stroke="currentColor" stroke-linecap="round"
-                                stroke-linejoin="round" stroke-width="16"></path>
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-gray-50 flex items-center justify-between transition-all outline-none">
+                    <div class="flex items-center gap-2 text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 8v8M8 12h8"></path>
                         </svg>
+                        <span class="text-sm font-bold text-gray-700 truncate">{{ selectedBrand === 'Semua' ? 'Semua
+                            Merk' : selectedBrand }}</span>
                     </div>
-                    <span class="pl-8">{{ selectedBrand === 'Semua' ? 'Merk' : selectedBrand }}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                        class="transition-transform" [class.rotate-180]="brandDropdownOpen">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" class="text-gray-400">
                         <path d="M6 9l6 6 6-6" />
                     </svg>
                 </button>
 
                 <div *ngIf="brandDropdownOpen" (click)="$event.stopPropagation()"
-                    class="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 max-h-64 overflow-y-auto">
+                    class="absolute z-50 mt-2 w-full bg-white rounded-xl shadow-xl border border-gray-100 py-1 max-h-64 overflow-y-auto">
                     <button (click)="selectBrand('Semua')" type="button"
-                        class="w-full px-4 py-2.5 text-left hover:bg-blue-50 transition-colors font-bold text-sm"
-                        [class.bg-blue-50]="selectedBrand === 'Semua'" [class.text-blue-600]="selectedBrand === 'Semua'"
-                        [class.text-gray-700]="selectedBrand !== 'Semua'">
+                        class="w-full px-4 py-2 text-left hover:bg-blue-50 transition-colors text-sm font-bold"
+                        [class.bg-blue-50]="selectedBrand === 'Semua'" [class.text-blue-700]="selectedBrand === 'Semua'"
+                        [class.text-gray-600]="selectedBrand !== 'Semua'">
                         Semua Merk
                     </button>
                     <button *ngFor="let brand of brands" (click)="selectBrand(brand)" type="button"
-                        class="w-full px-4 py-2.5 text-left hover:bg-blue-50 transition-colors font-bold text-sm"
-                        [class.bg-blue-50]="selectedBrand === brand" [class.text-blue-600]="selectedBrand === brand"
-                        [class.text-gray-700]="selectedBrand !== brand">
+                        class="w-full px-4 py-2 text-left hover:bg-blue-50 transition-colors text-sm font-bold"
+                        [class.bg-blue-50]="selectedBrand === brand" [class.text-blue-700]="selectedBrand === brand"
+                        [class.text-gray-600]="selectedBrand !== brand">
                         {{ brand }}
                     </button>
                 </div>
             </div>
 
-            <!-- Status Filter (Custom Dropdown) -->
-            <div class="w-full lg:w-48 relative group">
+            <!-- Status Filter -->
+            <div class="relative group">
                 <button (click)="toggleStatusDropdown(); $event.stopPropagation()" type="button"
-                    class="w-full pl-11 pr-10 py-3 rounded-2xl bg-gray-50 border-transparent focus:bg-white focus:border-blue-200 focus:ring-4 focus:ring-blue-50 outline-none transition-all font-bold text-gray-700 text-left flex items-center justify-between hover:bg-white">
-                    <div
-                        class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                            viewBox="0 0 256 256">
-                            <path d="M160,112l-80,96,24-64H56L136,48l-24,64Z" opacity="0.2"></path>
-                            <polygon points="160 112 80 208 104 144 56 144 136 48 112 112 160 112" fill="none"
-                                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16">
-                            </polygon>
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-gray-50 flex items-center justify-between transition-all outline-none">
+                    <div class="flex items-center gap-2 text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
                         </svg>
+                        <span class="text-sm font-bold text-gray-700 truncate">
+                            {{ selectedStatus === 'Semua' ? 'Semua Status' : (selectedStatus === 'good' ? 'Normal' :
+                            selectedStatus === 'maintenance' ? 'Maintenance' : 'Rusak') }}
+                        </span>
                     </div>
-                    <span class="pl-8">{{ selectedStatus === 'Semua' ? 'Status' : (selectedStatus === 'good' ? 'Normal'
-                        :
-                        selectedStatus === 'maintenance' ? 'Maintenance' : 'Rusak') }}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                        class="transition-transform" [class.rotate-180]="statusDropdownOpen">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" class="text-gray-400">
                         <path d="M6 9l6 6 6-6" />
                     </svg>
                 </button>
 
                 <div *ngIf="statusDropdownOpen" (click)="$event.stopPropagation()"
-                    class="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-2xl border border-gray-100 py-2">
+                    class="absolute z-50 mt-2 w-full bg-white rounded-xl shadow-xl border border-gray-100 py-1 overflow-hidden">
                     <button (click)="selectStatus('Semua')" type="button"
-                        class="w-full px-4 py-2.5 text-left hover:bg-blue-50 transition-colors font-bold text-sm"
-                        [class.bg-blue-50]="selectedStatus === 'Semua'"
-                        [class.text-blue-600]="selectedStatus === 'Semua'"
-                        [class.text-gray-700]="selectedStatus !== 'Semua'">
-                        Status
-                    </button>
+                        class="w-full px-4 py-2 text-left hover:bg-blue-50 transition-colors text-sm font-bold text-gray-600">Semua
+                        Status</button>
                     <button (click)="selectStatus('good')" type="button"
-                        class="w-full px-4 py-2.5 text-left hover:bg-green-50 transition-colors font-bold text-sm"
-                        [class.bg-green-50]="selectedStatus === 'good'"
-                        [class.text-green-600]="selectedStatus === 'good'"
-                        [class.text-gray-700]="selectedStatus !== 'good'">
-                        Normal
-                    </button>
+                        class="w-full px-4 py-2 text-left hover:bg-green-50 transition-colors text-sm font-bold text-green-600 border-l-4 border-transparent hover:border-green-600">Normal</button>
                     <button (click)="selectStatus('maintenance')" type="button"
-                        class="w-full px-4 py-2.5 text-left hover:bg-yellow-50 transition-colors font-bold text-sm"
-                        [class.bg-yellow-50]="selectedStatus === 'maintenance'"
-                        [class.text-yellow-600]="selectedStatus === 'maintenance'"
-                        [class.text-gray-700]="selectedStatus !== 'maintenance'">
-                        Maintenance
-                    </button>
+                        class="w-full px-4 py-2 text-left hover:bg-amber-50 transition-colors text-sm font-bold text-amber-600 border-l-4 border-transparent hover:border-amber-600">Maintenance</button>
                     <button (click)="selectStatus('broken')" type="button"
-                        class="w-full px-4 py-2.5 text-left hover:bg-red-50 transition-colors font-bold text-sm"
-                        [class.bg-red-50]="selectedStatus === 'broken'"
-                        [class.text-red-600]="selectedStatus === 'broken'"
-                        [class.text-gray-700]="selectedStatus !== 'broken'">
-                        Rusak
-                    </button>
+                        class="w-full px-4 py-2 text-left hover:bg-red-50 transition-colors text-sm font-bold text-red-600 border-l-4 border-transparent hover:border-red-600">Rusak</button>
                 </div>
             </div>
 
@@ -277,150 +207,143 @@
         <!-- === MODE 1: LIST / TABLE === -->
         <div *ngIf="viewMode === 'list'" class="animate-fade-in">
             <div *ngIf="!loading && filteredAssets.length > 0"
-                class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden min-h-[400px]">
+                class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr
-                                class="bg-gray-50/50 border-b border-gray-100 text-gray-400 text-xs uppercase tracking-wider">
-                                <th class="p-6 font-bold rounded-tl-[2.5rem] w-16">No</th>
-                                <th class="p-6 font-bold">Unit Info</th>
-                                <th class="p-6 font-bold">Lokasi</th>
-                                <th class="p-6 font-bold">Spesifikasi</th>
-                                <th class="p-6 font-bold">Status</th>
-                                <th class="p-6 font-bold rounded-tr-[2.5rem] text-right">Aksi</th>
+                                class="bg-gray-50 border-b border-gray-200 text-gray-500 text-[11px] uppercase tracking-wider font-bold">
+                                <th class="px-6 py-4 w-12 text-center">#</th>
+                                <th class="px-6 py-4">Informasi Aset</th>
+                                <th class="px-6 py-4">Lokasi</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4">Nilai Buku (Est)</th>
+                                <th class="px-6 py-4 text-right">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-50">
+                        <tbody class="divide-y divide-gray-100">
                             <tr *ngFor="let asset of paginatedAssets; let i = index"
-                                class="group hover:bg-blue-50/30 transition-colors duration-200">
-                                <td class="p-6 text-center">
-                                    <span class="font-bold text-gray-400 text-sm">{{ (currentPage - 1) * itemsPerPage +
-                                        i + 1 }}</span>
+                                class="group hover:bg-gray-50 transition-colors duration-200">
+                                <td class="px-6 py-4 text-center">
+                                    <span class="font-semibold text-gray-400 text-xs">{{ (currentPage - 1) *
+                                        itemsPerPage + i + 1 }}</span>
                                 </td>
-                                <td class="p-6">
-                                    <div class="flex items-center gap-4">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
                                         <div
-                                            class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center p-2">
-                                            <!-- SPLIT AC ICON -->
-                                            <svg *ngIf="(asset.brand || '').toLowerCase().includes('split') || !(asset.brand || '').toLowerCase().includes('casset')"
-                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                fill="currentColor" class="w-full h-full">
-                                                <path
-                                                    d="M4 6a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H4zm0 2h16v4H4V8z" />
-                                                <path d="M6 15h12v1H6z" />
-                                                <path d="M8 17h8v1H8z" />
-                                            </svg>
-                                            <!-- CASSETTE AC ICON -->
-                                            <svg *ngIf="(asset.brand || '').toLowerCase().includes('casset')"
-                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                fill="currentColor" class="w-full h-full">
-                                                <rect x="3" y="3" width="18" height="18" rx="2" opacity="0.4" />
-                                                <rect x="6" y="6" width="12" height="12" rx="1" />
-                                                <path d="M2 12h20M12 2v20" stroke="currentColor" stroke-width="0.5"
-                                                    class="opacity-30" />
-                                            </svg>
+                                            class="w-10 h-10 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center border border-blue-100 p-2">
+                                            <!-- Icon Switcher based on Type -->
+                                            <ng-container [ngSwitch]="getAssetType(asset)">
+
+                                                <!-- CASSETTE (Ceiling) -->
+                                                <svg *ngSwitchCase="'cassette'" xmlns="http://www.w3.org/2000/svg"
+                                                    width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+                                                    <path
+                                                        d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,176H48V48H208V208ZM128,48v160m-80-80H208"
+                                                        fill="none" stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="16"></path>
+                                                </svg>
+
+                                                <!-- STANDING (Floor) -->
+                                                <svg *ngSwitchCase="'standing'" xmlns="http://www.w3.org/2000/svg"
+                                                    width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+                                                    <rect x="56" y="32" width="144" height="192" rx="8" fill="none"
+                                                        stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="16"></rect>
+                                                    <line x1="56" y1="80" x2="200" y2="80" fill="none"
+                                                        stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="16"></line>
+                                                    <line x1="104" y1="160" x2="152" y2="160" fill="none"
+                                                        stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="16"></line>
+                                                </svg>
+
+                                                <!-- SPLIT (Default/Wall) -->
+                                                <svg *ngSwitchDefault xmlns="http://www.w3.org/2000/svg" width="20"
+                                                    height="20" fill="currentColor" viewBox="0 0 256 256">
+                                                    <path
+                                                        d="M224,112V88a16,16,0,0,0-16-16H48A16,16,0,0,0,32,88v24a16,16,0,0,0,16,16h4.13A40,40,0,0,0,88,168h80a40,40,0,0,0,35.87-40H208A16,16,0,0,0,224,112ZM168,152H88a24,24,0,0,1-23.47-19.1A8.25,8.25,0,0,0,64,132a8,8,0,0,0-8-8H48V88H208v36h-8a8,8,0,0,0-8,8,8.25,8.25,0,0,0-.53.9A24,24,0,0,1,168,152Z">
+                                                    </path>
+                                                </svg>
+                                            </ng-container>
                                         </div>
                                         <div>
-                                            <div class="font-bold text-gray-800 text-base">{{ asset.name }}</div>
-                                            <div class="text-xs text-gray-400 font-mono mt-1">{{ asset.brand }} • {{
-                                                asset.sku }}</div>
+                                            <div class="font-bold text-gray-900 text-sm">{{ asset.name }}</div>
+                                            <div
+                                                class="text-[10px] text-gray-500 font-medium leading-none mt-0.5 uppercase tracking-wide">
+                                                {{ asset.brand }} • {{ asset.sku }}</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="p-6">
-                                    <div
-                                        class="flex items-center gap-2 text-gray-600 font-medium bg-gray-50 px-3 py-1.5 rounded-xl w-fit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" viewBox="0 0 256 256">
-                                            <path
-                                                d="M128,64a40,40,0,1,0,40,40A40,40,0,0,0,128,64Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,128Z"
-                                                opacity="0.2"></path>
-                                            <circle cx="128" cy="104" r="32" fill="none" stroke="currentColor"
-                                                stroke-linecap="round" stroke-linejoin="round" stroke-width="16">
-                                            </circle>
-                                            <path d="M208,104c0,72-80,128-80,128S48,176,48,104a80,80,0,0,1,160,0Z"
-                                                fill="none" stroke="currentColor" stroke-linecap="round"
-                                                stroke-linejoin="round" stroke-width="16"></path>
-                                        </svg> {{ asset.location }}
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-1.5 text-gray-600 text-xs font-semibold">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none"
+                                            stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                        {{ asset.location }}
                                     </div>
                                 </td>
-                                <td class="p-6"><span class="font-bold text-gray-800">{{ asset.pk }}</span></td>
-                                <td class="p-6">
+                                <td class="px-6 py-4">
                                     <span
-                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide"
+                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border-2 text-[10px] font-extrabold uppercase tracking-wider bg-white"
                                         [ngClass]="{
-                                        'bg-green-100 text-green-600': asset.status === 'good',
-                                        'bg-red-100 text-red-600': asset.status === 'broken',
-                                        'bg-amber-100 text-amber-600': asset.status === 'maintenance'
-                                    }">
-                                        <span class="w-2 h-2 rounded-full"
-                                            [ngClass]="{'bg-green-500': asset.status === 'good','bg-red-500': asset.status === 'broken','bg-amber-500': asset.status === 'maintenance'}"></span>
+                                            'text-green-600 border-green-600': asset.status === 'good',
+                                            'text-red-600 border-red-600': asset.status === 'broken',
+                                            'text-amber-600 border-amber-600': asset.status === 'maintenance'
+                                        }">
+                                        <div class="w-1.5 h-1.5 rounded-full" [ngClass]="{
+                                            'bg-green-600': asset.status === 'good',
+                                            'bg-red-600': asset.status === 'broken',
+                                            'bg-amber-600': asset.status === 'maintenance'
+                                        }"></div>
                                         {{ asset.status === 'good' ? 'Normal' : (asset.status === 'broken' ? 'Rusak' :
-                                        'Perbaikan') }}
+                                        'Service') }}
                                     </span>
                                 </td>
-                                <td class="p-6 text-right">
-                                    <div class="flex items-center justify-end gap-2 text-white">
+                                <td class="px-6 py-4">
+                                    <div class="text-xs font-bold text-gray-700">
+                                        {{ calculateBookValue(asset) | currency:'IDR':'symbol':'1.0-0' }}
+                                    </div>
+                                    <div class="text-[10px] text-gray-400 font-medium">
+                                        Beli: {{ (asset.purchase_price || 0) | currency:'IDR':'symbol':'1.0-0' }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
                                         <a [routerLink]="['/admin/assets/print', asset.id]" target="_blank"
-                                            class="w-10 h-10 rounded-xl bg-gray-100 text-gray-500 hover:bg-gray-800 hover:text-white flex items-center justify-center transition-colors shadow-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                fill="currentColor" viewBox="0 0 256 256">
+                                            class="p-2 rounded-lg border border-gray-200 text-gray-500 hover:border-blue-600 hover:text-blue-600 transition-all bg-white"
+                                            title="Print QR">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <polyline points="6 9 6 2 18 2 18 9"></polyline>
                                                 <path
-                                                    d="M200,80H56a8,8,0,0,1,0-16H200a8,8,0,0,1,0,16ZM88,112H64a8,8,0,0,0-8,8v88a8,8,0,0,0,8,8H88a8,8,0,0,0,8-8V120A8,8,0,0,0,88,112Z"
-                                                    opacity="0.2"></path>
-                                                <polyline points="176 80 176 48 80 48 80 80" fill="none"
-                                                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="16"></polyline>
-                                                <path
-                                                    d="M48,80H208a8,8,0,0,1,8,8v96a8,8,0,0,1-8,8H176V152a8,8,0,0,0-8-8H88a8,8,0,0,0-8,8v40H48a8,8,0,0,1-8-8V88A8,8,0,0,1,48,80Z"
-                                                    fill="none" stroke="currentColor" stroke-linecap="round"
-                                                    stroke-linejoin="round" stroke-width="16"></path>
-                                                <rect x="80" y="144" width="96" height="80" rx="8" fill="none"
-                                                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="16"></rect>
+                                                    d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
+                                                </path>
+                                                <rect x="6" y="14" width="12" height="8"></rect>
                                             </svg>
                                         </a>
                                         <a [routerLink]="['/admin/assets/edit', asset.id]"
-                                            class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors shadow-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                fill="currentColor" viewBox="0 0 256 256">
-                                                <path
-                                                    d="M96,216H48a8,8,0,0,1-8-8V163.31a8,8,0,0,1,2.34-5.65l104-104a8,8,0,0,1,11.32,0l44.68,44.68a8,8,0,0,1,0,11.32l-104,104A8,8,0,0,1,96,216Z"
-                                                    opacity="0.2"></path>
-                                                <path
-                                                    d="M96,216H48a8,8,0,0,1-8-8V163.31a8,8,0,0,1,2.34-5.65l104-104a8,8,0,0,1,11.32,0l44.68,44.68a8,8,0,0,1,0,11.32l-104,104A8,8,0,0,1,96,216Z"
-                                                    fill="none" stroke="currentColor" stroke-linecap="round"
-                                                    stroke-linejoin="round" stroke-width="16"></path>
-                                                <line x1="136" y1="64" x2="192" y2="120" fill="none"
-                                                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="16"></line>
-                                                <polyline points="216 216 96 216 40.51 160.51" fill="none"
-                                                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="16"></polyline>
+                                            class="p-2 rounded-lg border border-gray-200 text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all bg-white"
+                                            title="Edit">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                                stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                                                </path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                                                </path>
                                             </svg>
                                         </a>
-                                        <button (click)="deleteAsset(asset)" type="button"
-                                            class="w-10 h-10 rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white flex items-center justify-center transition-colors shadow-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                fill="currentColor" viewBox="0 0 256 256">
-                                                <path d="M200,56V208a8,8,0,0,1-8,8H64a8,8,0,0,1-8-8V56Z" opacity="0.2">
+                                        <button (click)="openDisposalModal(asset)" type="button"
+                                            class="p-2 rounded-lg border border-gray-200 text-red-600 hover:border-red-600 hover:bg-red-50 transition-all bg-white"
+                                            title="Write-off / Musnahkan">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                                stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path
+                                                    d="M19 6V20a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
                                                 </path>
-                                                <line x1="216" y1="56" x2="40" y2="56" fill="none" stroke="currentColor"
-                                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="16">
-                                                </line>
-                                                <line x1="104" y1="104" x2="104" y2="168" fill="none"
-                                                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="16"></line>
-                                                <line x1="152" y1="104" x2="152" y2="168" fill="none"
-                                                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="16"></line>
-                                                <path d="M200,56V208a8,8,0,0,1-8,8H64a8,8,0,0,1-8-8V56" fill="none"
-                                                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="16"></path>
-                                                <path d="M168,56V40a16,16,0,0,0-16-16H104A16,16,0,0,0,88,40V56"
-                                                    fill="none" stroke="currentColor" stroke-linecap="round"
-                                                    stroke-linejoin="round" stroke-width="16"></path>
                                             </svg>
                                         </button>
                                     </div>
@@ -431,28 +354,26 @@
                 </div>
 
                 <!-- PAGINATION CONTROLS -->
-                <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
-                    <div class="text-xs font-bold text-gray-400">
-                        Menampilkan {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ (currentPage * itemsPerPage >
-                        filteredAssets.length) ? filteredAssets.length : currentPage * itemsPerPage }} dari {{
-                        filteredAssets.length }} Data
+                <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
+                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        Hal {{ currentPage }} dari {{ totalPages }}
                     </div>
-                    <div class="flex gap-2">
+                    <div class="flex gap-1.5">
                         <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
-                            class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold text-gray-500 hover:bg-white hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
-                            Sebelumnya
+                            class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:bg-white disabled:opacity-50 transition-all">
+                            Prev
                         </button>
                         <div class="flex items-center gap-1">
                             <button *ngFor="let p of [].constructor(totalPages); let i = index"
                                 (click)="changePage(i + 1)"
                                 class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all"
-                                [ngClass]="currentPage === (i + 1) ? 'bg-white text-blue-600 shadow-sm border border-blue-100' : 'text-gray-400 hover:text-gray-600'">
+                                [ngClass]="currentPage === (i + 1) ? 'bg-blue-700 text-white shadow-sm' : 'text-gray-400 hover:text-gray-700'">
                                 {{ i + 1 }}
                             </button>
                         </div>
                         <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
-                            class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-bold text-gray-500 hover:bg-white hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
-                            Selanjutnya
+                            class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:bg-white disabled:opacity-50 transition-all">
+                            Next
                         </button>
                     </div>
                 </div>
@@ -461,105 +382,168 @@
 
 
         <!-- === MODE 2: VISUAL MAP === -->
-        <div *ngIf="viewMode === 'visual'" class="space-y-8 animate-fade-in-up">
+        <div *ngIf="viewMode === 'visual'" class="space-y-6 animate-fade-in">
 
             <!-- Legend -->
-            <div class="flex justify-center gap-6 text-xs font-bold text-gray-400 uppercase tracking-widest">
+            <div class="flex justify-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                 <div class="flex items-center gap-2">
-                    <div class="w-3 h-3 rounded-full bg-green-500"></div> Normal
+                    <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div> Normal
                 </div>
                 <div class="flex items-center gap-2">
-                    <div class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div> Rusak (Lapor)
+                    <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div> Rusak
                 </div>
                 <div class="flex items-center gap-2">
-                    <div class="w-3 h-3 rounded-full bg-amber-500"></div> Maintenance
+                    <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div> Maintenance
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
-                <!-- Loop Per Room (Respects Filter) -->
-                <!-- We only show locations that are present in the FILTERED list to avoid empty cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 <ng-container *ngFor="let loc of (selectedLocation === 'Semua' ? locations : [selectedLocation])">
-
                     <div *ngIf="getAssetsByLocation(loc).length > 0"
-                        class="bg-white rounded-[2rem] p-6 shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-md transition-shadow relative overflow-hidden">
+                        class="bg-white rounded-xl p-5 shadow-sm border border-gray-200 flex flex-col hover:shadow-md transition-shadow">
 
-                        <!-- Room Header -->
-                        <div class="flex items-center justify-between mb-6 relative z-10">
-                            <h3 class="font-bold text-gray-800 text-lg truncate pr-2" [title]="loc">{{ loc }}</h3>
-                            <span
-                                class="bg-gray-50 text-gray-400 text-[10px] font-bold px-2 py-1 rounded-full border border-gray-100">
-                                {{ getAssetsByLocation(loc).length }} Unit
-                            </span>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-gray-900 text-sm truncate flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                    stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="text-blue-700">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                {{ loc }}
+                            </h3>
+                            <span class="text-[10px] font-bold text-gray-400">{{ getAssetsByLocation(loc).length }}
+                                unit</span>
                         </div>
 
-                        <!-- Room Grid -->
-                        <div class="grid grid-cols-3 gap-3 relative z-10">
+                        <div class="grid grid-cols-3 gap-2">
                             <div *ngFor="let asset of getAssetsByLocation(loc)"
                                 class="flex flex-col items-center group cursor-pointer"
-                                [routerLink]="['/admin/assets/edit', asset.id]" [title]="asset.name">
+                                [routerLink]="['/admin/assets/edit', asset.id]">
 
-                                <!-- DYNAMIC AC ICON -->
-                                <div class="w-16 h-12 rounded-xl flex items-center justify-center mb-2 transition-all duration-300 relative border-2"
+                                <div class="w-full aspect-video rounded-lg flex items-center justify-center transition-all duration-200 border-2"
                                     [ngClass]="{
-                                    'bg-green-50/50 border-green-100 text-green-600 group-hover:border-green-300': asset.status === 'good',
-                                    'bg-red-50/50 border-red-100 text-red-500 group-hover:border-red-300 animate-pulse': asset.status === 'broken',
-                                    'bg-amber-50/50 border-amber-100 text-amber-500 group-hover:border-amber-300': asset.status === 'maintenance'
+                                    'bg-white border-green-600 text-green-600': asset.status === 'good',
+                                    'bg-white border-red-600 text-red-600 animate-pulse': asset.status === 'broken',
+                                    'bg-white border-amber-500 text-amber-500': asset.status === 'maintenance'
                                 }">
-
-                                    <!-- Alert Badge -->
-                                    <div *ngIf="asset.status === 'broken'"
-                                        class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white text-[10px] flex items-center justify-center rounded-full shadow-sm z-20">
-                                        !</div>
-
-                                    <!-- SPLIT AC ICON -->
-                                    <svg *ngIf="(asset.brand || '').toLowerCase().includes('split') || !(asset.brand || '').toLowerCase().includes('casset')"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                        class="w-8 h-8">
-                                        <path
-                                            d="M4 6a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H4zm0 2h16v4H4V8z" />
-                                        <path d="M6 15h12v1H6z" />
-                                        <path d="M8 17h8v1H8z" />
-                                    </svg>
-
-                                    <!-- CASSETTE AC ICON -->
-                                    <svg *ngIf="(asset.brand || '').toLowerCase().includes('casset')"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                        class="w-8 h-8">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" opacity="0.4" />
-                                        <rect x="6" y="6" width="12" height="12" rx="1" />
-                                        <path d="M2 12h20M12 2v20" stroke="currentColor" stroke-width="0.5"
-                                            class="opacity-30" />
-                                    </svg>
-
+                                    <ng-container [ngSwitch]="getAssetType(asset)">
+                                        <!-- CASSETTE (Ceiling/Central - Square) -->
+                                        <svg *ngSwitchCase="'cassette'" xmlns="http://www.w3.org/2000/svg" width="20"
+                                            height="20" fill="currentColor" viewBox="0 0 256 256">
+                                            <rect x="32" y="32" width="192" height="192" rx="8" fill="none"
+                                                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="16"></rect>
+                                            <circle cx="128" cy="128" r="32" fill="none" stroke="currentColor"
+                                                stroke-linecap="round" stroke-linejoin="round" stroke-width="16">
+                                            </circle>
+                                            <line x1="128" y1="32" x2="128" y2="96" fill="none" stroke="currentColor"
+                                                stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line>
+                                            <line x1="128" y1="160" x2="128" y2="224" fill="none" stroke="currentColor"
+                                                stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line>
+                                            <line x1="224" y1="128" x2="160" y2="128" fill="none" stroke="currentColor"
+                                                stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line>
+                                            <line x1="96" y1="128" x2="32" y2="128" fill="none" stroke="currentColor"
+                                                stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line>
+                                            <line x1="195.88" y1="60.12" x2="150.63" y2="105.37" fill="none"
+                                                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="16"></line>
+                                            <line x1="105.37" y1="150.63" x2="60.12" y2="195.88" fill="none"
+                                                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="16"></line>
+                                            <line x1="195.88" y1="195.88" x2="150.63" y2="150.63" fill="none"
+                                                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="16"></line>
+                                            <line x1="105.37" y1="105.37" x2="60.12" y2="60.12" fill="none"
+                                                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="16"></line>
+                                        </svg>
+                                        <!-- STANDING -->
+                                        <svg *ngSwitchCase="'standing'" xmlns="http://www.w3.org/2000/svg" width="20"
+                                            height="20" fill="currentColor" viewBox="0 0 256 256">
+                                            <rect x="56" y="32" width="144" height="192" rx="8" fill="none"
+                                                stroke-width="16"></rect>
+                                            <line x1="56" y1="80" x2="200" y2="80" fill="none" stroke="currentColor"
+                                                stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line>
+                                            <line x1="104" y1="160" x2="152" y2="160" fill="none" stroke="currentColor"
+                                                stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line>
+                                        </svg>
+                                        <!-- SPLIT (Default) -->
+                                        <svg *ngSwitchDefault xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            fill="currentColor" viewBox="0 0 256 256">
+                                            <path
+                                                d="M224,112V88a16,16,0,0,0-16-16H48A16,16,0,0,0,32,88v24a16,16,0,0,0,16,16h4.13A40,40,0,0,0,88,168h80a40,40,0,0,0,35.87-40H208A16,16,0,0,0,224,112ZM168,152H88a24,24,0,0,1-23.47-19.1A8.25,8.25,0,0,0,64,132a8,8,0,0,0-8-8H48V88H208v36h-8a8,8,0,0,0-8,8,8.25,8.25,0,0,0-.53.9A24,24,0,0,1,168,152Z">
+                                            </path>
+                                        </svg>
+                                    </ng-container>
                                 </div>
-
-                                <!-- Mini Info -->
-                                <div class="text-center w-full">
-                                    <p class="text-[9px] font-bold text-gray-500 truncate w-full">{{ asset.sku }}</p>
-                                    <p
-                                        class="text-[8px] font-bold text-gray-300 truncate w-full group-hover:text-blue-500 transition-colors">
-                                        {{ asset.pk }}</p>
-                                </div>
+                                <p class="text-[8px] font-bold text-gray-400 mt-1 truncate w-full text-center">{{
+                                    asset.sku }}</p>
                             </div>
                         </div>
-
-                        <!-- Room Floor Decor -->
-                        <div class="absolute bottom-0 right-0 w-full h-1 bg-gray-50"></div>
                     </div>
-
                 </ng-container>
-
             </div>
         </div>
 
         <!-- Empty State -->
         <div *ngIf="!loading && filteredAssets.length === 0"
-            class="bg-white rounded-[2.5rem] p-12 text-center shadow-sm border border-gray-100">
-            <div class="text-6xl mb-4 grayscale opacity-20">🏝️</div>
-            <h3 class="text-xl font-bold text-gray-400">Tidak ada aset di lokasi ini</h3>
-            <p class="text-gray-300 mt-2">Coba pilih lokasi lain.</p>
+            class="bg-white rounded-xl py-12 px-6 text-center border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-400">Tidak ada aset ditemukan</h3>
+            <p class="text-sm text-gray-400 mt-1">Coba sesuaikan filter pencarian atau lokasi Anda.</p>
         </div>
 
     </div>
+
+    <!-- DISPOSAL MODAL -->
+    <div *ngIf="showDisposalModal"
+        class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm animate-fade-in">
+        <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div class="p-6 md:p-8">
+                <h3 class="text-xl font-black text-gray-900 mb-1">Konfirmasi Penghapusan Aset</h3>
+                <p class="text-gray-500 font-medium text-sm mb-6">Proses ini akan menonaktifkan aset secara permanen.
+                </p>
+
+                <form [formGroup]="disposalForm" (ngSubmit)="submitDisposal()" class="space-y-4">
+
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Jenis
+                            Penghapusan</label>
+                        <select formControlName="disposal_type"
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 font-bold text-sm bg-white">
+                            <option value="scrapped">Scrapped (Dimusnahkan/Rongsok)</option>
+                            <option value="sold">Sold (Dijual/Lelang)</option>
+                            <option value="lost">Lost (Hilang)</option>
+                            <option value="donated">Donated (Hibah)</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nilai Jual /
+                            Residu (Rp)</label>
+                        <input formControlName="sale_price" type="number"
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 font-bold text-sm">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Catatan
+                            Tambahan</label>
+                        <textarea formControlName="notes" rows="3"
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 font-bold text-sm"></textarea>
+                    </div>
+
+                    <div class="flex gap-3 pt-4">
+                        <button type="button" (click)="closeDisposalModal()"
+                            class="flex-1 py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-50 transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" [disabled]="isSubmitting"
+                            class="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold transition-colors disabled:opacity-50">
+                            {{ isSubmitting ? 'Memproses...' : 'Konfirmasi' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>

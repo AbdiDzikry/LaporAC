@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core'; // Added OnInit
 import { CommonModule } from '@angular/common'; // Added CommonModule for *ngFor
-import { AssetService, Asset } from '../../../../services/asset/asset'; // Correct relative path
+import { AssetService, Asset, AssetDisposal } from '../../../../services/asset/asset';
+import { ToastService } from '../../../../services/toast/toast'; // Import Toast
 import { RouterLink } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-asset-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './asset-list.html',
   styleUrl: './asset-list.css'
 })
@@ -32,7 +34,23 @@ export class AssetListComponent implements OnInit {
   brandDropdownOpen = false;
   statusDropdownOpen = false;
 
-  constructor(private assetService: AssetService) { }
+  // Disposal Modal State
+  showDisposalModal = false;
+  disposalForm: FormGroup;
+  selectedAssetForDisposal: Asset | null = null;
+  isSubmitting = false;
+
+  constructor(
+    private assetService: AssetService,
+    private fb: FormBuilder,
+    private toast: ToastService // Inject
+  ) {
+    this.disposalForm = this.fb.group({
+      disposal_type: ['scrapped', Validators.required],
+      sale_price: [0],
+      notes: ['']
+    });
+  }
 
   ngOnInit() {
     this.loadAssets();
@@ -183,7 +201,7 @@ export class AssetListComponent implements OnInit {
       const { error } = await this.assetService.deleteAsset(asset.id!);
 
       if (error) {
-        alert('Gagal menghapus aset: ' + error.message);
+        this.toast.show('Gagal menghapus aset: ' + error.message, 'error');
         return;
       }
 
@@ -191,11 +209,83 @@ export class AssetListComponent implements OnInit {
       this.allAssets = this.allAssets.filter(a => a.id !== asset.id);
       this.filterAssets();
 
-      alert('Aset berhasil dihapus!');
+      this.toast.show('Aset berhasil dihapus!', 'success');
     } catch (e: any) {
       console.error('Delete error:', e);
-      alert('Terjadi kesalahan saat menghapus aset');
+      this.toast.show('Terjadi kesalahan saat menghapus aset', 'error');
     }
   }
 
+  // --- DISPOSAL LOGIC ---
+
+  openDisposalModal(asset: Asset) {
+    this.selectedAssetForDisposal = asset;
+    this.showDisposalModal = true;
+    this.disposalForm.reset({
+      disposal_type: 'scrapped',
+      sale_price: asset.residual_value || 0,
+      notes: ''
+    });
+  }
+
+  closeDisposalModal() {
+    this.showDisposalModal = false;
+    this.selectedAssetForDisposal = null;
+  }
+
+  async submitDisposal() {
+    if (this.disposalForm.invalid || !this.selectedAssetForDisposal) return;
+
+    if (!confirm('Apakah anda yakin ingin memproses data ini? Data tidak bisa dikembalikan.')) return;
+
+    this.isSubmitting = true;
+    try {
+      const disposalData: AssetDisposal = {
+        asset_id: this.selectedAssetForDisposal.id!,
+        disposal_date: new Date().toISOString(),
+        ...this.disposalForm.value
+      };
+
+      await this.assetService.disposeAsset(disposalData);
+
+      // Update local state
+      this.closeDisposalModal();
+      await this.loadAssets(); // Reload to see changes (asset likely gone or status updated)
+      this.toast.show('Aset berhasil dihapus/dimusnahkan.', 'success');
+
+    } catch (e) {
+      console.error(e);
+      this.toast.show('Gagal memproses penghapusan aset.', 'error');
+    } finally {
+      this.isSubmitting = false;
+    }
+  }
+
+  calculateBookValue(asset: Asset): number {
+    return this.assetService.calculateBookValue(asset);
+  }
+
+  getAssetType(asset: Asset): 'split' | 'cassette' | 'standing' {
+    const text = (asset.brand + ' ' + asset.name).toLowerCase();
+
+    // 1. FLOOR STANDING
+    if (text.includes('standing') || text.includes('floor')) return 'standing';
+
+    // 2. CASSETTE / CENTRAL / CEILING / INDUSTRIAL / LARGE PK
+    // Check for keywords
+    if (text.includes('cassette') || text.includes('casset') || text.includes('kaset') ||
+      text.includes('ceiling') || text.includes('sentral') || text.includes('central') ||
+      text.includes('ducting') || text.includes('chiller') || text.includes('aicool')) {
+      return 'cassette';
+    }
+
+    // Check for High PK (>= 2.5 PK is typically Cassette/Central in this context)
+    if (asset.pk) {
+      const pkValue = parseFloat(asset.pk.replace(',', '.').replace(/[^\d.]/g, ''));
+      if (!isNaN(pkValue) && pkValue >= 2.5) return 'cassette';
+    }
+
+    // 3. Default to SPLIT (Wall)
+    return 'split';
+  }
 }

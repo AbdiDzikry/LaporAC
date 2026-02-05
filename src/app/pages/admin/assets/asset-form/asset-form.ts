@@ -3,11 +3,23 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AssetService } from '../../../../services/asset/asset';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-asset-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    MatDatepickerModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatNativeDateModule
+  ],
   templateUrl: './asset-form.html',
   styleUrl: './asset-form.css'
 })
@@ -16,6 +28,7 @@ export class AssetFormComponent implements OnInit {
   isEditMode = false;
   assetId: number | null = null;
   loading = false;
+  maintenanceDays: number[] = Array.from({ length: 31 }, (_, i) => i + 1); // 1-31
 
   constructor(
     private fb: FormBuilder,
@@ -29,7 +42,15 @@ export class AssetFormComponent implements OnInit {
       brand: ['', Validators.required], // Maps to JENIS
       location: ['', Validators.required],
       pk: ['', Validators.required],
-      status: ['good', Validators.required]
+      status: ['good', Validators.required],
+      next_maintenance_date: [''], // Next scheduled maintenance date
+
+      // Lifecycle Fields
+      vendor_name: [''],
+      purchase_price: [0],
+      warranty_expiry_date: [null],
+      useful_life_years: [5],
+      residual_value: [0]
     });
   }
 
@@ -45,7 +66,11 @@ export class AssetFormComponent implements OnInit {
     this.loading = true;
     const { data, error } = await this.assetService.getAssetById(id);
     if (data) {
-      this.assetForm.patchValue(data);
+      this.assetForm.patchValue({
+        ...data,
+        warranty_expiry_date: data.warranty_expiry_date ? new Date(data.warranty_expiry_date) : null,
+        next_maintenance_date: data.next_maintenance_date ? new Date(data.next_maintenance_date) : null
+      });
     }
     this.loading = false;
   }
