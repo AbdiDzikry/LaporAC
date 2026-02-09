@@ -1,0 +1,229 @@
+<div class="max-w-7xl mx-auto p-4 md:p-8 font-sans bg-white min-h-screen">
+    <!-- HEADER -->
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Periode Pemeliharaan</h1>
+            <p class="text-sm text-gray-500 mt-1">Kelola siklus pemeliharaan bulanan dan laporan.</p>
+        </div>
+        <button (click)="openCreateModal()"
+            class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold uppercase tracking-wide text-xs shadow-lg shadow-blue-500/30 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+                stroke-width="2.5" viewBox="0 0 24 24">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Buat Periode Baru
+        </button>
+    </div>
+
+    <!-- STATS CARDS -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="p-6 rounded-xl border border-gray-200 bg-white">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Total Periode</p>
+            <p class="text-3xl font-bold text-gray-900 tracking-tight">{{ yearStats?.total_periods || 0 }}</p>
+        </div>
+        <div class="p-6 rounded-xl border border-gray-200 bg-white">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Periode Aktif</p>
+            <p class="text-3xl font-bold text-blue-600 tracking-tight">{{ yearStats?.active_periods || 0 }}</p>
+        </div>
+        <div class="p-6 rounded-xl border border-gray-200 bg-white">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Total Jadwal {{ selectedYear }}
+            </p>
+            <p class="text-3xl font-bold text-gray-900 tracking-tight">{{ yearStats?.total_schedules || 0 }}</p>
+        </div>
+        <div class="p-6 rounded-xl border border-gray-200 bg-white">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Penyelesaian</p>
+            <div class="flex items-end gap-2">
+                <p class="text-3xl font-bold text-green-600 tracking-tight">{{ yearStats?.completion_rate || 0 }}%</p>
+                <p class="text-xs text-gray-400 font-bold mb-1.5">Tahun Ini</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="flex flex-col sm:flex-row gap-4 mb-8">
+        <div class="w-full sm:w-48">
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Tahun</label>
+            <select [(ngModel)]="selectedYear" (change)="onFilterChange()"
+                class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
+            </select>
+        </div>
+
+        <div class="w-full sm:w-48">
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Status</label>
+            <select [(ngModel)]="selectedStatus" (change)="onFilterChange()"
+                class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                <option value="all">Semua Status</option>
+                <option value="draft">Draft</option>
+                <option value="active">Aktif</option>
+                <option value="completed">Selesai</option>
+                <option value="archived">Arsip</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- LOADING STATE -->
+    <div *ngIf="loading" class="text-center py-20">
+        <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent">
+        </div>
+        <p class="text-sm text-gray-500 mt-4 font-bold uppercase tracking-wide">Memuat Periode...</p>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div *ngIf="!loading && periods.length === 0"
+        class="text-center py-20 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+        <div
+            class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-gray-400 shadow-sm border border-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="currentColor"
+                stroke-width="2" viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900">Belum Ada Periode</h3>
+        <p class="text-sm text-gray-500 mt-1 mb-6">Mulai dengan membuat periode pemeliharaan baru.</p>
+        <div class="flex flex-col gap-3 justify-center items-center">
+            <button (click)="openCreateModal()"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold uppercase tracking-wide text-xs transition-all w-full sm:w-auto">
+                Buat Periode Baru
+            </button>
+
+            <button (click)="migrateData()"
+                class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-bold uppercase tracking-wide text-xs transition-all w-full sm:w-auto">
+                Migrasi Data Awal (Jan 2026)
+            </button>
+        </div>
+    </div>
+
+    <!-- PERIODS GRID -->
+    <div *ngIf="!loading && periods.length > 0"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div *ngFor="let period of periods"
+            class="group bg-white rounded-xl border border-gray-200 hover:border-blue-600 hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+
+            <!-- Card Header -->
+            <div class="p-6 border-b border-gray-100 bg-gray-50/30">
+                <div class="flex justify-between items-start mb-3">
+                    <span
+                        [class]="getStatusColor(period.status) + ' px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide border'">
+                        {{ getStatusLabel(period.status) }}
+                    </span>
+                    <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <!-- Add actions dropdown or delete button if needed -->
+                        <button *ngIf="period.total_schedules === 0" (click)="deletePeriod(period)"
+                            class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Hapus Periode">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                    {{ period.name }}
+                </h3>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-6 flex-1">
+                <div class="mb-5">
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="font-bold text-gray-500 uppercase tracking-wide text-[10px]">Progress</span>
+                        <span class="font-bold text-gray-900">{{ getCompletionPercentage(period) }}%</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                        <div [class]="getProgressBarColor(getCompletionPercentage(period)) + ' h-1.5 rounded-full transition-all duration-500'"
+                            [style.width.%]="getCompletionPercentage(period)"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Total</p>
+                        <p class="text-sm font-bold text-gray-900 flex items-center gap-1">
+                            {{ period.total_schedules || 0 }}
+                            <span class="text-xs font-normal text-gray-500">Jadwal</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Selesai</p>
+                        <p class="text-sm font-bold text-green-600 flex items-center gap-1">
+                            {{ period.completed_schedules || 0 }}
+                            <span class="text-xs font-normal text-green-600/70">Done</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Footer -->
+            <div class="p-4 border-t border-gray-100 bg-gray-50/50 flex gap-2">
+                <a [routerLink]="['/admin/maintenance/periods', period.id]"
+                    class="flex-1 text-center px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 font-bold text-xs uppercase tracking-wide transition-all shadow-sm">
+                    Lihat Detail
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CREATE MODAL -->
+<div *ngIf="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-fadeIn">
+        <div class="p-6 border-b border-gray-100 bg-gray-50">
+            <h2 class="text-lg font-black text-gray-900 uppercase tracking-wide">Buat Periode Baru</h2>
+            <p class="text-xs text-gray-500 mt-1">Setup periode pemeliharaan bulanan</p>
+        </div>
+
+        <div class="p-6 space-y-4">
+            <!-- Year Selection -->
+            <div>
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Tahun</label>
+                <input type="number" [(ngModel)]="newPeriod.year" min="2020" max="2100"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-bold text-gray-900">
+            </div>
+
+            <!-- Month Selection -->
+            <div>
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Bulan</label>
+                <select [(ngModel)]="newPeriod.month"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-bold text-gray-900">
+                    <option *ngFor="let month of monthNames; let i = index" [value]="i + 1">
+                        {{ month }}
+                    </option>
+                </select>
+            </div>
+
+            <!-- Template Selection -->
+            <div>
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+                    Template (Opsional)
+                    <span class="text-gray-400 font-normal normal-case float-right">Salin jadwal dari periode
+                        lain</span>
+                </label>
+                <select [(ngModel)]="newPeriod.templatePeriodId"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-gray-700">
+                    <option [ngValue]="null">-- Kosong (Tanpa Jadwal) --</option>
+                    <option *ngFor="let p of periods" [value]="p.id">Salin dari: {{ p.name }}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+            <button (click)="closeCreateModal()"
+                class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 font-bold text-xs uppercase tracking-wide transition-all">
+                Batal
+            </button>
+            <button (click)="createPeriod()" [disabled]="creating"
+                class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-bold text-xs uppercase tracking-wide transition-all disabled:opacity-50">
+                {{ creating ? 'Memproses...' : 'Buat Periode' }}
+            </button>
+        </div>
+    </div>
+</div>

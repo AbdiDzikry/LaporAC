@@ -1,35 +1,40 @@
-<div class="h-full w-64 bg-white border-r border-gray-200 flex flex-col font-sans">
+<div
+    class="h-full w-full bg-white border-r border-gray-200 flex flex-col font-sans group overflow-hidden transition-all duration-300">
 
     <!-- Brand Section -->
-    <div class="p-6 flex-shrink-0 border-b border-gray-100">
-        <div class="flex items-center gap-3">
+    <div
+        class="h-[88px] flex items-center justify-center group-hover:justify-start px-0 group-hover:px-6 flex-shrink-0 border-b border-gray-100 transition-all duration-300">
+        <div class="flex items-center gap-0 group-hover:gap-3 transition-all duration-300">
             <div
-                class="w-10 h-10 rounded-lg bg-blue-700 flex items-center justify-center text-white shadow-md shadow-blue-200">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-200 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
                     <path d="M2 17l10 5 10-5"></path>
                     <path d="M2 12l10 5 10-5"></path>
                 </svg>
             </div>
-            <div>
-                <h1 class="text-lg font-bold tracking-tight text-gray-900 leading-none">LaporAC</h1>
+            <div
+                class="w-0 group-hover:w-auto overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-500 whitespace-nowrap">
+                <h1 class="text-xl font-black tracking-tight text-gray-900 leading-none">LaporAC</h1>
                 <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Management System</p>
             </div>
         </div>
     </div>
 
     <!-- Navigation Section -->
-    <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-        <p class="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 font-inter">Principal</p>
+    <nav class="flex-1 py-6 space-y-1 overflow-y-auto overflow-x-hidden scrollbar-thin">
+        <p
+            class="px-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 font-inter opacity-0 h-0 group-hover:opacity-100 group-hover:h-auto transition-all duration-300 whitespace-nowrap">
+            Principal</p>
 
         <!-- DASHBOARD -->
-        <a routerLink="/dashboard" routerLinkActive="bg-blue-50 text-blue-700 font-semibold"
+        <a routerLink="/dashboard" routerLinkActive="bg-blue-50 text-blue-700 font-semibold shadow-sm"
             [routerLinkActiveOptions]="{exact: true}"
-            class="flex items-center px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group">
+            class="flex items-center h-12 px-0 justify-center group-hover:justify-start group-hover:px-6 mx-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group/item relative">
             <div
-                class="mr-3 text-gray-400 group-hover:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                class="shrink-0 group-hover:mr-3 text-gray-400 group-hover/item:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                     stroke-width="2" viewBox="0 0 24 24">
                     <rect x="3" y="3" width="7" height="7"></rect>
                     <rect x="14" y="3" width="7" height="7"></rect>
@@ -37,33 +42,42 @@
                     <rect x="3" y="14" width="7" height="7"></rect>
                 </svg>
             </div>
-            <span class="text-sm">Dashboard</span>
+            <span
+                class="text-sm font-medium w-0 overflow-hidden group-hover:w-auto opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">Dashboard</span>
+            <!-- Tooltip for collapsed state -->
+            <div
+                class="fixed left-[70px] bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-0 pointer-events-none group-hover/item:opacity-100 group-hover/item:delay-500 hidden md:block z-[60]">
+                Dashboard
+            </div>
         </a>
 
         <!-- ANALYTICS -->
-        <a routerLink="/admin/analytics" routerLinkActive="bg-blue-50 text-blue-700 font-semibold"
-            class="flex items-center px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group">
+        <a routerLink="/admin/analytics" routerLinkActive="bg-blue-50 text-blue-700 font-semibold shadow-sm"
+            class="flex items-center h-12 px-0 justify-center group-hover:justify-start group-hover:px-6 mx-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group/item relative">
             <div
-                class="mr-3 text-gray-400 group-hover:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                class="shrink-0 group-hover:mr-3 text-gray-400 group-hover/item:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                     stroke-width="2" viewBox="0 0 24 24">
                     <line x1="18" y1="20" x2="18" y2="10"></line>
                     <line x1="12" y1="20" x2="12" y2="4"></line>
                     <line x1="6" y1="20" x2="6" y2="14"></line>
                 </svg>
             </div>
-            <span class="text-sm">Analitik</span>
+            <span
+                class="text-sm font-medium w-0 overflow-hidden group-hover:w-auto opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">Analitik</span>
         </a>
 
         <div class="h-6"></div>
-        <p class="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 font-inter">Operational</p>
+        <p
+            class="px-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 font-inter opacity-0 h-0 group-hover:opacity-100 group-hover:h-auto transition-all duration-300 whitespace-nowrap">
+            Operational</p>
 
         <!-- ASSETS -->
-        <a routerLink="/admin/assets" routerLinkActive="bg-blue-50 text-blue-700 font-semibold"
-            class="flex items-center px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group">
+        <a routerLink="/admin/assets" routerLinkActive="bg-blue-50 text-blue-700 font-semibold shadow-sm"
+            class="flex items-center h-12 px-0 justify-center group-hover:justify-start group-hover:px-6 mx-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group/item relative">
             <div
-                class="mr-3 text-gray-400 group-hover:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                class="shrink-0 group-hover:mr-3 text-gray-400 group-hover/item:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                     stroke-width="2" viewBox="0 0 24 24">
                     <path
                         d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
@@ -72,15 +86,17 @@
                     <line x1="12" y1="22.08" x2="12" y2="12"></line>
                 </svg>
             </div>
-            <span class="text-sm">Data Aset</span>
+            <span
+                class="text-sm font-medium w-0 overflow-hidden group-hover:w-auto opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">Data
+                Aset</span>
         </a>
 
         <!-- MAINTENANCE -->
-        <a routerLink="/admin/maintenance" routerLinkActive="bg-blue-50 text-blue-700 font-semibold"
-            class="flex items-center px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group">
+        <a routerLink="/admin/maintenance" routerLinkActive="bg-blue-50 text-blue-700 font-semibold shadow-sm"
+            class="flex items-center h-12 px-0 justify-center group-hover:justify-start group-hover:px-6 mx-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group/item relative">
             <div
-                class="mr-3 text-gray-400 group-hover:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                class="shrink-0 group-hover:mr-3 text-gray-400 group-hover/item:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                     stroke-width="2" viewBox="0 0 24 24">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                     <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -88,15 +104,17 @@
                     <line x1="3" y1="10" x2="21" y2="10"></line>
                 </svg>
             </div>
-            <span class="text-sm">Jadwal Maintenance</span>
+            <span
+                class="text-sm font-medium w-0 overflow-hidden group-hover:w-auto opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">Jadwal
+                Maintenance</span>
         </a>
 
         <!-- TICKETS -->
-        <a routerLink="/admin/tickets" routerLinkActive="bg-blue-50 text-blue-700 font-semibold"
-            class="flex items-center px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group">
+        <a routerLink="/admin/tickets" routerLinkActive="bg-blue-50 text-blue-700 font-semibold shadow-sm"
+            class="flex items-center h-12 px-0 justify-center group-hover:justify-start group-hover:px-6 mx-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group/item relative">
             <div
-                class="mr-3 text-gray-400 group-hover:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                class="shrink-0 group-hover:mr-3 text-gray-400 group-hover/item:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                     stroke-width="2" viewBox="0 0 24 24">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
@@ -105,18 +123,22 @@
                     <polyline points="10 9 9 9 8 9"></polyline>
                 </svg>
             </div>
-            <span class="text-sm">Tiket Laporan</span>
+            <span
+                class="text-sm font-medium w-0 overflow-hidden group-hover:w-auto opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">Tiket
+                Laporan</span>
         </a>
 
         <div class="h-6"></div>
-        <p class="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 font-inter">Administration</p>
+        <p
+            class="px-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 font-inter opacity-0 h-0 group-hover:opacity-100 group-hover:h-auto transition-all duration-300 whitespace-nowrap">
+            Administration</p>
 
         <!-- USERS -->
-        <a routerLink="/admin/users" routerLinkActive="bg-blue-50 text-blue-700 font-semibold"
-            class="flex items-center px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group">
+        <a routerLink="/admin/users" routerLinkActive="bg-blue-50 text-blue-700 font-semibold shadow-sm"
+            class="flex items-center h-12 px-0 justify-center group-hover:justify-start group-hover:px-6 mx-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group/item relative">
             <div
-                class="mr-3 text-gray-400 group-hover:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                class="shrink-0 group-hover:mr-3 text-gray-400 group-hover/item:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                     stroke-width="2" viewBox="0 0 24 24">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                     <circle cx="9" cy="7" r="4"></circle>
@@ -124,46 +146,55 @@
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
             </div>
-            <span class="text-sm">Manajemen User</span>
+            <span
+                class="text-sm font-medium w-0 overflow-hidden group-hover:w-auto opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">Manajemen
+                User</span>
         </a>
 
         <!-- LOGS -->
-        <a routerLink="/admin/logs" routerLinkActive="bg-blue-50 text-blue-700 font-semibold"
-            class="flex items-center px-4 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group">
+        <a routerLink="/admin/logs" routerLinkActive="bg-blue-50 text-blue-700 font-semibold shadow-sm"
+            class="flex items-center h-12 px-0 justify-center group-hover:justify-start group-hover:px-6 mx-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-blue-700 transition-all duration-200 group/item relative">
             <div
-                class="mr-3 text-gray-400 group-hover:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                class="shrink-0 group-hover:mr-3 text-gray-400 group-hover/item:text-blue-600 group-[.text-blue-700]:text-blue-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                     stroke-width="2" viewBox="0 0 24 24">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>
             </div>
-            <span class="text-sm">System Logs</span>
+            <span
+                class="text-sm font-medium w-0 overflow-hidden group-hover:w-auto opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">System
+                Logs</span>
         </a>
 
         <!-- LOGOUT -->
-        <div class="mt-auto pt-6 px-1">
+        <div class="mt-auto pt-4 pb-4 px-0">
             <button (click)="logout()"
-                class="w-full flex items-center px-4 py-3 rounded-lg text-gray-500 hover:bg-red-50 hover:text-red-700 transition-all duration-200 group">
-                <div class="mr-3 text-gray-400 group-hover:text-red-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                class="w-full flex items-center h-12 px-0 justify-center group-hover:justify-start group-hover:px-6 mx-0 rounded-xl text-gray-500 hover:bg-red-50 hover:text-red-700 transition-all duration-200 group/item relative">
+                <div class="shrink-0 group-hover:mr-3 text-gray-400 group-hover/item:text-red-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                         stroke-width="2" viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                         <polyline points="16 17 21 12 16 7"></polyline>
                         <line x1="21" y1="12" x2="9" y2="12"></line>
                     </svg>
                 </div>
-                <span class="text-sm font-medium">Keluar Aplikasi</span>
+                <span
+                    class="text-sm font-medium w-0 overflow-hidden group-hover:w-auto opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">Keluar
+                    Aplikasi</span>
             </button>
         </div>
     </nav>
 
     <!-- User Profile Footer -->
-    <div class="p-4 border-t border-gray-100 bg-gray-50/50">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded bg-gray-900 flex items-center justify-center text-white font-bold text-xs">
+    <div
+        class="h-[76px] px-0 flex items-center justify-center group-hover:justify-start group-hover:px-6 border-t border-gray-100 bg-gray-50/50 flex-shrink-0 transition-all duration-300 overflow-hidden">
+        <div class="flex items-center gap-0 group-hover:gap-3 transition-all duration-300">
+            <div
+                class="w-9 h-9 rounded-lg bg-gray-900 flex items-center justify-center text-white font-bold text-xs ring-2 ring-gray-100 shrink-0">
                 A
             </div>
-            <div class="min-w-0">
+            <div
+                class="min-w-0 w-0 overflow-hidden group-hover:w-auto opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
                 <p class="text-xs font-bold text-gray-900 truncate">Administrator</p>
                 <p class="text-[10px] text-gray-500 font-medium truncate">Head Office</p>
             </div>

@@ -46,7 +46,7 @@ export class MaintenanceDetailComponent implements OnInit {
             if (error) throw error;
 
             if (data) {
-                this.workOrder = data.find(s => s.id === id) || null;
+                this.workOrder = data.find((s: MaintenanceSchedule) => s.id === id) || null;
             }
 
             // Initialize Forms

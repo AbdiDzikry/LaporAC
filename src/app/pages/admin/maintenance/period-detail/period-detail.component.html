@@ -1,0 +1,136 @@
+<div class="p-6 md:p-10 max-w-[1600px] mx-auto min-h-screen bg-gray-50/30 font-sans" *ngIf="period">
+    <!-- BACK BUTTON & BREADCRUMB -->
+    <div class="mb-6 flex items-center gap-2 text-sm text-gray-500">
+        <a routerLink="/admin/maintenance/periods"
+            class="hover:text-blue-600 transition-colors flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+                stroke-width="2" viewBox="0 0 24 24">
+                <path d="M19 12H5M12 19l-7-7 7-7"></path>
+            </svg>
+            Kembali ke Daftar Periode
+        </a>
+        <span class="text-gray-300">/</span>
+        <span class="text-gray-900 font-bold truncate">{{ period.name }}</span>
+    </div>
+
+    <!-- HEADER SECTION -->
+    <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 mb-8">
+        <div>
+            <div class="flex items-center gap-3 mb-1">
+                <h1 class="text-3xl font-black text-gray-900 tracking-tight leading-none">{{ period.name }}</h1>
+                <span
+                    [class]="getStatusColor(period.status) + ' px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm'">
+                    {{ getStatusLabel(period.status) }}
+                </span>
+            </div>
+            <p class="text-sm text-gray-500 font-medium">
+                Periode Pemeliharaan: <span class="text-gray-900 font-bold">{{ period.month }}/{{ period.year }}</span>
+            </p>
+        </div>
+
+        <div class="flex gap-3">
+            <button (click)="exportPDF()" [disabled]="exporting"
+                class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-300 hover:shadow-md flex items-center gap-2.5 font-bold text-xs uppercase tracking-wide transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                <svg *ngIf="!exporting" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+                    stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <div *ngIf="exporting"
+                    class="w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
+                {{ exporting ? 'Generating Report...' : 'Export Laporan PDF' }}
+            </button>
+        </div>
+    </div>
+
+    <!-- STATS DASHBOARD -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
+        <!-- CARD 1: Total Units -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+            </div>
+            <div>
+                <p class="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-0.5">Total Unit</p>
+                <p class="text-2xl font-black text-gray-900 leading-none">{{ period.total_schedules || 0 }}</p>
+            </div>
+        </div>
+
+        <!-- CARD 2: Completed -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center text-green-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+            <div>
+                <p class="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-0.5">Selesai</p>
+                <p class="text-2xl font-black text-gray-900 leading-none">{{ period.completed_schedules || 0 }}</p>
+            </div>
+        </div>
+
+        <!-- CARD 3: Remaining -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-yellow-50 flex items-center justify-center text-yellow-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <div>
+                <p class="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-0.5">Belum Dikerjakan</p>
+                <p class="text-2xl font-black text-gray-900 leading-none">
+                    {{ (period.total_schedules || 0) - (period.completed_schedules || 0) }}
+                </p>
+            </div>
+        </div>
+
+        <!-- CARD 4: Progress -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M12 20V10"></path>
+                    <path d="M18 20V4"></path>
+                    <path d="M6 20v-4"></path>
+                </svg>
+            </div>
+            <div class="w-full">
+                <div class="flex justify-between items-end mb-1">
+                    <p class="text-[10px] uppercase tracking-widest font-bold text-gray-400">Progress</p>
+                    <p class="text-sm font-black text-indigo-600">
+                        {{ period.total_schedules ? Math.round(((period.completed_schedules || 0) /
+                        period.total_schedules) * 100) : 0 }}%
+                    </p>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                    <div class="bg-indigo-500 h-2 rounded-full transition-all duration-500"
+                        [style.width.%]="period.total_schedules ? ((period.completed_schedules || 0) / period.total_schedules) * 100 : 0">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="mt-12">
+        <app-maintenance-list [periodId]="periodId" [initialMonth]="period.month" [initialYear]="period.year">
+        </app-maintenance-list>
+    </div>
+</div>
+
+<div *ngIf="loading" class="text-center py-20">
+    <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent">
+    </div>
+    <p class="text-sm text-gray-500 mt-4 font-bold uppercase tracking-wide">Memuat Periode...</p>
+</div>

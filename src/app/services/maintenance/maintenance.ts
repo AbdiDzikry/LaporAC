@@ -19,6 +19,8 @@ export interface MaintenanceSchedule {
         name: string;
         location: string;
         sku: string;
+        brand?: string;
+        pk?: string;
         maintenance_interval_days: number;
     };
 }
@@ -38,23 +40,34 @@ export class MaintenanceService {
      * Get maintenance schedules.
      * @param filter 'upcoming' | 'history' | 'all'
      */
-    async getSchedules(filter: 'upcoming' | 'history' | 'all' = 'upcoming') {
+    async getSchedules(filter: 'upcoming' | 'history' | 'all' | 'period' = 'upcoming', periodId?: number) {
         let query = this.supabase.client
             .from('maintenance_schedules')
-            .select('*, assets(name, location, sku, maintenance_interval_days)')
+            .select('*, assets(name, location, sku, brand, pk, maintenance_interval_days)')
             .order('scheduled_date', { ascending: true });
 
-        const today = new Date().toISOString().split('T')[0];
-
-        if (filter === 'upcoming') {
-            // Status scheduled/in_progress OR (missed but not too old?)
-            // Let's just get everything >= today OR status != completed
+        // IMPORTANT: For 'all' tab, we want EVERYTHING (including past scheduled items)
+        if (filter === 'period' && periodId) {
+            query = query.eq('period_id', periodId);
+        } else if (filter === 'upcoming') {
+            // Only show non-completed items
             query = query.neq('status', 'completed').neq('status', 'skipped');
         } else if (filter === 'history') {
             query = query.in('status', ['completed', 'skipped']);
         }
+        // else: filter === 'all', no additional filters
 
         return await query;
+    }
+
+    /**
+     * TEST: Direct query without filters
+     */
+    async testDirectQuery() {
+        return await this.supabase.client
+            .from('maintenance_schedules')
+            .select('*, assets(name, sku)', { count: 'exact' })
+            .limit(5);
     }
 
     /**
@@ -116,6 +129,65 @@ export class MaintenanceService {
             console.error("PM Generation Failed", e);
             return { error: e };
         }
+    }
+
+    /**
+     * Create a single maintenance schedule manually
+     */
+    async createSchedule(assetId: number, scheduledDate: string, periodId?: number) {
+        const payload: any = {
+            asset_id: assetId,
+            scheduled_date: scheduledDate,
+            status: 'scheduled'
+        };
+
+        if (periodId) {
+            payload.period_id = periodId;
+        }
+
+        const { data, error } = await this.supabase.client
+            .from('maintenance_schedules')
+            .insert(payload)
+            .select();
+
+        if (error) return { error };
+
+        await this.audit.logAction('SCHEDULE_CREATED', 'maintenance_schedules', assetId, {
+            scheduled_date: scheduledDate
+        });
+
+        return { data };
+    }
+
+    /**
+     * Create multiple schedules for the same date (bulk creation)
+     */
+    async createBulkSchedules(assetIds: number[], scheduledDate: string, periodId?: number) {
+        const schedules = assetIds.map(assetId => {
+            const payload: any = {
+                asset_id: assetId,
+                scheduled_date: scheduledDate,
+                status: 'scheduled' as const
+            };
+            if (periodId) {
+                payload.period_id = periodId;
+            }
+            return payload;
+        });
+
+        const { data, error } = await this.supabase.client
+            .from('maintenance_schedules')
+            .insert(schedules)
+            .select();
+
+        if (error) return { error };
+
+        await this.audit.logAction('BULK_SCHEDULE_CREATED', 'maintenance_schedules', 0, {
+            count: assetIds.length,
+            scheduled_date: scheduledDate
+        });
+
+        return { data };
     }
 
     /**
