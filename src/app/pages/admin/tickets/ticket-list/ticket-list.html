@@ -1,164 +1,228 @@
-<div class="max-w-7xl mx-auto font-sans p-4 space-y-8">
+<div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 font-sans bg-gray-50/30 min-h-screen">
 
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-            <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">Tiket Laporan</h1>
-            <p class="text-gray-400 mt-2 text-lg">Pantau & kelola laporan kerusakan AC.</p>
+    <!-- Professional Header Section -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+        <div class="space-y-1">
+            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
+                <span class="p-2 bg-blue-600 rounded-lg text-white shadow-lg shadow-blue-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4v-3a2 2 0 00-2-2H5z" />
+                    </svg>
+                </span>
+                Tiket Laporan Kerusakan
+            </h1>
+            <p class="text-gray-500 font-medium text-sm ml-11">Manajemen & monitoring laporan kerusakan unit AC secara
+                real-time.</p>
         </div>
 
-        <!-- Filter Toggle -->
-        <div class="flex bg-white p-1 rounded-2xl border border-gray-100 shadow-sm overflow-x-auto">
+        <!-- Desktop Search & Actions -->
+        <div class="flex items-center gap-4 w-full md:w-auto">
+            <div class="relative flex-1 md:w-64">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </span>
+                <input type="text" [(ngModel)]="searchQuery" placeholder="Cari ID, Aset, atau NPK..."
+                    class="block w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm">
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter & Statistics -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+        <!-- Status Tabs (Segment Control Style) -->
+        <div
+            class="flex items-center p-1 bg-white rounded-xl border border-gray-200 shadow-sm w-full sm:w-auto overflow-x-auto no-scrollbar">
             <button (click)="setTab('all')"
-                class="px-5 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap"
-                [ngClass]="activeTab === 'all' ? 'bg-gray-900 text-white shadow-md' : 'text-gray-400 hover:bg-gray-50'">
+                [class]="activeTab === 'all' ? 'bg-gray-900 text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'"
+                class="px-5 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap">
                 Semua
             </button>
             <button (click)="setTab('pending')"
-                class="px-5 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2"
-                [ngClass]="activeTab === 'pending' ? 'bg-blue-100 text-blue-700 shadow-sm ring-1 ring-blue-200' : 'text-gray-400 hover:bg-gray-50'">
-                <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                [class]="activeTab === 'pending' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'"
+                class="px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-current" [class.animate-pulse]="activeTab !== 'pending'"></span>
                 Butuh Validasi
             </button>
             <button (click)="setTab('open')"
-                class="px-5 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap"
-                [ngClass]="activeTab === 'open' ? 'bg-white text-gray-800 border border-gray-200 shadow-sm' : 'text-gray-400 hover:bg-gray-50'">
-                Open / Proses
+                [class]="activeTab === 'open' ? 'bg-amber-600 text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'"
+                class="px-5 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap">
+                Diproses
             </button>
             <button (click)="setTab('resolved')"
-                class="px-5 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap"
-                [ngClass]="activeTab === 'resolved' ? 'bg-white text-gray-800 border border-gray-200 shadow-sm' : 'text-gray-400 hover:bg-gray-50'">
-                Riwayat
+                [class]="activeTab === 'resolved' ? 'bg-green-600 text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'"
+                class="px-5 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap">
+                Selesai
             </button>
         </div>
+
+        <div class="text-xs font-bold text-gray-400 tracking-widest uppercase">
+            {{ filteredTickets.length }} Laporan Ditemukan
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex flex-col items-center justify-center py-24 space-y-4">
+        <div class="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
+        <p class="text-gray-500 font-bold animate-pulse">Menghubungkan ke pusat data...</p>
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!loading && tickets.length === 0"
-        class="bg-white rounded-[2.5rem] p-12 text-center shadow-sm border border-gray-100 flex flex-col items-center">
-        <div class="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center text-green-500 mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    <div *ngIf="!loading && filteredTickets.length === 0"
+        class="bg-white rounded-[2.5rem] p-16 text-center shadow-sm border border-gray-100 flex flex-col items-center max-w-2xl mx-auto">
+        <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
         </div>
-        <h3 class="text-2xl font-bold text-gray-800">Semua Aman!</h3>
-        <p class="text-gray-400 mt-2">Tidak ada tiket laporan kerusakan saat ini.</p>
+        <h3 class="text-xl font-extrabold text-gray-900">Data Tidak Ditemukan</h3>
+        <p class="text-gray-500 mt-2 max-w-xs mx-auto">Coba sesuaikan filter atau kata kunci pencarian Anda untuk
+            menemukan tiket yang dicari.</p>
+        <button (click)="searchQuery = ''; setTab('all')"
+            class="mt-6 text-blue-600 font-bold text-sm hover:underline cursor-pointer">Reset Semua Filter</button>
     </div>
 
-    <!-- Ticket List Container -->
-    <div *ngIf="!loading && tickets.length > 0"
-        class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
-        <div class="overflow-x-auto">
+    <!-- Main Data Table Container -->
+    <div *ngIf="!loading && filteredTickets.length > 0"
+        class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden transition-all">
+        <div class="overflow-x-auto overflow-y-hidden no-scrollbar">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-gray-50/50 border-b border-gray-100 text-gray-400 text-xs uppercase tracking-wider">
-                        <th class="p-6 font-bold pl-8">ID & Waktu</th>
-                        <th class="p-6 font-bold">Aset / Unit</th>
-                        <th class="p-6 font-bold">Masalah</th>
-                        <th class="p-6 font-bold">Pelapor</th>
-                        <th class="p-6 font-bold">Status</th>
-                        <th class="p-6 font-bold text-right pr-8">Detail</th>
+                    <tr
+                        class="bg-gray-50 border-b border-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-[0.15em]">
+                        <th class="p-6 pl-10 text-center">ID</th>
+                        <th class="p-6">Informasi Aset</th>
+                        <th class="p-6">Detail Laporan</th>
+                        <th class="p-6">Reporter</th>
+                        <th class="p-6">Status Progres</th>
+                        <th class="p-6 text-right pr-10">Tindakan</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50">
+                <tbody class="divide-y divide-gray-50 bg-white">
                     <tr *ngFor="let ticket of filteredTickets"
-                        class="group hover:bg-purple-50/30 transition-colors duration-200">
+                        class="group hover:bg-gray-50/80 transition-all duration-300">
 
-                        <!-- ID & Time -->
-                        <td class="p-6 pl-8">
-                            <div class="font-bold text-gray-800">#{{ ticket.id }}</div>
-                            <div class="text-xs text-gray-400 font-medium mt-1">{{ ticket.created_at | date:'dd MMM,
-                                HH:mm' }}</div>
+                        <!-- ID -->
+                        <td class="p-6 pl-10 text-center">
+                            <span
+                                class="inline-block px-2.5 py-1 rounded-md bg-gray-100 text-gray-900 text-xs font-black border border-gray-200 tabular-nums">
+                                #{{ ticket.id }}
+                            </span>
                         </td>
 
-                        <!-- Asset -->
+                        <!-- Asset Info -->
                         <td class="p-6">
-                            <div class="flex items-center gap-3">
-                                <span class="text-blue-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="w-6 h-6">
-                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                                        <line x1="8" y1="21" x2="16" y2="21"></line>
-                                        <line x1="12" y1="17" x2="12" y2="21"></line>
-                                    </svg>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-extrabold text-gray-900 truncate max-w-[180px]"
+                                    [title]="ticket.assets?.name">
+                                    {{ ticket.assets?.name || 'Aset Terhapus' }}
                                 </span>
-                                <div>
-                                    <div class="font-bold text-gray-800 text-sm">{{ ticket.assets?.name || 'Unknown' }}
-                                    </div>
-                                    <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wide">{{
-                                        ticket.assets?.location }}</div>
+                                <div class="flex items-center gap-1.5 mt-1">
+                                    <span
+                                        class="text-[9px] font-black uppercase px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded-sm border border-blue-100 tracking-tighter">
+                                        {{ ticket.assets?.sku || 'NO-SKU' }}
+                                    </span>
+                                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">/ {{
+                                        ticket.assets?.location }}</span>
                                 </div>
                             </div>
                         </td>
 
-                        <!-- Issue -->
+                        <!-- Issue Detail -->
                         <td class="p-6">
-                            <span
-                                class="inline-block px-2 py-1 rounded-md bg-gray-100 text-gray-500 text-[10px] font-bold uppercase tracking-wider mb-1">
-                                {{ ticket.issue_category }}
-                            </span>
-                            <p class="text-sm text-gray-600 line-clamp-1 max-w-[200px]" [title]="ticket.description">
-                                {{ ticket.description }}
-                            </p>
-                        </td>
-
-                        <!-- Reporter -->
-                        <td class="p-6">
-                            <div class="flex items-center gap-2">
-                                <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-orange-300 to-red-300"></div>
-                                <span class="text-sm font-bold text-gray-600">{{ ticket.reporter_name }}</span>
+                            <div class="space-y-1">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-black uppercase bg-red-100 text-red-700 border border-red-200">
+                                    {{ ticket.issue_category }}
+                                </span>
+                                <p class="text-xs text-gray-500 font-medium line-clamp-2 max-w-[220px]"
+                                    [title]="ticket.description">
+                                    {{ ticket.description || 'Tanpa keterangan tambahan.' }}
+                                </p>
                             </div>
                         </td>
 
-                        <!-- Status -->
-                        <!-- Status -->
+                        <!-- Reporter Info -->
                         <td class="p-6">
-                            <span
-                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide border"
-                                [ngClass]="getStatusClass(ticket.status)">
-                                <span class="w-2 h-2 rounded-full animate-pulse bg-current"></span>
-                                {{ ticket.status.replace('_', ' ') }}
-                            </span>
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 border border-gray-200 group-hover:bg-blue-600 group-hover:text-white transition-colors overflow-hidden">
+                                    <span class="text-[10px] font-black uppercase">{{ ticket.reporter_name?.substring(0,
+                                        2) }}</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-extrabold text-gray-700 leading-tight">{{
+                                        ticket.reporter_name }}</span>
+                                    <span class="text-[10px] text-gray-400 font-bold mt-0.5">NPK: {{ ticket.reporter_nik
+                                        }}</span>
+                                </div>
+                            </div>
                         </td>
 
-                        <!-- Action -->
-                        <td class="p-6 text-right pr-8">
-                            <!-- Helper Actions for Pending Validation -->
+                        <!-- Status Badge -->
+                        <td class="p-6">
+                            <div class="flex items-center">
+                                <span [class]="getStatusClass(ticket.status)"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-current"
+                                        [class.animate-pulse]="ticket.status !== 'closed' && ticket.status !== 'false_alarm'"></span>
+                                    {{ ticket.status.replace('_', ' ') }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <!-- Action Buttons -->
+                        <td class="p-6 text-right pr-10">
+                            <!-- Pending Validation Context -->
                             <div *ngIf="ticket.status === 'pending_validation'"
                                 class="flex items-center justify-end gap-2">
-                                <button (click)="validateTicket(ticket, true)" title="Validasi (Teruskan ke Teknisi)"
-                                    class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm hover:shadow-md transition-all">
-                                    Valid
+                                <button (click)="validateTicket(ticket, true)"
+                                    class="h-9 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black shadow-lg shadow-blue-100 transition-all transform active:scale-95 group/btn">
+                                    Validasi
                                 </button>
-                                <button (click)="validateTicket(ticket, false)" title="Tolak (False Alarm)"
-                                    class="p-2 rounded-xl border border-gray-200 text-red-500 hover:bg-red-50 hover:border-red-200 transition-all">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                <button (click)="validateTicket(ticket, false)"
+                                    class="h-9 w-9 flex items-center justify-center rounded-xl bg-white border border-gray-200 text-red-500 hover:bg-red-50 transition-all active:scale-95">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
                             </div>
 
-                            <!-- Standard Detail Button -->
+                            <!-- Detail Context (Chevron) -->
                             <a *ngIf="ticket.status !== 'pending_validation'"
                                 [routerLink]="['/admin/tickets', ticket.id]"
-                                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-400 hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200 transition-all shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M5 12h14"></path>
-                                    <path d="M12 5l7 7-7 7"></path>
+                                class="inline-flex items-center justify-center h-10 w-10 rounded-2xl bg-white border border-gray-100 text-gray-400 hover:bg-white hover:text-blue-600 hover:border-blue-200 hover:shadow-lg transition-all group/link">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="w-5 h-5 group-hover/link:translate-x-0.5 transition-transform" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                 </svg>
                             </a>
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Footer Info -->
+        <div
+            class="p-6 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between text-[11px] font-bold text-gray-400">
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                    Validasi Masuk</span>
+                <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                    Progres Perbaikan</span>
+                <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                    Selesai Teratasi</span>
+            </div>
+            <div class="italic">Last sync: {{ today | date:'HH:mm:ss' }}</div>
         </div>
     </div>
 </div>

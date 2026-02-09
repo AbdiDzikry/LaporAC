@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TicketService } from '../../../../services/ticket/ticket';
 import { ToastService } from '../../../../services/toast/toast'; // Import Toast
@@ -7,13 +8,14 @@ import { ToastService } from '../../../../services/toast/toast'; // Import Toast
 @Component({
   selector: 'app-ticket-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './ticket-list.html',
   styleUrl: './ticket-list.css'
 })
 export class TicketListComponent implements OnInit {
   tickets: any[] = [];
   loading = false;
+  today = new Date();
 
   constructor(
     private ticketService: TicketService,
@@ -33,25 +35,37 @@ export class TicketListComponent implements OnInit {
     this.loading = false;
   }
 
-  // Filter Logic
+  // Search and Filter Logic
   activeTab: 'all' | 'pending' | 'open' | 'resolved' = 'all';
+  searchQuery: string = '';
 
   get filteredTickets() {
-    if (this.activeTab === 'all') return this.tickets;
+    let filtered = this.tickets;
 
-    if (this.activeTab === 'pending') {
-      return this.tickets.filter(t => t.status === 'pending_validation');
+    // Status Filter
+    if (this.activeTab !== 'all') {
+      if (this.activeTab === 'pending') {
+        filtered = filtered.filter(t => t.status === 'pending_validation');
+      } else if (this.activeTab === 'open') {
+        filtered = filtered.filter(t => ['open', 'assigned', 'in_progress'].includes(t.status));
+      } else if (this.activeTab === 'resolved') {
+        filtered = filtered.filter(t => ['resolved', 'closed'].includes(t.status));
+      }
     }
 
-    if (this.activeTab === 'open') {
-      return this.tickets.filter(t => ['open', 'assigned', 'in_progress'].includes(t.status));
+    // Search Filter
+    if (this.searchQuery.trim()) {
+      const q = this.searchQuery.toLowerCase();
+      filtered = filtered.filter(t =>
+        t.id?.toString().includes(q) ||
+        t.assets?.name?.toLowerCase().includes(q) ||
+        t.assets?.sku?.toLowerCase().includes(q) ||
+        t.reporter_name?.toLowerCase().includes(q) ||
+        t.issue_category?.toLowerCase().includes(q)
+      );
     }
 
-    if (this.activeTab === 'resolved') {
-      return this.tickets.filter(t => ['resolved', 'closed'].includes(t.status));
-    }
-
-    return this.tickets;
+    return filtered;
   }
 
   setTab(tab: 'all' | 'pending' | 'open' | 'resolved') {
