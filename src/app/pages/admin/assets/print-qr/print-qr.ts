@@ -36,7 +36,7 @@ export class PrintQrComponent implements OnInit {
       this.asset = data as Asset;
       // Generate Deep Link URL
       // Points to the Public Reporting Form with pre-filled SKU
-      const productionUrl = 'https://lapor-ac.dharmap.com'; // Change this to your actual production domain
+      const productionUrl = 'https://lapor-ac.vercel.app'; // Change this to your actual production domain
       this.qrData = `${productionUrl}/report/new?sku=${this.asset.sku}`;
     }
     this.loading = false;

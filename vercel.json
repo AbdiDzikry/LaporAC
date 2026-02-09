@@ -2,6 +2,10 @@
     "version": 2,
     "rewrites": [
         {
+            "source": "/api/(.*)",
+            "destination": "https://msa-be.dharmagroup.co.id/api/$1"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }
