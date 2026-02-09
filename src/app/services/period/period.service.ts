@@ -196,6 +196,45 @@ export class PeriodService {
     }
 
     /**
+     * Sync period statuses based on current date
+     * - Activate current month if exists and draft
+     * - Complete past active periods
+     */
+    async syncPeriodStatuses() {
+        const now = new Date();
+        const currentMonth = now.getMonth() + 1;
+        const currentYear = now.getFullYear();
+
+        // 1. Get current month period
+        const { data: currentPeriod } = await this.supabase.client
+            .from('maintenance_periods')
+            .select('*')
+            .eq('month', currentMonth)
+            .eq('year', currentYear)
+            .single();
+
+        // Activate current period if draft
+        if (currentPeriod && currentPeriod.status === 'draft') {
+            await this.updatePeriod(currentPeriod.id, { status: 'active' });
+        }
+
+        // 2. Get past active periods
+        // Logic: Year < CurrentYear OR (Year == CurrentYear AND Month < CurrentMonth)
+        // AND status = 'active'
+        const { data: pastActivePeriods } = await this.supabase.client
+            .from('maintenance_periods')
+            .select('*')
+            .eq('status', 'active')
+            .or(`year.lt.${currentYear},and(year.eq.${currentYear},month.lt.${currentMonth})`);
+
+        if (pastActivePeriods && pastActivePeriods.length > 0) {
+            for (const period of pastActivePeriods) {
+                await this.updatePeriod(period.id, { status: 'completed' });
+            }
+        }
+    }
+
+    /**
      * Get statistics for a specific year
      */
     async getYearStats(year: number): Promise<PeriodStats> {

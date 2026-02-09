@@ -44,6 +44,7 @@ export class PeriodsListComponent implements OnInit {
 
     async ngOnInit() {
         await this.loadAvailableYears();
+        await this.periodService.syncPeriodStatuses(); // Auto-sync statuses
         await this.loadPeriods();
         await this.loadYearStats();
     }
