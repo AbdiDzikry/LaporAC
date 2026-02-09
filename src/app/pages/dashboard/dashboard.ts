@@ -71,8 +71,11 @@ export class DashboardComponent implements OnInit {
           .slice(0, 5); // Top 5 upcoming
       }
 
-      const { data: tickets } = await this.ticketService.getTickets();
+      const { data: tickets, error } = await this.ticketService.getTickets();
+      if (error) console.error('Error fetching tickets:', error);
+
       if (tickets) {
+        console.log('Dashboard Tickets:', tickets); // Debug log
         this.analytics.recentTickets = tickets.slice(0, 5);
 
         // Calculate Stats
@@ -81,11 +84,15 @@ export class DashboardComponent implements OnInit {
         let cost = 0;
 
         tickets.forEach((t: any) => {
-          if (t.status === 'open' || t.status === 'in_progress') openCount++;
+          // Check status carefully
+          if (t.status === 'open' || t.status === 'in_progress' || t.status === 'pending_validation' || t.status === 'assigned') {
+            openCount++;
+          }
           if (t.status === 'resolved' || t.status === 'closed') resolvedCount++;
           if (t.repair_cost) cost += Number(t.repair_cost);
         });
 
+        console.log('Calculated Open Tickets:', openCount); // Debug log
         this.analytics.openTickets = openCount;
         this.analytics.resolvedTickets = resolvedCount;
         this.analytics.maintenanceCost = cost;
