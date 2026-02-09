@@ -8,6 +8,7 @@ import { AdminLayout } from './components/admin-layout/admin-layout';
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'report', component: ReportFormComponent },
+    { path: 'report/new', component: ReportFormComponent },
 
     // Print route (no layout, no sidebar) - Lazy loaded
     {
