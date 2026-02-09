@@ -1,162 +1,41 @@
-09:09:18.490 Running build in Washington, D.C., USA (East) – iad1
-09:09:18.491 Build machine configuration: 2 cores, 8 GB
-09:09:18.602 Cloning github.com/AbdiDzikry/LaporAC (Branch: main, Commit: 8828f44)
-09:09:18.603 Previous build caches not available.
-09:09:18.821 Cloning completed: 218.000ms
-09:09:19.285 Running "vercel build"
-09:09:20.342 Vercel CLI 50.11.0
-09:09:20.885 Installing dependencies...
-09:09:32.252 
-09:09:32.253 added 611 packages in 11s
-09:09:32.253 
-09:09:32.253 126 packages are looking for funding
-09:09:32.254   run `npm fund` for details
-09:09:32.311 Running "npm run build"
-09:09:32.410 
-09:09:32.410 > lapor-ac@0.0.0 build
-09:09:32.410 > ng build
-09:09:32.410 
-09:09:33.064 ❯ Building...
-09:09:53.902 ✔ Building...
-09:09:53.904 Initial chunk files   | Names                   |  Raw size | Estimated transfer size
-09:09:53.905 chunk-M4JCWOTE.js     | -                       | 219.74 kB |                65.98 kB
-09:09:53.905 chunk-RZ4BEOP5.js     | -                       | 209.01 kB |                47.72 kB
-09:09:53.905 chunk-KVTVJGCT.js     | -                       | 167.68 kB |                49.16 kB
-09:09:53.905 chunk-S4V3N26P.js     | -                       | 104.89 kB |                26.45 kB
-09:09:53.905 styles-7WE4OX2D.css   | styles                  |  60.04 kB |                 8.56 kB
-09:09:53.905 main-RUFILZTO.js      | main                    |  49.73 kB |                11.58 kB
-09:09:53.906 chunk-7HRZHVN6.js     | -                       |  47.78 kB |                 9.71 kB
-09:09:53.906 polyfills-6ISPNSXF.js | polyfills               |  35.68 kB |                11.57 kB
-09:09:53.906 chunk-YAO3TF52.js     | -                       |   2.00 kB |               656 bytes
-09:09:53.906 chunk-76SPUGCP.js     | -                       |   1.92 kB |               703 bytes
-09:09:53.906 chunk-RA2WU32H.js     | -                       |   1.33 kB |               585 bytes
-09:09:53.906 chunk-C72LYKH4.js     | -                       | 847 bytes |               847 bytes
-09:09:53.906 chunk-ZWPBOIPN.js     | -                       | 535 bytes |               535 bytes
-09:09:53.906 
-09:09:53.906                       | Initial total           | 901.17 kB |               234.06 kB
-09:09:53.907 
-09:09:53.907 Lazy chunk files      | Names                   |  Raw size | Estimated transfer size
-09:09:53.907 chunk-KEYHRAAA.js     | period-detail-component | 504.63 kB |               134.65 kB
-09:09:53.907 chunk-ZCI6GU73.js     | asset-form              | 306.45 kB |                55.30 kB
-09:09:53.907 chunk-36J5DKF7.js     | html2canvas             | 202.86 kB |                38.57 kB
-09:09:53.907 chunk-R2CCZAXW.js     | index-es                | 158.78 kB |                46.83 kB
-09:09:53.907 chunk-ZCNTOVWU.js     | browser                 |  67.78 kB |                17.79 kB
-09:09:53.907 chunk-KX7OM4EZ.js     | print-qr                |  36.74 kB |                12.21 kB
-09:09:53.908 chunk-DDTPHZ3I.js     | asset-list              |  32.78 kB |                 7.35 kB
-09:09:53.908 chunk-J4QN2MBM.js     | purify-es               |  22.39 kB |                 7.74 kB
-09:09:53.908 chunk-3NZMRKZT.js     | periods-list-component  |  16.94 kB |                 4.48 kB
-09:09:53.908 chunk-CSSYUDLI.js     | ticket-detail           |  13.39 kB |                 3.81 kB
-09:09:53.908 chunk-AWE66KXT.js     | analytics               |  12.39 kB |                 3.80 kB
-09:09:53.908 chunk-TS7B3UJM.js     | user-list               |  10.43 kB |                 3.20 kB
-09:09:53.908 chunk-2JECD3T3.js     | ticket-list             |  10.40 kB |                 3.15 kB
-09:09:53.908 chunk-7M735QLF.js     | logs                    |   3.90 kB |                 1.56 kB
-09:09:53.908 chunk-OQPJWDXA.js     | -                       |   3.76 kB |                 1.13 kB
-09:09:53.908 ...and 3 more lazy chunks files. Use "--verbose" to show all the files.
-09:09:53.908 
-09:09:53.909 Application bundle generation complete. [20.838 seconds] - 2026-02-09T02:09:53.901Z
-09:09:53.909 
-09:09:53.913 ▲ [WARNING] Module 'core-js/modules/es.promise.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.913 
-09:09:53.913   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.913   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.913 
-09:09:53.913 
-09:09:53.914 ▲ [WARNING] Module 'core-js/modules/es.string.match.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.914 
-09:09:53.914   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.914   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.915 
-09:09:53.915 
-09:09:53.915 ▲ [WARNING] Module 'core-js/modules/es.string.replace.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.915 
-09:09:53.915   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.916   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.916 
-09:09:53.917 
-09:09:53.917 ▲ [WARNING] Module 'core-js/modules/es.string.starts-with.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.919 
-09:09:53.920   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.920   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.920 
-09:09:53.920 
-09:09:53.920 ▲ [WARNING] Module 'core-js/modules/es.array.iterator.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.921 
-09:09:53.921   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.921   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.921 
-09:09:53.921 
-09:09:53.922 ▲ [WARNING] Module 'core-js/modules/web.dom-collections.iterator.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.922 
-09:09:53.922   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.922   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.922 
-09:09:53.923 
-09:09:53.923 ▲ [WARNING] Module 'core-js/modules/es.array.reduce.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.923 
-09:09:53.923   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.923   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.924 
-09:09:53.924 
-09:09:53.924 ▲ [WARNING] Module 'core-js/modules/es.string.ends-with.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.924 
-09:09:53.924   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.924   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.925 
-09:09:53.925 
-09:09:53.925 ▲ [WARNING] Module 'core-js/modules/es.string.split.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.925 
-09:09:53.925   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.926   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.926 
-09:09:53.926 
-09:09:53.926 ▲ [WARNING] Module 'raf' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.927 
-09:09:53.927   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.927   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.927 
-09:09:53.927 
-09:09:53.928 ▲ [WARNING] Module 'core-js/modules/es.string.trim.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.928 
-09:09:53.928   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.928   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.928 
-09:09:53.929 
-09:09:53.929 ▲ [WARNING] Module 'rgbcolor' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.929 
-09:09:53.929   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.929   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.938 
-09:09:53.939 
-09:09:53.939 ▲ [WARNING] Module 'core-js/modules/es.array.index-of.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.940 
-09:09:53.940   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.941   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.941 
-09:09:53.942 
-09:09:53.942 ▲ [WARNING] Module 'core-js/modules/es.string.includes.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.942 
-09:09:53.943   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.943   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.950 
-09:09:53.950 
-09:09:53.950 ▲ [WARNING] Module 'core-js/modules/es.array.reverse.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.950 
-09:09:53.950   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.950   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.951 
-09:09:53.951 
-09:09:53.951 ▲ [WARNING] Module 'core-js/modules/es.regexp.to-string.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
-09:09:53.951 
-09:09:53.951   CommonJS or AMD dependencies can cause optimization bailouts.
-09:09:53.952   For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
-09:09:53.952 
-09:09:53.952 
-09:09:53.961 Output location: /vercel/path0/dist/lapor-ac
-09:09:53.966 
-09:09:54.187 Build Completed in /vercel/output [33s]
-09:09:54.293 Deploying outputs...
-09:09:59.036 Deployment completed
-09:10:00.052 Creating build cache...
-09:10:15.501 Created build cache: 15.442s
-09:10:15.502 Uploading build cache [79.11 MB]
-09:10:18.163 Build cache uploaded: 2.669s
+Terjadi Kesalahan: Failed to fetch dynamically imported module: https://lapor-ac.vercel.app/chunk-UHVDTXUI.js...
+
+installHook.js:1 Qt: Acquiring an exclusive Navigator LockManager lock "lock:lapor-ac-auth-v5" immediately failed
+    at chunk-RZ4BEOP5.js:27:17767
+    at Generator.next (<anonymous>)
+    at chunk-RA2WU32H.js:1:1260
+    at new M (polyfills-6ISPNSXF.js:2:2232)
+    at D (chunk-RA2WU32H.js:1:1080)
+    at chunk-RZ4BEOP5.js:27:17440
+overrideMethod @ installHook.js:1
+installHook.js:1 Qt: Acquiring an exclusive Navigator LockManager lock "lock:lapor-ac-auth-v5" immediately failed
+    at chunk-RZ4BEOP5.js:27:17767
+    at Generator.next (<anonymous>)
+    at chunk-RA2WU32H.js:1:1260
+    at new M (polyfills-6ISPNSXF.js:2:2232)
+    at D (chunk-RA2WU32H.js:1:1080)
+    at chunk-RZ4BEOP5.js:27:17440
+overrideMethod @ installHook.js:1
+installHook.js:1 Qt: Acquiring an exclusive Navigator LockManager lock "lock:lapor-ac-auth-v5" immediately failed
+    at chunk-RZ4BEOP5.js:27:17767
+    at Generator.next (<anonymous>)
+    at chunk-RA2WU32H.js:1:1260
+    at new M (polyfills-6ISPNSXF.js:2:2232)
+    at D (chunk-RA2WU32H.js:1:1080)
+    at chunk-RZ4BEOP5.js:27:17440
+overrideMethod @ installHook.js:1
+chunk-UHVDTXUI.js:1 Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "text/html". Strict MIME type checking is enforced for module scripts per HTML spec.
+installHook.js:1 Global Error: TypeError: Failed to fetch dynamically imported module: https://lapor-ac.vercel.app/chunk-UHVDTXUI.js
+overrideMethod @ installHook.js:1
+installHook.js:1 Global Error: TypeError: Failed to fetch dynamically imported module: https://lapor-ac.vercel.app/chunk-UHVDTXUI.js
+overrideMethod @ installHook.js:1
+installHook.js:1 Global Error: TypeError: Failed to fetch dynamically imported module: https://lapor-ac.vercel.app/chunk-UHVDTXUI.js
+overrideMethod @ installHook.js:1
+installHook.js:1 Qt: Acquiring an exclusive Navigator LockManager lock "lock:lapor-ac-auth-v5" immediately failed
+    at chunk-RZ4BEOP5.js:27:17767
+    at Generator.next (<anonymous>)
+    at chunk-RA2WU32H.js:1:1260
+    at new M (polyfills-6ISPNSXF.js:2:2232)
+    at D (chunk-RA2WU32H.js:1:1080)
+    at chunk-RZ4BEOP5.js:27:17440
+overrideMethod @ installHook.js:1
