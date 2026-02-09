@@ -58,7 +58,11 @@
               },
               "allowedCommonJsDependencies": [
                 "html2canvas",
-                "qrcode"
+                "qrcode",
+                "canvg",
+                "dompurify",
+                "raf",
+                "rgbcolor"
               ]
             },
             "development": {
