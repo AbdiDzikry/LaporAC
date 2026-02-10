@@ -194,6 +194,7 @@ export class AuthService {
 
       // Sanitize ID just in case
       const userId = user.id.trim();
+      console.log('AuthService: Fetching profile for sanitized ID:', userId);
 
       const { data, error } = await this.supabase.client
         .from('profiles')
@@ -202,7 +203,7 @@ export class AuthService {
         .single();
 
       if (error) {
-        console.error('Error fetching profile:', error);
+        console.error('Error fetching profile (Details):', JSON.stringify(error, null, 2));
 
         // If profile doesn't exist, create a default one
         if (error.code === 'PGRST116') { // Row not found
