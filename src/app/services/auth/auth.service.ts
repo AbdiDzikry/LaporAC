@@ -212,7 +212,7 @@ export class AuthService {
           const defaultProfile: UserProfile = {
             id: userId,
             email: user.email || '',
-            full_name: (user.user_metadata as any)?.full_name || user.email?.split('@')[0] || 'Unknown User',
+            full_name: (user.user_metadata as any)?.['full_name'] || (user.user_metadata as any)?.['name'] || `${(user.user_metadata as any)?.['first_name'] || ''} ${(user.user_metadata as any)?.['last_name'] || ''}`.trim() || user.email?.split('@')[0] || 'Unknown User',
             role: 'staff', // Default role
             created_at: new Date().toISOString()
           };
