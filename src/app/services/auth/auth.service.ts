@@ -186,8 +186,11 @@ export class AuthService {
 
   private async fetchUserProfile(): Promise<UserProfile | null> {
     try {
-      const { data: { user } } = await this.supabase.client.auth.getUser();
-      if (!user) return null;
+      const { data: { user }, error: userError } = await this.supabase.client.auth.getUser();
+      if (userError || !user) {
+        console.error('Error getting user from auth:', userError);
+        return null;
+      }
 
       const { data, error } = await this.supabase.client
         .from('profiles')
@@ -197,12 +200,40 @@ export class AuthService {
 
       if (error) {
         console.error('Error fetching profile:', error);
+        // If profile doesn't exist, create a default one
+        if (error.code === 'PGRST116') { // Row not found
+          console.log('Profile not found, creating default profile...');
+          const defaultProfile: UserProfile = {
+            id: user.id,
+            email: user.email || '',
+            full_name: (user.user_metadata as any)?.full_name || user.email?.split('@')[0] || 'Unknown User',
+            role: 'staff', // Default role
+            created_at: new Date().toISOString()
+          };
+          
+          // Attempt to create the profile
+          const { error: insertError } = await this.supabase.client
+            .from('profiles')
+            .insert([{
+              id: user.id,
+              email: user.email,
+              full_name: defaultProfile.full_name,
+              role: 'staff'
+            }]);
+            
+          if (insertError) {
+            console.error('Error creating default profile:', insertError);
+            return null;
+          }
+          
+          return defaultProfile;
+        }
         return null;
       }
 
       return data as UserProfile;
-    } catch (error) {
-      console.error('Error in fetchUserProfile:', error);
+    } catch (error: any) {
+      console.error('Error in fetchUserProfile:', error?.message || error);
       return null;
     }
   }
