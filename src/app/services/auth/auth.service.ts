@@ -198,7 +198,7 @@ export class AuthService {
 
       const { data, error } = await this.supabase.client
         .from('profiles')
-        .select('id, email, full_name, role, avatar_url, created_at')
+        .select('id, email, full_name, role, created_at')
         .eq('id', userId)
         .single();
 
