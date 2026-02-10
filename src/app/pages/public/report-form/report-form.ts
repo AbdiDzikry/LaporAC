@@ -21,6 +21,7 @@ export class ReportFormComponent implements OnInit {
   sku: string | null = null;
   employeeName: string | null = null;
   checkingNik = false;
+  loading = false;
 
   constructor(
     private fb: FormBuilder,

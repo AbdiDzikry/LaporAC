@@ -49,6 +49,7 @@
     "@angular/build": "^21.1.2",
     "@angular/cli": "^21.1.2",
     "@angular/compiler-cli": "^21.1.0",
+    "@types/file-saver": "^2.0.7",
     "autoprefixer": "^10.4.17",
     "jsdom": "^27.1.0",
     "postcss": "^8.4.33",

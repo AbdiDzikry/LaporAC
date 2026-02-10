@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToastService } from './toast/toast';
+import { ToastService } from '../toast/toast';
 
 export interface ApiError {
   status: number;

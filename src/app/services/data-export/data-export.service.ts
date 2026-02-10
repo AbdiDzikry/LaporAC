@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AssetService } from './asset/asset';
-import { TicketService } from './ticket/ticket';
+import { AssetService } from '../asset/asset';
+import { TicketService } from '../ticket/ticket';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { saveAs } from 'file-saver';
@@ -39,7 +39,7 @@ export class DataExportService {
       const headers = ['ID', 'SKU', 'Nama', 'Merek', 'Lokasi', 'PK', 'Status', 'Tanggal Pembelian', 'Tanggal Pemeliharaan Terakhir', 'Tanggal Pemeliharaan Berikutnya', 'Harga Beli', 'Umur Manfaat (Tahun)', 'Nilai Sisa', 'Aktif'];
       const csvContent = [
         headers.join(','),
-        ...assets.map(asset => [
+        ...assets.map((asset: any) => [
           asset.id,
           `"${asset.sku}"`,
           `"${asset.name}"`,
@@ -82,7 +82,7 @@ export class DataExportService {
       const headers = ['ID', 'Tanggal Dibuat', 'ID Aset', 'NIK Pelapor', 'Nama Pelapor', 'Kategori Masalah', 'Deskripsi', 'Status', 'Foto URL', 'ID Teknisi', 'Tanggal Mulai', 'Tanggal Selesai', 'Diverifikasi Oleh', 'Tanggal Verifikasi', 'Catatan Verifikasi'];
       const csvContent = [
         headers.join(','),
-        ...tickets.map(ticket => [
+        ...tickets.map((ticket: any) => [
           ticket.id,
           ticket.created_at || '',
           ticket.asset_id,
@@ -134,7 +134,7 @@ export class DataExportService {
 
       // Table
       const tableColumn = ['SKU', 'Nama', 'Lokasi', 'Merek', 'PK', 'Status'];
-      const tableRows = assets.map(asset => [
+      const tableRows = assets.map((asset: any) => [
         asset.sku,
         asset.name,
         asset.location,
@@ -187,7 +187,7 @@ export class DataExportService {
 
       // Table
       const tableColumn = ['ID', 'Aset', 'Pelapor', 'Kategori', 'Status', 'Tanggal Dibuat'];
-      const tableRows = tickets.map(ticket => [
+      const tableRows = tickets.map((ticket: any) => [
         ticket.id,
         ticket.assets?.name || ticket.asset_id,
         `${ticket.reporter_name} (${ticket.reporter_nik})`,

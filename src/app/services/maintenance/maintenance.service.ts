@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { SupabaseService } from './supabase/supabase';
-import { AssetService } from './asset/asset';
-import { TicketService } from './ticket/ticket';
-import { AuditService } from './audit/audit';
-import { ErrorHandlerService } from './error-handler/error-handler.service';
-import { NotificationService } from './notification/notification.service';
+import { SupabaseService } from '../supabase/supabase';
+import { AssetService } from '../asset/asset';
+import { TicketService } from '../ticket/ticket';
+import { AuditService } from '../audit/audit';
+import { ErrorHandlerService } from '../error-handler/error-handler.service';
+import { NotificationService } from '../notification/notification.service';
 
 export interface MaintenanceSchedule {
   id?: number;
@@ -274,8 +274,8 @@ export class MaintenanceService {
         .eq('id', id)
         .single();
 
-      if (scheduleResult.data?.assets?.name) {
-        this.notificationService.showSuccess(`Pemeliharaan selesai untuk ${scheduleResult.data.assets.name}`, 'PM Selesai');
+      if (scheduleResult.data && (scheduleResult.data as any).assets?.name) {
+        this.notificationService.showSuccess(`Pemeliharaan selesai untuk ${(scheduleResult.data as any).assets.name}`, 'PM Selesai');
       }
 
       return result;
@@ -314,8 +314,8 @@ export class MaintenanceService {
         .eq('id', id)
         .single();
 
-      if (scheduleResult.data?.assets?.name) {
-        this.notificationService.showInfo(`Pemeliharaan dilewati untuk ${scheduleResult.data.assets.name}: ${reason}`, 'PM Dilewati');
+      if (scheduleResult.data && (scheduleResult.data as any).assets?.name) {
+        this.notificationService.showInfo(`Pemeliharaan dilewati untuk ${(scheduleResult.data as any).assets.name}: ${reason}`, 'PM Dilewati');
       }
 
       return result;
@@ -325,7 +325,7 @@ export class MaintenanceService {
     }
   }
 
-  async updateNextMaintenanceDate(assetId: number) {
+  async updateNextMaintenanceDate(assetId: number): Promise<any> {
     try {
       // Get asset interval
       const { data: asset } = await this.supabase.client
@@ -334,7 +334,7 @@ export class MaintenanceService {
         .eq('id', assetId)
         .single();
 
-      if (!asset || !asset.maintenance_interval_days) return;
+      if (!asset || !asset.maintenance_interval_days) return null;
 
       const nextDate = new Date();
       nextDate.setDate(nextDate.getDate() + asset.maintenance_interval_days);
@@ -352,6 +352,7 @@ export class MaintenanceService {
     } catch (error) {
       console.error('Error updating next maintenance date:', error);
       // Don't throw error here as it's not critical to the main operation
+      return null;
     }
   }
 
@@ -367,7 +368,7 @@ export class MaintenanceService {
         throw new Error('Tidak dapat mengambil data aset');
       }
 
-      const activeAssets = assets.filter(asset => asset.is_active !== false);
+      const activeAssets = assets.filter((asset: any) => asset.is_active !== false);
       const schedulesToCreate = [];
 
       // Generate schedules for each asset for the next few months

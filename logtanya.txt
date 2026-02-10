@@ -1,20 +1,304 @@
-PS C:\5. Magang Dharma\4. LaporAC> git add .
-warning: in the working copy of 'package-lock.json', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/guards/role/role-guard.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/pages/auth/login/login.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/pages/dashboard/dashboard.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/pages/public/report-form/report-form.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/services/asset/asset.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/services/employee/employee.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/services/ticket/ticket.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'QWEN.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'README_IMPROVEMENTS.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/services/auth/auth.service.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/services/data-export/data-export.service.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/services/error-handler/error-handler.service.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/services/loading/loading.service.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/services/maintenance/maintenance.service.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/services/notification/notification.service.ts', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'src/app/services/session/session.service.ts', LF will be replaced by CRLF the next time Git touches it
-PS C:\5. Magang Dharma\4. LaporAC> git 
+09:04:27.493 Running build in Washington, D.C., USA (East) – iad1
+09:04:27.494 Build machine configuration: 2 cores, 8 GB
+09:04:27.619 Cloning github.com/AbdiDzikry/LaporAC (Branch: main, Commit: 4a9a8e0)
+09:04:27.884 Cloning completed: 265.000ms
+09:04:28.579 Restored build cache from previous deployment (d2r4mrYnFsb6Lg7aYpJC71Xgr5V4)
+09:04:28.848 Running "vercel build"
+09:04:29.939 Vercel CLI 50.13.2
+09:04:30.475 Installing dependencies...
+09:04:31.950 
+09:04:31.951 added 1 package in 1s
+09:04:31.951 
+09:04:31.952 126 packages are looking for funding
+09:04:31.952   run `npm fund` for details
+09:04:31.986 Running "npm run build"
+09:04:32.088 
+09:04:32.088 > lapor-ac@0.0.0 build
+09:04:32.088 > ng build
+09:04:32.089 
+09:04:32.800 ❯ Building...
+09:04:50.149 ✔ Building...
+09:04:50.152 Application bundle generation failed. [17.348 seconds] - 2026-02-10T02:04:50.148Z
+09:04:50.153 
+09:04:50.171 ✘ [ERROR] TS2339: Property 'loading' does not exist on type 'ReportFormComponent'. [plugin angular-compiler]
+09:04:50.171 
+09:04:50.172     src/app/pages/public/report-form/report-form.html:104:54:
+09:04:50.172       104 │ ... <button type="submit" [disabled]="loading || reportForm.invalid"
+09:04:50.172           ╵                                       ~~~~~~~
+09:04:50.172 
+09:04:50.173   Error occurs in the template of component ReportFormComponent.
+09:04:50.173 
+09:04:50.173     src/app/pages/public/report-form/report-form.ts:15:15:
+09:04:50.174       15 │   templateUrl: './report-form.html',
+09:04:50.174          ╵                ~~~~~~~~~~~~~~~~~~~~
+09:04:50.174 
+09:04:50.174 
+09:04:50.174 ✘ [ERROR] TS2339: Property 'loading' does not exist on type 'ReportFormComponent'. [plugin angular-compiler]
+09:04:50.174 
+09:04:50.175     src/app/pages/public/report-form/report-form.html:106:37:
+09:04:50.175       106 │                         <span *ngIf="loading"
+09:04:50.175           ╵                                      ~~~~~~~
+09:04:50.175 
+09:04:50.175   Error occurs in the template of component ReportFormComponent.
+09:04:50.175 
+09:04:50.176     src/app/pages/public/report-form/report-form.ts:15:15:
+09:04:50.176       15 │   templateUrl: './report-form.html',
+09:04:50.176          ╵                ~~~~~~~~~~~~~~~~~~~~
+09:04:50.176 
+09:04:50.177 
+09:04:50.177 ✘ [ERROR] TS2339: Property 'loading' does not exist on type 'ReportFormComponent'. [plugin angular-compiler]
+09:04:50.177 
+09:04:50.177     src/app/pages/public/report-form/report-form.html:108:38:
+09:04:50.177       108 │                         <span *ngIf="!loading">Kirim Laporan</span>
+09:04:50.177           ╵                                       ~~~~~~~
+09:04:50.178 
+09:04:50.178   Error occurs in the template of component ReportFormComponent.
+09:04:50.178 
+09:04:50.178     src/app/pages/public/report-form/report-form.ts:15:15:
+09:04:50.178       15 │   templateUrl: './report-form.html',
+09:04:50.179          ╵                ~~~~~~~~~~~~~~~~~~~~
+09:04:50.179 
+09:04:50.179 
+09:04:50.179 ✘ [ERROR] TS2339: Property 'loading' does not exist on type 'ReportFormComponent'. [plugin angular-compiler]
+09:04:50.180 
+09:04:50.180     src/app/pages/public/report-form/report-form.html:109:37:
+09:04:50.180       109 │ ...               <svg *ngIf="!loading" class="w-5 h-5" fill="non...
+09:04:50.180           ╵                                ~~~~~~~
+09:04:50.181 
+09:04:50.181   Error occurs in the template of component ReportFormComponent.
+09:04:50.181 
+09:04:50.181     src/app/pages/public/report-form/report-form.ts:15:15:
+09:04:50.182       15 │   templateUrl: './report-form.html',
+09:04:50.182          ╵                ~~~~~~~~~~~~~~~~~~~~
+09:04:50.182 
+09:04:50.182 
+09:04:50.182 ✘ [ERROR] TS2339: Property 'loading' does not exist on type 'ReportFormComponent'. [plugin angular-compiler]
+09:04:50.183 
+09:04:50.184     src/app/pages/public/report-form/report-form.html:119:35:
+09:04:50.184       119 │ ...     <div *ngIf="!asset && !loading && sku" class="text-center...
+09:04:50.184           ╵                                ~~~~~~~
+09:04:50.184 
+09:04:50.185   Error occurs in the template of component ReportFormComponent.
+09:04:50.185 
+09:04:50.185     src/app/pages/public/report-form/report-form.ts:15:15:
+09:04:50.185       15 │   templateUrl: './report-form.html',
+09:04:50.186          ╵                ~~~~~~~~~~~~~~~~~~~~
+09:04:50.186 
+09:04:50.187 
+09:04:50.188 ✘ [ERROR] TS2339: Property 'loading' does not exist on type 'ReportFormComponent'. [plugin angular-compiler]
+09:04:50.188 
+09:04:50.188     src/app/pages/public/report-form/report-form.html:137:33:
+09:04:50.189       137 │             <div *ngIf="!sku && !loading" class="text-center py-12">
+09:04:50.189           ╵                                  ~~~~~~~
+09:04:50.189 
+09:04:50.190   Error occurs in the template of component ReportFormComponent.
+09:04:50.190 
+09:04:50.191     src/app/pages/public/report-form/report-form.ts:15:15:
+09:04:50.197       15 │   templateUrl: './report-form.html',
+09:04:50.197          ╵                ~~~~~~~~~~~~~~~~~~~~
+09:04:50.198 
+09:04:50.198 
+09:04:50.198 ✘ [ERROR] TS2339: Property 'loading' does not exist on type 'ReportFormComponent'. [plugin angular-compiler]
+09:04:50.198 
+09:04:50.199     src/app/pages/public/report-form/report-form.html:179:24:
+09:04:50.199       179 │             <div *ngIf="loading && !asset" class="py-20 flex flex...
+09:04:50.199           ╵                         ~~~~~~~
+09:04:50.200 
+09:04:50.200   Error occurs in the template of component ReportFormComponent.
+09:04:50.200 
+09:04:50.201     src/app/pages/public/report-form/report-form.ts:15:15:
+09:04:50.201       15 │   templateUrl: './report-form.html',
+09:04:50.201          ╵                ~~~~~~~~~~~~~~~~~~~~
+09:04:50.201 
+09:04:50.202 
+09:04:50.202 ✘ [ERROR] TS2307: Cannot find module './asset/asset' or its corresponding type declarations. [plugin angular-compiler]
+09:04:50.202 
+09:04:50.209     src/app/services/data-export/data-export.service.ts:2:29:
+09:04:50.209       2 │ import { AssetService } from './asset/asset';
+09:04:50.210         ╵                              ~~~~~~~~~~~~~~~
+09:04:50.210 
+09:04:50.210 
+09:04:50.210 ✘ [ERROR] TS2307: Cannot find module './ticket/ticket' or its corresponding type declarations. [plugin angular-compiler]
+09:04:50.211 
+09:04:50.211     src/app/services/data-export/data-export.service.ts:3:30:
+09:04:50.211       3 │ import { TicketService } from './ticket/ticket';
+09:04:50.211         ╵                               ~~~~~~~~~~~~~~~~~
+09:04:50.212 
+09:04:50.212 
+09:04:50.212 ✘ [ERROR] TS7016: Could not find a declaration file for module 'file-saver'. '/vercel/path0/node_modules/file-saver/dist/FileSaver.min.js' implicitly has an 'any' type.
+09:04:50.212   Try `npm i --save-dev @types/file-saver` if it exists or add a new declaration (.d.ts) file containing `declare module 'file-saver';` [plugin angular-compiler]
+09:04:50.213 
+09:04:50.213     src/app/services/data-export/data-export.service.ts:6:23:
+09:04:50.213       6 │ import { saveAs } from 'file-saver';
+09:04:50.213         ╵                        ~~~~~~~~~~~~
+09:04:50.214 
+09:04:50.214 
+09:04:50.214 ✘ [ERROR] NG2003: No suitable injection token for parameter 'assetService' of class 'DataExportService'.
+09:04:50.214   Consider using the @Inject decorator to specify an injection token. [plugin angular-compiler]
+09:04:50.215 
+09:04:50.215     src/app/services/data-export/data-export.service.ts:22:12:
+09:04:50.215       22 │     private assetService: AssetService,
+09:04:50.215          ╵             ~~~~~~~~~~~~
+09:04:50.216 
+09:04:50.216   This type does not have a value, so it cannot be used as injection token.
+09:04:50.216 
+09:04:50.217     src/app/services/data-export/data-export.service.ts:22:26:
+09:04:50.217       22 │     private assetService: AssetService,
+09:04:50.217          ╵                           ~~~~~~~~~~~~
+09:04:50.217 
+09:04:50.218 
+09:04:50.218 ✘ [ERROR] TS7006: Parameter 'asset' implicitly has an 'any' type. [plugin angular-compiler]
+09:04:50.218 
+09:04:50.218     src/app/services/data-export/data-export.service.ts:42:22:
+09:04:50.219       42 │         ...assets.map(asset => [
+09:04:50.219          ╵                       ~~~~~
+09:04:50.219 
+09:04:50.219 
+09:04:50.220 ✘ [ERROR] TS7006: Parameter 'ticket' implicitly has an 'any' type. [plugin angular-compiler]
+09:04:50.220 
+09:04:50.220     src/app/services/data-export/data-export.service.ts:85:23:
+09:04:50.221       85 │         ...tickets.map(ticket => [
+09:04:50.221          ╵                        ~~~~~~
+09:04:50.221 
+09:04:50.221 
+09:04:50.222 ✘ [ERROR] TS7006: Parameter 'asset' implicitly has an 'any' type. [plugin angular-compiler]
+09:04:50.222 
+09:04:50.222     src/app/services/data-export/data-export.service.ts:137:35:
+09:04:50.222       137 │       const tableRows = assets.map(asset => [
+09:04:50.223           ╵                                    ~~~~~
+09:04:50.223 
+09:04:50.223 
+09:04:50.224 ✘ [ERROR] TS7006: Parameter 'ticket' implicitly has an 'any' type. [plugin angular-compiler]
+09:04:50.224 
+09:04:50.224     src/app/services/data-export/data-export.service.ts:190:36:
+09:04:50.224       190 │       const tableRows = tickets.map(ticket => [
+09:04:50.225           ╵                                     ~~~~~~
+09:04:50.225 
+09:04:50.225 
+09:04:50.226 ✘ [ERROR] TS2307: Cannot find module './toast/toast' or its corresponding type declarations. [plugin angular-compiler]
+09:04:50.226 
+09:04:50.226     src/app/services/error-handler/error-handler.service.ts:2:29:
+09:04:50.226       2 │ import { ToastService } from './toast/toast';
+09:04:50.227         ╵                              ~~~~~~~~~~~~~~~
+09:04:50.227 
+09:04:50.227 
+09:04:50.227 ✘ [ERROR] NG2003: No suitable injection token for parameter 'toastService' of class 'ErrorHandlerService'.
+09:04:50.228   Consider using the @Inject decorator to specify an injection token. [plugin angular-compiler]
+09:04:50.228 
+09:04:50.228     src/app/services/error-handler/error-handler.service.ts:14:22:
+09:04:50.228       14 │   constructor(private toastService: ToastService) {}
+09:04:50.229          ╵                       ~~~~~~~~~~~~
+09:04:50.229 
+09:04:50.229   This type does not have a value, so it cannot be used as injection token.
+09:04:50.230 
+09:04:50.230     src/app/services/error-handler/error-handler.service.ts:14:36:
+09:04:50.230       14 │   constructor(private toastService: ToastService) {}
+09:04:50.231          ╵                                     ~~~~~~~~~~~~
+09:04:50.231 
+09:04:50.231 
+09:04:50.231 ✘ [ERROR] TS2307: Cannot find module './supabase/supabase' or its corresponding type declarations. [plugin angular-compiler]
+09:04:50.232 
+09:04:50.232     src/app/services/maintenance/maintenance.service.ts:2:32:
+09:04:50.232       2 │ import { SupabaseService } from './supabase/supabase';
+09:04:50.233         ╵                                 ~~~~~~~~~~~~~~~~~~~~~
+09:04:50.233 
+09:04:50.233 
+09:04:50.233 ✘ [ERROR] TS2307: Cannot find module './asset/asset' or its corresponding type declarations. [plugin angular-compiler]
+09:04:50.234 
+09:04:50.234     src/app/services/maintenance/maintenance.service.ts:3:29:
+09:04:50.234       3 │ import { AssetService } from './asset/asset';
+09:04:50.234         ╵                              ~~~~~~~~~~~~~~~
+09:04:50.235 
+09:04:50.235 
+09:04:50.235 ✘ [ERROR] TS2307: Cannot find module './ticket/ticket' or its corresponding type declarations. [plugin angular-compiler]
+09:04:50.235 
+09:04:50.236     src/app/services/maintenance/maintenance.service.ts:4:30:
+09:04:50.236       4 │ import { TicketService } from './ticket/ticket';
+09:04:50.245         ╵                               ~~~~~~~~~~~~~~~~~
+09:04:50.245 
+09:04:50.247 
+09:04:50.247 ✘ [ERROR] TS2307: Cannot find module './audit/audit' or its corresponding type declarations. [plugin angular-compiler]
+09:04:50.247 
+09:04:50.247     src/app/services/maintenance/maintenance.service.ts:5:29:
+09:04:50.248       5 │ import { AuditService } from './audit/audit';
+09:04:50.248         ╵                              ~~~~~~~~~~~~~~~
+09:04:50.248 
+09:04:50.250 
+09:04:50.250 ✘ [ERROR] TS2307: Cannot find module './error-handler/error-handler.service' or its corresponding type declarations. [plugin angular-compiler]
+09:04:50.251 
+09:04:50.251     src/app/services/maintenance/maintenance.service.ts:6:36:
+09:04:50.251       6 │ ...ErrorHandlerService } from './error-handler/error-handler.service';
+09:04:50.251         ╵                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+09:04:50.252 
+09:04:50.252 
+09:04:50.252 ✘ [ERROR] TS2307: Cannot find module './notification/notification.service' or its corresponding type declarations. [plugin angular-compiler]
+09:04:50.253 
+09:04:50.253     src/app/services/maintenance/maintenance.service.ts:7:36:
+09:04:50.253       7 │ ...{ NotificationService } from './notification/notification.service';
+09:04:50.253         ╵                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+09:04:50.254 
+09:04:50.254 
+09:04:50.254 ✘ [ERROR] NG2003: No suitable injection token for parameter 'supabase' of class 'MaintenanceService'.
+09:04:50.254   Consider using the @Inject decorator to specify an injection token. [plugin angular-compiler]
+09:04:50.255 
+09:04:50.255     src/app/services/maintenance/maintenance.service.ts:37:12:
+09:04:50.255       37 │     private supabase: SupabaseService,
+09:04:50.255          ╵             ~~~~~~~~
+09:04:50.256 
+09:04:50.256   This type does not have a value, so it cannot be used as injection token.
+09:04:50.256 
+09:04:50.256     src/app/services/maintenance/maintenance.service.ts:37:22:
+09:04:50.257       37 │     private supabase: SupabaseService,
+09:04:50.257          ╵                       ~~~~~~~~~~~~~~~
+09:04:50.257 
+09:04:50.257 
+09:04:50.258 ✘ [ERROR] TS7006: Parameter 'asset' implicitly has an 'any' type. [plugin angular-compiler]
+09:04:50.258 
+09:04:50.258     src/app/services/maintenance/maintenance.service.ts:370:41:
+09:04:50.258       370 │ ...activeAssets = assets.filter(asset => asset.is_active !== false);
+09:04:50.259           ╵                                 ~~~~~
+09:04:50.259 
+09:04:50.259 
+09:04:50.259 ✘ [ERROR] TS2307: Cannot find module './toast/toast' or its corresponding type declarations. [plugin angular-compiler]
+09:04:50.259 
+09:04:50.260     src/app/services/notification/notification.service.ts:2:29:
+09:04:50.260       2 │ import { ToastService } from './toast/toast';
+09:04:50.260         ╵                              ~~~~~~~~~~~~~~~
+09:04:50.260 
+09:04:50.261 
+09:04:50.261 ✘ [ERROR] NG2003: No suitable injection token for parameter 'toastService' of class 'NotificationService'.
+09:04:50.261   Consider using the @Inject decorator to specify an injection token. [plugin angular-compiler]
+09:04:50.261 
+09:04:50.261     src/app/services/notification/notification.service.ts:19:22:
+09:04:50.262       19 │   constructor(private toastService: ToastService) {}
+09:04:50.262          ╵                       ~~~~~~~~~~~~
+09:04:50.262 
+09:04:50.262   This type does not have a value, so it cannot be used as injection token.
+09:04:50.263 
+09:04:50.263     src/app/services/notification/notification.service.ts:19:36:
+09:04:50.263       19 │   constructor(private toastService: ToastService) {}
+09:04:50.264          ╵                                     ~~~~~~~~~~~~
+09:04:50.264 
+09:04:50.264 
+09:04:50.264 ✘ [ERROR] TS2307: Cannot find module './auth/auth.service' or its corresponding type declarations. [plugin angular-compiler]
+09:04:50.265 
+09:04:50.265     src/app/services/session/session.service.ts:3:41:
+09:04:50.265       3 │ import { AuthService, UserProfile } from './auth/auth.service';
+09:04:50.265         ╵                                          ~~~~~~~~~~~~~~~~~~~~~
+09:04:50.266 
+09:04:50.266 
+09:04:50.266 ✘ [ERROR] NG2003: No suitable injection token for parameter 'authService' of class 'SessionService'.
+09:04:50.266   Consider using the @Inject decorator to specify an injection token. [plugin angular-compiler]
+09:04:50.267 
+09:04:50.267     src/app/services/session/session.service.ts:15:22:
+09:04:50.267       15 │   constructor(private authService: AuthService) {
+09:04:50.267          ╵                       ~~~~~~~~~~~
+09:04:50.268 
+09:04:50.268   This type does not have a value, so it cannot be used as injection token.
+09:04:50.268 
+09:04:50.268     src/app/services/session/session.service.ts:15:35:
+09:04:50.269       15 │   constructor(private authService: AuthService) {
+09:04:50.269          ╵                                    ~~~~~~~~~~~
+09:04:50.269 
+09:04:50.269 
+09:04:50.366 Error: Command "npm run build" exited with 1
