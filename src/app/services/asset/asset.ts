@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from '../supabase/supabase';
 import { AuditService } from '../audit/audit'; // Import
+import { ErrorHandlerService } from '../error-handler/error-handler.service';
 
 export interface Asset {
   id?: number;
@@ -41,60 +42,89 @@ export class AssetService {
 
   constructor(
     private supabase: SupabaseService,
-    private audit: AuditService // Inject
+    private audit: AuditService, // Inject
+    private errorHandler: ErrorHandlerService
   ) { }
 
   async getAssets() {
-    return await this.supabase.client
-      .from('assets')
-      .select('*')
-      .order('created_at', { ascending: false });
+    try {
+      return await this.supabase.client
+        .from('assets')
+        .select('*')
+        .order('created_at', { ascending: false });
+    } catch (error) {
+      this.errorHandler.handleError(error, 'Gagal mengambil daftar aset');
+      throw error;
+    }
   }
 
   async getAssetById(id: number) {
-    return await this.supabase.client
-      .from('assets')
-      .select('*')
-      .eq('id', id)
-      .single();
+    try {
+      return await this.supabase.client
+        .from('assets')
+        .select('*')
+        .eq('id', id)
+        .single();
+    } catch (error) {
+      this.errorHandler.handleError(error, 'Gagal mengambil detail aset');
+      throw error;
+    }
   }
 
   async createAsset(asset: Asset) {
-    const response = await this.supabase.client
-      .from('assets')
-      .insert(asset)
-      .select()
-      .single();
+    try {
+      const response = await this.supabase.client
+        .from('assets')
+        .insert(asset)
+        .select()
+        .single();
 
-    if (!response.error && response.data) {
-      await this.audit.logAction('ASSET_CREATED', 'assets', response.data.id, { sku: asset.sku, name: asset.name });
+      if (!response.error && response.data) {
+        await this.audit.logAction('ASSET_CREATED', 'assets', response.data.id, { sku: asset.sku, name: asset.name });
+      }
+      
+      return response;
+    } catch (error) {
+      this.errorHandler.handleError(error, 'Gagal membuat aset baru');
+      throw error;
     }
-    return response;
   }
 
   async updateAsset(id: number, asset: Partial<Asset>) {
-    const response = await this.supabase.client
-      .from('assets')
-      .update(asset)
-      .eq('id', id);
+    try {
+      const response = await this.supabase.client
+        .from('assets')
+        .update(asset)
+        .eq('id', id);
 
-    if (!response.error) {
-      await this.audit.logAction('ASSET_UPDATED', 'assets', id, { changes: asset });
+      if (!response.error) {
+        await this.audit.logAction('ASSET_UPDATED', 'assets', id, { changes: asset });
+      }
+      
+      return response;
+    } catch (error) {
+      this.errorHandler.handleError(error, 'Gagal memperbarui aset');
+      throw error;
     }
-    return response;
   }
 
   async deleteAsset(id: number) {
-    // Soft delete preferred for lifecycle, but if hard delete requested:
-    const response = await this.supabase.client
-      .from('assets')
-      .delete()
-      .eq('id', id);
+    try {
+      // Soft delete preferred for lifecycle, but if hard delete requested:
+      const response = await this.supabase.client
+        .from('assets')
+        .delete()
+        .eq('id', id);
 
-    if (!response.error) {
-      await this.audit.logAction('ASSET_DELETED', 'assets', id, { hard_delete: true });
+      if (!response.error) {
+        await this.audit.logAction('ASSET_DELETED', 'assets', id, { hard_delete: true });
+      }
+      
+      return response;
+    } catch (error) {
+      this.errorHandler.handleError(error, 'Gagal menghapus aset');
+      throw error;
     }
-    return response;
   }
 
   // --- Lifecycle Methods ---
@@ -127,23 +157,28 @@ export class AssetService {
   }
 
   async disposeAsset(disposal: AssetDisposal) {
-    // 1. Create disposal record
-    const { error: disposalError } = await this.supabase.client
-      .from('asset_disposals')
-      .insert(disposal);
+    try {
+      // 1. Create disposal record
+      const { error: disposalError } = await this.supabase.client
+        .from('asset_disposals')
+        .insert(disposal);
 
-    if (disposalError) throw disposalError;
+      if (disposalError) throw disposalError;
 
-    // 2. Mark asset as inactive
-    const response = await this.updateAsset(disposal.asset_id, {
-      is_active: false,
-      status: 'broken' // or a new status 'disposed' if enum allowed
-    });
+      // 2. Mark asset as inactive
+      const response = await this.updateAsset(disposal.asset_id, {
+        is_active: false,
+        status: 'broken' // or a new status 'disposed' if enum allowed
+      });
 
-    if (!response.error) {
-      await this.audit.logAction('ASSET_DISPOSED', 'assets', disposal.asset_id, { type: disposal.disposal_type, price: disposal.sale_price });
+      if (!response.error) {
+        await this.audit.logAction('ASSET_DISPOSED', 'assets', disposal.asset_id, { type: disposal.disposal_type, price: disposal.sale_price });
+      }
+
+      return response;
+    } catch (error) {
+      this.errorHandler.handleError(error, 'Gagal membuang aset');
+      throw error;
     }
-
-    return response;
   }
 }

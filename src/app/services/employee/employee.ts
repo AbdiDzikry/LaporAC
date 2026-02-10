@@ -26,4 +26,25 @@ export class EmployeeService {
 
     return this.http.get(this.apiUrl, { headers });
   }
+
+  async getEmployeeByNik(nik: string): Promise<Employee | null> {
+    try {
+      const headers = new HttpHeaders({
+        'x-api-key': this.apiKey
+      });
+
+      const response: any = await this.http.get(this.apiUrl, { headers }).toPromise();
+      const employees = response.data || response; // Adjust based on actual API response structure
+      
+      if (Array.isArray(employees)) {
+        const employee = employees.find((emp: any) => emp.nik === nik || emp.id === nik);
+        return employee ? { nik: employee.nik || employee.id, name: employee.name, department: employee.department || '' } : null;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error fetching employee by NIK:', error);
+      throw error;
+    }
+  }
 }

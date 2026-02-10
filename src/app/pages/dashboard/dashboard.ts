@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AssetService } from '../../services/asset/asset';
 import { TicketService } from '../../services/ticket/ticket';
-import { SupabaseService } from '../../services/supabase/supabase';
+import { SessionService } from '../../services/session/session.service';
+import { LoadingService } from '../../services/loading/loading.service';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -24,29 +25,33 @@ export class DashboardComponent implements OnInit {
     upcomingMaintenance: [] as any[] // Assets with upcoming maintenance
   };
   today = new Date();
-  loading = false;
   isAdmin = false;
-  userProfile: any = null;
+  userRole: string | null = null;
 
   constructor(
     private assetService: AssetService,
     private ticketService: TicketService,
-    private supabase: SupabaseService
+    private sessionService: SessionService,
+    private loadingService: LoadingService
   ) { }
 
-  ngOnInit() {
-    this.checkUser();
+  async ngOnInit() {
+    await this.checkUser();
     this.loadStats();
   }
 
   async checkUser() {
-    const profile = await this.supabase.getProfile();
-    this.userProfile = profile?.data;
-    this.isAdmin = this.userProfile?.role === 'admin' || this.userProfile?.role === 'super_admin';
+    this.userRole = this.sessionService.getCurrentUserRole();
+    if (!this.userRole) {
+      // Refresh session if not set
+      await this.sessionService.checkAuthStatus();
+      this.userRole = this.sessionService.getCurrentUserRole();
+    }
+    this.isAdmin = this.userRole === 'admin' || this.userRole === 'super_admin';
   }
 
   async loadStats() {
-    this.loading = true;
+    this.loadingService.show();
     try {
       const { data: assets } = await this.assetService.getAssets();
       if (assets) {
@@ -100,7 +105,7 @@ export class DashboardComponent implements OnInit {
     } catch (error) {
       console.error(error);
     } finally {
-      this.loading = false;
+      this.loadingService.hide();
     }
   }
 

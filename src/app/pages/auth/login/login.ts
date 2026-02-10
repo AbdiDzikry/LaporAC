@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { SupabaseService } from '../../../services/supabase/supabase';
-import { AuditService } from '../../../services/audit/audit'; // Import AuditService
+import { AuthService } from '../../../services/auth/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -19,8 +18,7 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private supabase: SupabaseService,
-    private audit: AuditService, // Inject AuditService
+    private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -38,24 +36,14 @@ export class LoginComponent {
     const { email, password } = this.loginForm.value;
 
     try {
-      const { data, error } = await this.supabase.client.auth.signInWithPassword({
-        email,
-        password
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      if (data.session) {
-        // Log Login Action
-        if (data.user) {
-          await this.audit.logAction('LOGIN', 'auth', data.user.id, { email: this.loginForm.value.email });
-        }
-
+      const result = await this.authService.signIn(email, password);
+      
+      if (result.success) {
         // Smart Redirect
         const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
         this.router.navigateByUrl(returnUrl);
+      } else {
+        this.errorMsg = result.error || 'Login failed';
       }
     } catch (error: any) {
       this.errorMsg = error.message || 'Login failed';

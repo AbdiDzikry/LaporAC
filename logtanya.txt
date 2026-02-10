@@ -1,41 +1,20 @@
-Terjadi Kesalahan: Failed to fetch dynamically imported module: https://lapor-ac.vercel.app/chunk-UHVDTXUI.js...
-
-installHook.js:1 Qt: Acquiring an exclusive Navigator LockManager lock "lock:lapor-ac-auth-v5" immediately failed
-    at chunk-RZ4BEOP5.js:27:17767
-    at Generator.next (<anonymous>)
-    at chunk-RA2WU32H.js:1:1260
-    at new M (polyfills-6ISPNSXF.js:2:2232)
-    at D (chunk-RA2WU32H.js:1:1080)
-    at chunk-RZ4BEOP5.js:27:17440
-overrideMethod @ installHook.js:1
-installHook.js:1 Qt: Acquiring an exclusive Navigator LockManager lock "lock:lapor-ac-auth-v5" immediately failed
-    at chunk-RZ4BEOP5.js:27:17767
-    at Generator.next (<anonymous>)
-    at chunk-RA2WU32H.js:1:1260
-    at new M (polyfills-6ISPNSXF.js:2:2232)
-    at D (chunk-RA2WU32H.js:1:1080)
-    at chunk-RZ4BEOP5.js:27:17440
-overrideMethod @ installHook.js:1
-installHook.js:1 Qt: Acquiring an exclusive Navigator LockManager lock "lock:lapor-ac-auth-v5" immediately failed
-    at chunk-RZ4BEOP5.js:27:17767
-    at Generator.next (<anonymous>)
-    at chunk-RA2WU32H.js:1:1260
-    at new M (polyfills-6ISPNSXF.js:2:2232)
-    at D (chunk-RA2WU32H.js:1:1080)
-    at chunk-RZ4BEOP5.js:27:17440
-overrideMethod @ installHook.js:1
-chunk-UHVDTXUI.js:1 Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "text/html". Strict MIME type checking is enforced for module scripts per HTML spec.
-installHook.js:1 Global Error: TypeError: Failed to fetch dynamically imported module: https://lapor-ac.vercel.app/chunk-UHVDTXUI.js
-overrideMethod @ installHook.js:1
-installHook.js:1 Global Error: TypeError: Failed to fetch dynamically imported module: https://lapor-ac.vercel.app/chunk-UHVDTXUI.js
-overrideMethod @ installHook.js:1
-installHook.js:1 Global Error: TypeError: Failed to fetch dynamically imported module: https://lapor-ac.vercel.app/chunk-UHVDTXUI.js
-overrideMethod @ installHook.js:1
-installHook.js:1 Qt: Acquiring an exclusive Navigator LockManager lock "lock:lapor-ac-auth-v5" immediately failed
-    at chunk-RZ4BEOP5.js:27:17767
-    at Generator.next (<anonymous>)
-    at chunk-RA2WU32H.js:1:1260
-    at new M (polyfills-6ISPNSXF.js:2:2232)
-    at D (chunk-RA2WU32H.js:1:1080)
-    at chunk-RZ4BEOP5.js:27:17440
-overrideMethod @ installHook.js:1
+PS C:\5. Magang Dharma\4. LaporAC> git add .
+warning: in the working copy of 'package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/guards/role/role-guard.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/pages/auth/login/login.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/pages/dashboard/dashboard.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/pages/public/report-form/report-form.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/services/asset/asset.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/services/employee/employee.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/services/ticket/ticket.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'QWEN.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'README_IMPROVEMENTS.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/services/auth/auth.service.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/services/data-export/data-export.service.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/services/error-handler/error-handler.service.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/services/loading/loading.service.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/services/maintenance/maintenance.service.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/services/notification/notification.service.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/services/session/session.service.ts', LF will be replaced by CRLF the next time Git touches it
+PS C:\5. Magang Dharma\4. LaporAC> git 
