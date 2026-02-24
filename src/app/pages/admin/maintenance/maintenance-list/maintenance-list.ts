@@ -2,8 +2,8 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MaintenanceService, MaintenanceSchedule } from '../../../../services/maintenance/maintenance';
+import { AssetService } from '../../../../services/asset/asset';
 import { ToastService } from '../../../../services/toast/toast';
-import { SupabaseService } from '../../../../services/supabase/supabase';
 import { RouterLink } from '@angular/router';
 import { CustomDropdownComponent } from '../../../../components/custom-dropdown/custom-dropdown.component';
 
@@ -18,12 +18,21 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
     @Input() initialMonth: number | null = null; // 1-12
     @Input() initialYear: number | null = null;
 
+    // Maintenance rules
+    readonly MAX_UNITS_PER_DAY = 8;
+    readonly MAINTENANCE_DAYS = [2, 3, 6]; // Selasa=2, Rabu=3, Sabtu=6
+    readonly DAY_LABELS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+    readonly DAY_LABELS_FULL = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+
     schedules: MaintenanceSchedule[] = [];
     loading = false;
     activeTab: 'upcoming' | 'history' | 'all' = 'upcoming';
     viewMode: 'list' | 'calendar' = 'list';
-    mainTab: 'planning' | 'execution' = 'planning';
+    // mainTab merged into unified view
     generating = false;
+    batchCompleting = false;
+    checklistMode = false;
+    checkedScheduleIds: Set<number> = new Set();
 
     // Calendar Data
     currentMonth: Date;
@@ -57,13 +66,13 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
     filterBrand: string = '';
     filterDateFrom: string = '';
     filterDateTo: string = '';
-    showFilters: boolean = true;
+    showFilters: boolean = false; // collapsed by default
 
 
     constructor(
         private maintenanceService: MaintenanceService,
-        private toast: ToastService,
-        private supabase: SupabaseService
+        private assetService: AssetService,
+        private toast: ToastService
     ) {
         // Initialize currentMonth in constructor to ensure it's always set
         this.currentMonth = new Date();
@@ -73,6 +82,9 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
         if (this.periodId) {
             this.activeTab = 'all';
             this.viewMode = 'calendar';
+            this.activeTab = 'all';
+            this.viewMode = 'calendar';
+            this.showFilters = false;
             // Only set currentMonth if explicitly provided
             if (this.initialMonth && this.initialYear) {
                 this.currentMonth = new Date(this.initialYear, this.initialMonth - 1, 1);
@@ -104,11 +116,7 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
         this.loadSchedules();
     }
 
-    setMainTab(tab: 'planning' | 'execution') {
-        this.mainTab = tab;
-        this.viewMode = 'calendar';
-        this.generateCalendar();
-    }
+
 
     setViewMode(mode: 'list' | 'calendar') {
         this.viewMode = mode;
@@ -138,17 +146,17 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
         const year = this.currentMonth.getFullYear();
         const month = this.currentMonth.getMonth();
 
-        // Get first day of month and its day of week
+        // Get first day of month and its day of week (Monday=0 based)
         const firstDay = new Date(year, month, 1);
-        const firstDayOfWeek = firstDay.getDay(); // 0 = Sunday
+        const jsDay = firstDay.getDay(); // JS: 0=Sun
+        const mondayBasedDay = jsDay === 0 ? 6 : jsDay - 1; // Mon=0..Sun=6
 
         // Get last day of month
         const lastDay = new Date(year, month + 1, 0).getDate();
 
-        // Add empty days for alignment (start from Monday)
-        const startPadding = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
-        for (let i = 0; i < startPadding; i++) {
-            const prevDate = new Date(year, month, -startPadding + i + 1);
+        // Add previous month padding (start from Monday)
+        for (let i = 0; i < mondayBasedDay; i++) {
+            const prevDate = new Date(year, month, -mondayBasedDay + i + 1);
             this.calendarDays.push(prevDate);
         }
 
@@ -291,6 +299,22 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
                 console.warn('⚠️ No data from database, using MOCK DATA for demo');
                 this.schedules = this.generateMockData();
             }
+
+            // UI LOGIC: Mark past due scheduled items as 'missed'
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            this.schedules.forEach(s => {
+                if (s.status === 'scheduled' && s.scheduled_date) {
+                    const sDate = new Date(s.scheduled_date);
+                    sDate.setHours(0, 0, 0, 0);
+                    if (sDate < today) {
+                        s.status = 'missed';
+                    }
+                }
+            });
+
+            this.selectedAssetIds.clear();
         } catch (err) {
             this.toast.show('Failed to load maintenance schedules', 'error');
             console.error(err);
@@ -379,12 +403,178 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
         }
     }
 
-    // ========== SCHEDULE CREATION METHODS ==========
+    // ========== CALENDAR UX HELPERS ==========
+
+    /** Check if a date falls on a maintenance day (Selasa=2, Rabu=3, Sabtu=6) */
+    isMaintenanceDay(date: Date): boolean {
+        const jsDay = date.getDay(); // 0=Sun
+        return this.MAINTENANCE_DAYS.includes(jsDay);
+    }
+
+    /** Get maintenance day label */
+    getMaintenanceDayLabel(date: Date): string {
+        const jsDay = date.getDay();
+        if (jsDay === 6) return 'Office';
+        if (jsDay === 3) return 'Area Lain';
+        if (jsDay === 2) return 'Overflow';
+        return '';
+    }
+
+    /** Get capacity info for a date */
+    getDayCapacityInfo(date: Date): { count: number; max: number; isFull: boolean; isOver: boolean } {
+        const count = this.getSchedulesForDate(date).length;
+        return {
+            count,
+            max: this.MAX_UNITS_PER_DAY,
+            isFull: count >= this.MAX_UNITS_PER_DAY,
+            isOver: count > this.MAX_UNITS_PER_DAY
+        };
+    }
+
+    /** Get density class for calendar cell background */
+    getDayDensityClass(date: Date): string {
+        if (!this.isCurrentMonth(date)) return '';
+        const count = this.getSchedulesForDate(date).length;
+        if (count === 0) return '';
+        if (count <= 3) return 'bg-blue-50/60';
+        if (count <= 6) return 'bg-blue-100/60';
+        if (count <= 8) return 'bg-blue-200/50';
+        return 'bg-red-100/50'; // over capacity
+    }
+
+    /** Group schedules for a date by location */
+    getSchedulesGroupedByLocation(date: Date | null): { location: string; schedules: MaintenanceSchedule[] }[] {
+        if (!date) return [];
+        const daySchedules = this.getSchedulesForDate(date);
+        const groups = new Map<string, MaintenanceSchedule[]>();
+
+        for (const s of daySchedules) {
+            const loc = s.assets?.location || 'Tidak Diketahui';
+            if (!groups.has(loc)) groups.set(loc, []);
+            groups.get(loc)!.push(s);
+        }
+
+        return Array.from(groups.entries())
+            .map(([location, schedules]) => ({ location, schedules }))
+            .sort((a, b) => a.location.localeCompare(b.location));
+    }
+
+    /** Get summary stats for a date */
+    getDaySummary(date: Date | null): { total: number; completed: number; pending: number } {
+        if (!date) return { total: 0, completed: 0, pending: 0 };
+        const daySchedules = this.getSchedulesForDate(date);
+        const completed = daySchedules.filter(s => s.status === 'completed').length;
+        return {
+            total: daySchedules.length,
+            completed,
+            pending: daySchedules.length - completed
+        };
+    }
+
+    /** Get unique location summaries for a calendar cell */
+    getCellLocationSummary(date: Date): string[] {
+        const daySchedules = this.getSchedulesForDate(date);
+        const locations = new Set<string>();
+        for (const s of daySchedules) {
+            if (s.assets?.location) locations.add(s.assets.location);
+        }
+        return Array.from(locations).slice(0, 2);
+    }
+
+    /** Batch complete all schedules for a location on a date */
+    async batchCompleteByLocation(date: Date, location: string) {
+        const daySchedules = this.getSchedulesForDate(date)
+            .filter(s => s.assets?.location === location && s.status !== 'completed');
+
+        if (daySchedules.length === 0) {
+            this.toast.show('Semua unit di lokasi ini sudah selesai', 'info');
+            return;
+        }
+
+        if (!confirm(`Tandai ${daySchedules.length} unit di ${location} sebagai selesai?`)) return;
+
+        this.batchCompleting = true;
+        try {
+            for (const schedule of daySchedules) {
+                if (schedule.id) {
+                    await this.maintenanceService.completeMaintenance(schedule.id, 'Batch completion');
+                }
+            }
+            this.toast.show(`${daySchedules.length} unit di ${location} selesai`, 'success');
+            await this.loadSchedules();
+        } catch (err) {
+            this.toast.show('Gagal menyelesaikan batch', 'error');
+            console.error(err);
+        } finally {
+            this.batchCompleting = false;
+        }
+    }
+
+    /** Get completion count for a location group */
+    getLocationCompletedCount(schedules: MaintenanceSchedule[]): number {
+        return schedules.filter(s => s.status === 'completed').length;
+    }
+
+    // ========== CHECKLIST MODE ==========
+
+    toggleChecklistMode() {
+        this.checklistMode = !this.checklistMode;
+        if (!this.checklistMode) {
+            this.checkedScheduleIds.clear();
+        }
+    }
+
+    toggleScheduleCheck(id: number) {
+        if (this.checkedScheduleIds.has(id)) {
+            this.checkedScheduleIds.delete(id);
+        } else {
+            this.checkedScheduleIds.add(id);
+        }
+    }
+
+    selectAllForDate() {
+        if (!this.selectedDate) return;
+        const pending = this.getSchedulesForDate(this.selectedDate)
+            .filter(s => s.status !== 'completed' && s.id);
+
+        // If all pending are already checked, uncheck all
+        const allChecked = pending.every(s => this.checkedScheduleIds.has(s.id!));
+        if (allChecked) {
+            pending.forEach(s => this.checkedScheduleIds.delete(s.id!));
+        } else {
+            pending.forEach(s => this.checkedScheduleIds.add(s.id!));
+        }
+    }
+
+    async saveChecklist() {
+        if (this.checkedScheduleIds.size === 0) return;
+
+        this.batchCompleting = true;
+        try {
+            const ids = Array.from(this.checkedScheduleIds);
+            for (const id of ids) {
+                const res = await this.maintenanceService.completeMaintenance(id, 'Completed via checklist');
+                if (res.error) throw res.error;
+            }
+            this.toast.show(`${ids.length} unit berhasil ditandai selesai`, 'success');
+            this.checkedScheduleIds.clear();
+            this.checklistMode = false;
+            await this.loadSchedules();
+        } catch (err) {
+            this.toast.show('Gagal menyimpan', 'error');
+            console.error(err);
+        } finally {
+            this.batchCompleting = false;
+        }
+    }
+
 
     async openCreateModal(date: Date) {
         this.selectedDateForCreate = date;
         this.selectedAssetIds.clear();
         this.searchQuery = '';
+        this.selectedLocationFilter = '';
+        this.selectedBrandFilter = '';
         await this.loadAllAssets();
         await this.loadExistingSchedules();
 
@@ -402,13 +592,14 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
 
     async loadAllAssets() {
         try {
-            const { data, error } = await this.supabase.client
-                .from('assets')
-                .select('*')
-                .order('name');
+            const { data, error } = await this.assetService.getAssets();
 
             if (error) throw error;
             this.allAssets = data || [];
+
+            // Re-sort correctly by name
+            this.allAssets.sort((a, b) => a.name.localeCompare(b.name));
+
         } catch (err) {
             console.error('Failed to load assets:', err);
             this.toast.show('Failed to load AC units', 'error');
@@ -417,23 +608,19 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
 
     async loadExistingSchedules() {
         try {
-            let query = this.supabase.client
-                .from('maintenance_schedules')
-                .select('asset_id, scheduled_date')
-                .eq('status', 'scheduled');
+            // First get all schedules
+            const result = this.periodId
+                ? await this.maintenanceService.getSchedules('period', this.periodId)
+                : await this.maintenanceService.getSchedules('all');
 
-            // If we are in a specific period, only check for schedules within that period
-            if (this.periodId) {
-                query = query.eq('period_id', this.periodId);
-            }
-
-            const { data, error } = await query;
-
-            if (error) throw error;
+            if (result.error) throw result.error;
 
             this.assetSchedules.clear();
-            if (data) {
-                data.forEach((schedule: any) => {
+            if (result.data) {
+                // Filter for 'scheduled' status
+                const scheduledSchedules = result.data.filter(schedule => schedule.status === 'scheduled');
+
+                scheduledSchedules.forEach((schedule: any) => {
                     this.assetSchedules.set(schedule.asset_id, schedule.scheduled_date);
                 });
             }
@@ -442,17 +629,32 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
         }
     }
 
+    toggleFilterByStatus(status: string) {
+        if (this.filterStatus === status) {
+            this.filterStatus = 'all';
+        } else {
+            this.filterStatus = status;
+        }
+        this.loadSchedules();
+    }
+
     filterAssets() {
         const query = this.searchQuery.toLowerCase().trim();
 
-        if (!query) {
+        if (!query && !this.selectedLocationFilter && !this.selectedBrandFilter) {
             this.filteredAssets = [...this.allAssets];
         } else {
-            this.filteredAssets = this.allAssets.filter(asset =>
-                asset.name.toLowerCase().includes(query) ||
-                asset.location.toLowerCase().includes(query) ||
-                asset.sku.toLowerCase().includes(query)
-            );
+            this.filteredAssets = this.allAssets.filter(asset => {
+                const matchQuery = !query ||
+                    asset.name.toLowerCase().includes(query) ||
+                    asset.location.toLowerCase().includes(query) ||
+                    asset.sku.toLowerCase().includes(query);
+
+                const matchLocation = !this.selectedLocationFilter || asset.location === this.selectedLocationFilter;
+                const matchBrand = !this.selectedBrandFilter || asset.brand === this.selectedBrandFilter;
+
+                return matchQuery && matchLocation && matchBrand;
+            });
         }
 
         // Sort: Selected first, then by name
@@ -472,7 +674,29 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
 
     clearSearch() {
         this.searchQuery = '';
+        this.selectedLocationFilter = '';
+        this.selectedBrandFilter = '';
         this.filterAssets();
+    }
+
+    // Modal Filters
+    selectedLocationFilter: string = '';
+    selectedBrandFilter: string = '';
+
+    get uniqueAssetLocations(): string[] {
+        const locations = new Set<string>();
+        this.allAssets.forEach(a => {
+            if (a.location) locations.add(a.location);
+        });
+        return Array.from(locations).sort();
+    }
+
+    get uniqueAssetBrands(): string[] {
+        const brands = new Set<string>();
+        this.allAssets.forEach(a => {
+            if (a.brand) brands.add(a.brand);
+        });
+        return Array.from(brands).sort();
     }
 
     isAssetScheduled(assetId: number): boolean {
@@ -485,6 +709,21 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
 
     getSelectedDateString(): string {
         return this.formatDate(this.selectedDateForCreate);
+    }
+
+    get areAllFilteredSelected(): boolean {
+        if (this.filteredAssets.length === 0) return false;
+        return this.filteredAssets.every(a => this.selectedAssetIds.has(a.id));
+    }
+
+    toggleSelectAllFiltered() {
+        if (this.areAllFilteredSelected) {
+            // Deselect all visible
+            this.filteredAssets.forEach(a => this.selectedAssetIds.delete(a.id));
+        } else {
+            // Select all visible
+            this.filteredAssets.forEach(a => this.selectedAssetIds.add(a.id));
+        }
     }
 
     isSelectedDate(date: Date): boolean {

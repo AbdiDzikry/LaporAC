@@ -1,54 +1,80 @@
 import { Injectable } from '@angular/core';
-import { SupabaseService } from '../supabase/supabase';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface UserProfile {
-    id: string;
+    id: string | number;
     email?: string;
     full_name?: string;
-    role: 'super_admin' | 'admin' | 'technician' | 'staff';
+    name?: string; // Laravel default
+    role: 'super_admin' | 'admin' | 'technician' | 'staff' | string;
     avatar_url?: string;
     created_at?: string;
+    nik?: string;
 }
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
+    private apiUrl = `${environment.apiUrl}/users`;
 
-    constructor(private supabase: SupabaseService) { }
+    constructor(private http: HttpClient) { }
 
     /**
      * Get all user profiles (for Admin Management List)
      */
     async getAllUsers() {
-        return await this.supabase.client
-            .from('profiles')
-            .select('*')
-            .order('created_at', { ascending: false });
+        try {
+            // we will need an endpoint for this in Laravel
+            const data = await firstValueFrom(this.http.get<UserProfile[]>(this.apiUrl));
+            return { data, error: null };
+        } catch (error: any) {
+            return { data: null, error };
+        }
     }
 
     /**
      * Get only technicians (for Ticket Assignment Dropdown)
      */
     async getTechnicians() {
-        return await this.supabase.client
-            .from('profiles')
-            .select('*')
-            .eq('role', 'technician')
-            .order('full_name', { ascending: true });
+        try {
+            const data = await firstValueFrom(this.http.get<UserProfile[]>(`${this.apiUrl}?role=technician`));
+            return { data, error: null };
+        } catch (error: any) {
+            return { data: null, error };
+        }
     }
 
     /**
-     * Invite a new user (This usually requires Supabase Admin API or calling an Edge Function)
-     * For Client-Side only, we can create a profile if the user already signed up, 
-     * or we just manage the roles of existing users.
-     * 
-     * For this MVP corporate standard: Update Role
+     * Get User By ID
      */
-    async updateUserRole(id: string, role: UserProfile['role']) {
-        return await this.supabase.client
-            .from('profiles')
-            .update({ role })
-            .eq('id', id);
+    async getUserById(id: string | number) {
+        try {
+            const data = await firstValueFrom(this.http.get<UserProfile>(`${this.apiUrl}/${id}`));
+            return { data, error: null };
+        } catch (error: any) {
+            return { data: null, error };
+        }
+    }
+
+    /**
+     * Update User Role
+     */
+    async updateUserRole(id: string | number, role: UserProfile['role']) {
+        return this.updateUser(id, { role });
+    }
+
+    /**
+     * Update General User Profile
+     */
+    async updateUser(id: string | number, updates: Partial<UserProfile>) {
+        try {
+            const data = await firstValueFrom(this.http.put<UserProfile>(`${this.apiUrl}/${id}`, updates));
+            return { data, error: null };
+        } catch (error: any) {
+            return { data: null, error };
+        }
     }
 }

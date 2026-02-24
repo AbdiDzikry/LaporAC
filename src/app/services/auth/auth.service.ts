@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { SupabaseService } from '../supabase/supabase';
-import { AuditService } from '../audit/audit';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { AuditService } from '../audit/audit';
 
 export interface UserProfile {
-  id: string;
+  id: string | number;
   email?: string;
-  full_name?: string;
+  name?: string;
+  full_name?: string; // Kept for compatibility if used elsewhere
+  nik?: string;
   role: 'super_admin' | 'admin' | 'technician' | 'staff' | 'dept_head';
   avatar_url?: string;
   created_at?: string;
@@ -20,142 +23,94 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<UserProfile | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
+  private apiUrl = environment.apiUrl;
+  private initPromise: Promise<void>;
+
   constructor(
-    private supabase: SupabaseService,
-    private audit: AuditService,
-    private router: Router
+    private http: HttpClient,
+    private router: Router,
+    private audit: AuditService
   ) {
-    this.initializeAuthState();
+    this.initPromise = this.initializeAuthState();
   }
 
   private async initializeAuthState() {
-    const session = await this.supabase.session;
-    if (session.data.session) {
-      const profile = await this.fetchUserProfile();
-      if (profile) {
-        this.currentUserSubject.next(profile);
+    const token = localStorage.getItem('laporac_token');
+    if (token) {
+      try {
+        const profile = await this.fetchUserProfile();
+        if (profile) {
+          this.currentUserSubject.next(this.mapProfile(profile));
+        } else {
+          // Token might be invalid
+          this.clearAuth();
+        }
+      } catch (e) {
+        console.error('AuthService: Failed to restore session', e);
+        this.clearAuth();
       }
     }
+  }
+
+  async waitForInit(): Promise<void> {
+    return this.initPromise;
   }
 
   async signIn(email: string, password: string): Promise<{ success: boolean; error?: string }> {
     try {
-      const { data, error } = await this.supabase.client.auth.signInWithPassword({
-        email,
-        password
-      });
+      const response: any = await firstValueFrom(
+        this.http.post(`${this.apiUrl}/login`, { email, password })
+      );
 
-      if (error) {
-        throw error;
-      }
+      if (response && response.token) {
+        localStorage.setItem('laporac_token', response.token);
+        const mappedUser = this.mapProfile(response.user);
+        this.currentUserSubject.next(mappedUser);
 
-      if (data.session) {
-        const profile = await this.fetchUserProfile();
-        if (profile) {
-          this.currentUserSubject.next(profile);
-
-          // Log login action
-          await this.audit.logAction('LOGIN', 'auth', profile.id, {
+        // Optional Audit logging
+        try {
+          await this.audit.logAction('LOGIN', 'auth', mappedUser.id as number, {
             email,
             userAgent: navigator.userAgent,
             timestamp: new Date().toISOString()
           });
-        }
+        } catch (e) { } // Ignore audit errors on login
 
         return { success: true };
       }
 
-      return { success: false, error: 'No session returned' };
+      return { success: false, error: 'Token tidak diterima dari server' };
     } catch (error: any) {
-      return { success: false, error: error.message || 'Login failed' };
-    }
-  }
-
-  async signUp(email: string, password: string, fullName: string): Promise<{ success: boolean; error?: string }> {
-    try {
-      const { data, error } = await this.supabase.client.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName
-          }
-        }
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      // Create profile in our profiles table
-      if (data.user) {
-        const profileResult = await this.supabase.client
-          .from('profiles')
-          .insert([{
-            id: data.user.id,
-            email,
-            full_name: fullName,
-            role: 'staff' // Default role for new users
-          }]);
-
-        if (profileResult.error) {
-          console.error('Error creating profile:', profileResult.error);
-        }
-      }
-
-      return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Registration failed' };
+      const msg = error.error?.message || error.message || 'Login failed';
+      return { success: false, error: msg };
     }
   }
 
   async signOut(): Promise<void> {
     const user = this.currentUserSubject.value;
 
-    await this.supabase.client.auth.signOut();
-    this.currentUserSubject.next(null);
-
-    if (user) {
-      // Log logout action
-      await this.audit.logAction('LOGOUT', 'auth', user.id, {
-        timestamp: new Date().toISOString()
-      });
+    try {
+      if (localStorage.getItem('laporac_token')) {
+        await firstValueFrom(this.http.post(`${this.apiUrl}/logout`, {}));
+      }
+    } catch (e) {
+      console.warn('Logout API failed, ignoring client-side');
     }
 
+    if (user) {
+      try {
+        await this.audit.logAction('LOGOUT', 'auth', user.id as number, {
+          timestamp: new Date().toISOString()
+        });
+      } catch (e) { }
+    }
+
+    this.clearAuth();
     this.router.navigate(['/login']);
   }
 
-  async forgotPassword(email: string): Promise<{ success: boolean; error?: string }> {
-    try {
-      const { error } = await this.supabase.client.auth.resetPasswordForEmail(email);
-
-      if (error) {
-        throw error;
-      }
-
-      return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Password reset request failed' };
-    }
-  }
-
-  async updatePassword(newPassword: string): Promise<{ success: boolean; error?: string }> {
-    try {
-      const { error } = await this.supabase.client.auth.updateUser({
-        password: newPassword
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Password update failed' };
-    }
-  }
-
   async getCurrentUser(): Promise<UserProfile | null> {
+    await this.initPromise;
     return this.currentUserSubject.value;
   }
 
@@ -172,7 +127,6 @@ export class AuthService {
     const user = this.currentUserSubject.value;
     if (!user) return false;
 
-    // Define role hierarchy
     const roleHierarchy: { [key: string]: number } = {
       'staff': 1,
       'technician': 2,
@@ -181,92 +135,32 @@ export class AuthService {
       'super_admin': 5
     };
 
-    return roleHierarchy[user.role] >= roleHierarchy[requiredRole];
+    return (roleHierarchy[user.role] || 0) >= (roleHierarchy[requiredRole] || 0);
   }
 
-  private async fetchUserProfile(): Promise<UserProfile | null> {
+  private async fetchUserProfile(): Promise<any | null> {
     try {
-      const { data: { user }, error: userError } = await this.supabase.client.auth.getUser();
-      if (userError || !user || !user.id) {
-        console.error('Error getting user from auth:', userError);
-        return null;
-      }
-
-      // Sanitize ID just in case
-      const userId = user.id.trim();
-      console.log('AuthService: Fetching profile for sanitized ID:', userId);
-
-      const { data, error } = await this.supabase.client
-        .from('profiles')
-        .select('id, email, full_name, role, created_at')
-        .eq('id', userId)
-        .single();
-
-      if (error) {
-        console.error('Error fetching profile (Details):', JSON.stringify(error, null, 2));
-
-        // If profile doesn't exist, create a default one
-        if (error.code === 'PGRST116') { // Row not found
-          // ... existing default profile logic ...
-          console.log('Profile not found, creating default profile...');
-          const defaultProfile: UserProfile = {
-            id: userId,
-            email: user.email || '',
-            full_name: (user.user_metadata as any)?.['full_name'] || (user.user_metadata as any)?.['name'] || `${(user.user_metadata as any)?.['first_name'] || ''} ${(user.user_metadata as any)?.['last_name'] || ''}`.trim() || user.email?.split('@')[0] || 'Unknown User',
-            role: 'staff', // Default role
-            created_at: new Date().toISOString()
-          };
-
-          // Attempt to create the profile
-          const { error: insertError } = await this.supabase.client
-            .from('profiles')
-            .insert([{
-              id: userId,
-              email: user.email,
-              full_name: defaultProfile.full_name,
-              role: 'staff'
-            }]);
-
-          if (insertError) {
-            console.error('Error creating default profile:', insertError);
-            return null;
-          }
-
-          return defaultProfile;
-        }
-        return null;
-      }
-
-      return data as UserProfile;
-    } catch (error: any) {
-      console.error('Error in fetchUserProfile:', error?.message || error);
+      return await firstValueFrom(this.http.get(`${this.apiUrl}/me`));
+    } catch (error) {
       return null;
     }
   }
 
-  async updateProfile(updates: Partial<UserProfile>): Promise<{ success: boolean; error?: string }> {
-    try {
-      const user = this.currentUserSubject.value;
-      if (!user) {
-        return { success: false, error: 'No user logged in' };
-      }
+  private clearAuth() {
+    localStorage.removeItem('laporac_token');
+    this.currentUserSubject.next(null);
+  }
 
-      const { error } = await this.supabase.client
-        .from('profiles')
-        .update(updates)
-        .eq('id', user.id);
-
-      if (error) {
-        throw error;
-      }
-
-      // Update the local user state
-      const updatedUser = { ...user, ...updates };
-      this.currentUserSubject.next(updatedUser);
-
-      return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Profile update failed' };
-    }
+  // Helper to map Laravel User model to Angular UserProfile interface
+  private mapProfile(laravelUser: any): UserProfile {
+    return {
+      id: laravelUser.id,
+      email: laravelUser.email,
+      name: laravelUser.name,
+      full_name: laravelUser.name, // alias
+      nik: laravelUser.nik,
+      role: laravelUser.role || 'staff',
+      created_at: laravelUser.created_at
+    };
   }
 }

@@ -44,6 +44,22 @@ export class PeriodDetailComponent implements OnInit {
             const { data, error } = await this.periodService.getPeriodById(this.periodId);
             if (error) throw error;
             this.period = data;
+
+            if (this.period) {
+                const today = new Date();
+                const currentMonth = today.getMonth() + 1;
+                const currentYear = today.getFullYear();
+
+                if (this.period.status === 'active' || this.period.status === 'draft') {
+                    if (this.period.year < currentYear || (this.period.year === currentYear && this.period.month < currentMonth)) {
+                        const total = this.period.total_schedules || 0;
+                        const completed = this.period.completed_schedules || 0;
+                        if (completed < total || total === 0) {
+                            this.period.status = 'overdue';
+                        }
+                    }
+                }
+            }
         } catch (err) {
             console.error(err);
             this.toast.show('Gagal memuat detail periode', 'error');
@@ -120,7 +136,8 @@ export class PeriodDetailComponent implements OnInit {
             'draft': 'bg-gray-100 text-gray-700 border-gray-300',
             'active': 'bg-blue-100 text-blue-700 border-blue-300',
             'completed': 'bg-green-100 text-green-700 border-green-300',
-            'archived': 'bg-purple-100 text-purple-700 border-purple-300'
+            'archived': 'bg-purple-100 text-purple-700 border-purple-300',
+            'overdue': 'bg-red-100 text-red-700 border-red-300'
         };
         return colors[status] || colors['draft'];
     }
@@ -130,7 +147,8 @@ export class PeriodDetailComponent implements OnInit {
             'draft': 'Draft',
             'active': 'Aktif',
             'completed': 'Selesai',
-            'archived': 'Arsip'
+            'archived': 'Arsip',
+            'overdue': 'Terlewat'
         };
         return labels[status] || status;
     }

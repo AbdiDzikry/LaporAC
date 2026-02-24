@@ -1,20 +1,24 @@
-<div class="h-full flex flex-col font-sans bg-gray-50/30 p-6 md:p-8 space-y-6">
+<div class="h-full flex flex-col font-sans bg-gradient-to-br from-gray-50 to-gray-100 p-6 md:p-8 space-y-6">
 
     <!-- HEADER -->
     <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-black text-gray-900 tracking-tight">
+        <h1 class="text-3xl font-bold text-gray-900 tracking-tight">
             {{ currentDate | date:'MMMM yyyy' }}
         </h1>
-        <div class="flex gap-2">
+        <div class="flex gap-3">
             <button (click)="prevMonth()"
-                class="p-2 rounded-lg hover:bg-gray-100 border border-gray-200 text-gray-600 transition-colors">
+                class="p-3 rounded-xl bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 shadow-sm transition-all hover:shadow-md">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                     stroke-width="2" viewBox="0 0 24 24">
                     <path d="M15 18l-6-6 6-6" />
                 </svg>
             </button>
+            <button (click)="today()"
+                class="px-4 py-3 rounded-xl bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 shadow-sm transition-all hover:shadow-md">
+                Today
+            </button>
             <button (click)="nextMonth()"
-                class="p-2 rounded-lg hover:bg-gray-100 border border-gray-200 text-gray-600 transition-colors">
+                class="p-3 rounded-xl bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 shadow-sm transition-all hover:shadow-md">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                     stroke-width="2" viewBox="0 0 24 24">
                     <path d="M9 18l6-6-6-6" />
@@ -24,11 +28,11 @@
     </div>
 
     <!-- CALENDAR GRID -->
-    <div class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden flex-1 flex flex-col">
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden flex-1 flex flex-col">
         <!-- Weekday Headers -->
-        <div class="grid grid-cols-7 bg-gray-50 border-b border-gray-100">
+        <div class="grid grid-cols-7 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
             <div *ngFor="let day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']"
-                class="py-3 text-center text-[10px] font-black uppercase tracking-widest text-gray-400">
+                class="py-4 text-center text-xs font-semibold uppercase tracking-wide text-gray-600">
                 {{ day }}
             </div>
         </div>
@@ -36,19 +40,49 @@
         <!-- Days -->
         <div class="grid grid-cols-7 flex-1 auto-rows-fr">
             <div *ngFor="let day of calendarDays"
-                class="min-h-[100px] border-b border-r border-gray-100 p-2 relative group hover:bg-gray-50/50 transition-colors"
-                [ngClass]="{'bg-gray-50/20': day.empty}">
+                class="min-h-[140px] border-b border-r border-gray-100 p-3 relative group hover:bg-blue-50/30 transition-colors"
+                [ngClass]="{
+                    'bg-gray-50/30': day.empty,
+                    'bg-blue-50': !day.empty && isToday(day.date),
+                    'bg-gradient-to-br from-blue-50 to-indigo-50': !day.empty && isSelectedDay(day.date)
+                }">
 
                 <ng-container *ngIf="!day.empty">
-                    <span class="text-xs font-bold text-gray-400 block mb-2">{{ day.day }}</span>
+                    <div class="flex justify-between items-start">
+                        <span 
+                            class="text-sm font-bold w-7 h-7 flex items-center justify-center rounded-full"
+                            [ngClass]="{
+                                'text-white bg-blue-600': isToday(day.date),
+                                'text-blue-600': !isToday(day.date) && !isSelectedDay(day.date),
+                                'text-white bg-indigo-600': isSelectedDay(day.date)
+                            }">
+                            {{ day.day }}
+                        </span>
+                        <span 
+                            class="text-[8px] px-1.5 py-0.5 rounded-full font-semibold"
+                            [ngClass]="{
+                                'bg-green-100 text-green-800': day.events.length > 0 && allEventsCompleted(day.events),
+                                'bg-amber-100 text-amber-800': day.events.length > 0 && hasInProgressEvents(day.events),
+                                'bg-blue-100 text-blue-800': day.events.length > 0 && hasScheduledEvents(day.events),
+                                'bg-gray-100 text-gray-800': day.events.length === 0
+                            }"
+                            *ngIf="day.events.length > 0">
+                            {{ day.events.length }}
+                        </span>
+                    </div>
 
                     <!-- Events -->
-                    <div class="space-y-1">
+                    <div class="mt-2 space-y-1.5 max-h-[calc(100%-30px)] overflow-y-auto">
                         <div *ngFor="let event of day.events"
-                            class="text-[10px] px-2 py-1 rounded-md font-bold truncate cursor-pointer"
+                            class="text-[11px] px-2.5 py-1.5 rounded-lg font-medium truncate cursor-pointer transition-all hover:scale-[1.02]"
                             [ngClass]="getEventClass(event.status)"
-                            title="{{ event.assets?.name }} - {{ event.status }}">
-                            {{ event.assets?.name }}
+                            title="{{ event.assets?.name }} - {{ event.status }}"
+                            (click)="selectEvent(event)">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full" 
+                                      [ngClass]="getEventIndicatorClass(event.status)"></span>
+                                {{ event.assets?.name }}
+                            </div>
                         </div>
                     </div>
                 </ng-container>

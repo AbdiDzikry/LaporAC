@@ -7,6 +7,16 @@
             <p class="text-gray-500 text-sm mt-1">Laporan performa dan monitoring aset real-time.</p>
         </div>
         <div class="flex items-center gap-3">
+            <button (click)="exportPDF()"
+                class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-blue-700 transition-colors flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Export PDF
+            </button>
             <div
                 class="px-4 py-2 border border-blue-100 rounded-lg bg-blue-50 text-xs text-blue-700 font-semibold tracking-wide flex items-center gap-2">
                 <div class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></div>
@@ -16,6 +26,30 @@
                 Last Update<br>
                 <span class="text-gray-600">{{ currentDate | date:'dd MMM yyyy, HH:mm' }}</span>
             </div>
+        </div>
+    </div>
+
+    <!-- Date Range Filter -->
+    <div class="flex flex-wrap items-center gap-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
+        <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Filter Periode:</span>
+        <div class="flex gap-2">
+            <button
+                *ngFor="let p of [{key:'week',label:'Minggu Ini'},{key:'month',label:'Bulan Ini'},{key:'3months',label:'3 Bulan'},{key:'all',label:'Semua'}]"
+                (click)="setPreset(p.key)"
+                [class]="activePreset === p.key ? 'px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-sm' : 'px-3 py-1.5 text-xs font-medium rounded-lg bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:text-blue-600 transition-colors'">
+                {{ p.label }}
+            </button>
+        </div>
+        <div class="flex items-center gap-2 ml-auto">
+            <input type="date" [(ngModel)]="startDate"
+                class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 focus:ring-blue-500 focus:border-blue-500">
+            <span class="text-xs text-gray-400">s/d</span>
+            <input type="date" [(ngModel)]="endDate"
+                class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 focus:ring-blue-500 focus:border-blue-500">
+            <button (click)="applyDateFilter()"
+                class="px-3 py-1.5 text-xs font-bold rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-colors">
+                Terapkan
+            </button>
         </div>
     </div>
 
@@ -107,6 +141,55 @@
                 <p class="text-xs font-semibold text-gray-400 mt-1 uppercase tracking-wide">Estimasi Biaya Perbaikan</p>
             </div>
 
+        </div>
+
+        <!-- Secondary Stats Row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Avg Resolution Time -->
+            <div class="p-5 rounded-xl border border-gray-200 flex items-center gap-4">
+                <div class="p-3 bg-purple-50 text-purple-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xl font-bold text-gray-900">{{ stats.avgResolutionLabel }}</p>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Rata-rata Waktu Resolusi</p>
+                </div>
+            </div>
+
+            <!-- Resolved Tickets -->
+            <div class="p-5 rounded-xl border border-gray-200 flex items-center gap-4">
+                <div class="p-3 bg-green-50 text-green-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xl font-bold text-gray-900">{{ stats.resolvedTickets }}</p>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Tiket Terselesaikan</p>
+                </div>
+            </div>
+
+            <!-- Maintenance Assets -->
+            <div class="p-5 rounded-xl border border-gray-200 flex items-center gap-4">
+                <div class="p-3 bg-amber-50 text-amber-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <path
+                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                        </path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xl font-bold text-gray-900">{{ stats.maintenanceAssets }}</p>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Dalam Perawatan</p>
+                </div>
+            </div>
         </div>
 
         <!-- Charts Grid -->

@@ -1,0 +1,1765 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\User;
+use App\Models\Role;
+use App\Models\Permission;
+use App\Models\Asset;
+use App\Models\MaintenancePeriod;
+use App\Models\Ticket;
+use App\Models\MaintenanceSchedule;
+use Illuminate\Database\Seeder;
+
+class DatabaseSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // 1. Roles & Permissions
+        $adminRole = Role::create(['name' => 'admin', 'description' => 'Administrator System']);
+        $techRole = Role::create(['name' => 'technician', 'description' => 'Field Technician']);
+
+        $perm1 = Permission::create(['code' => 'manage_users', 'description' => 'Can manage users']);
+        $perm2 = Permission::create(['code' => 'manage_assets', 'description' => 'Can manage assets']);
+
+        $adminRole->permissions()->attach([$perm1->id, $perm2->id]);
+
+        // 2. Users
+        $admin = User::create([
+            'name' => 'Admin User',
+            'email' => 'admin123',
+            'password' => bcrypt('admin123'),
+            'nik' => 'ADMIN001',
+            'role' => 'admin',
+        ]);
+
+        $tech = User::create([
+            'name' => 'Technician User',
+            'email' => 'tech@dharma.com',
+            'password' => bcrypt('password123'),
+            'nik' => 'TECH001',
+            'role' => 'technician',
+        ]);
+
+        // 3. Assets
+        $assets = [];
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 001',
+            'sku' => 'RA 001',
+            'location' => 'AUDITORIUM',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 002',
+            'sku' => 'RA 002',
+            'location' => 'AUDITORIUM',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 003',
+            'sku' => 'RA 003',
+            'location' => 'AUDITORIUM',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 004',
+            'sku' => 'RA 004',
+            'location' => 'AUDITORIUM',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 005',
+            'sku' => 'RA 005',
+            'location' => 'AUDITORIUM',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 006',
+            'sku' => 'RA 006',
+            'location' => 'AUDITORIUM',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 007',
+            'sku' => 'RA 007',
+            'location' => 'AUDITORIUM',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 4 PK - RA 008',
+            'sku' => 'RA 008',
+            'location' => 'AUDITORIUM',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 4 PK - RA 009',
+            'sku' => 'RA 009',
+            'location' => 'AUDITORIUM',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 4 PK - RA 010',
+            'sku' => 'RA 010',
+            'location' => 'AUDITORIUM',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 4 PK - RA 011',
+            'sku' => 'RA 011',
+            'location' => 'AUDITORIUM',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 014',
+            'sku' => 'RA 014',
+            'location' => 'R. TRAINING',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 015',
+            'sku' => 'RA 015',
+            'location' => 'R. TRAINING',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 016',
+            'sku' => 'RA 016',
+            'location' => 'R. ARJUNO',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 017',
+            'sku' => 'RA 017',
+            'location' => 'R. MERBABU',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 018',
+            'sku' => 'RA 018',
+            'location' => 'R. MERBABU',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 042',
+            'sku' => 'RA 042',
+            'location' => 'SEKCOR',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 043',
+            'sku' => 'RA 043',
+            'location' => 'SEKERTARIS',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 2 PK - RA 044',
+            'sku' => 'RA 044',
+            'location' => 'DIREKTUR 1',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 2 PK - RA 045',
+            'sku' => 'RA 045',
+            'location' => 'DIREKTUR 2',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 2 PK - RA 046',
+            'sku' => 'RA 046',
+            'location' => 'DIREKTUR 3',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RA 047',
+            'sku' => 'RA 047',
+            'location' => 'DIREKTUR 4',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 2 PK - RA048',
+            'sku' => 'RA048',
+            'location' => 'PRESDIR',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 3 PK - RA 049',
+            'sku' => 'RA 049',
+            'location' => 'R. MEETING EXC',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 3 PK - RA 050',
+            'sku' => 'RA 050',
+            'location' => 'R. MEETING EXC',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 3 PK - RA 051',
+            'sku' => 'RA 051',
+            'location' => 'R. MEETING EXC',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RB002',
+            'sku' => 'RB002',
+            'location' => 'R. SPSI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 2 PK - RB003',
+            'sku' => 'RB003',
+            'location' => 'R. KLINIK',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 2 PK - RB004',
+            'sku' => 'RB004',
+            'location' => 'R. KERINCI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 2 PK - RB005',
+            'sku' => 'RB005',
+            'location' => 'R. LAKTASI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RB006',
+            'sku' => 'RB006',
+            'location' => 'R. KELUD',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RB007',
+            'sku' => 'RB007',
+            'location' => 'R. PAPANDAYAN',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 3 PK - RB008',
+            'sku' => 'RB008',
+            'location' => 'R. GYM',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - RB009',
+            'sku' => 'RB009',
+            'location' => 'R. PERSONALIA',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1,5 - RB010',
+            'sku' => 'RB010',
+            'location' => 'R. INVOICE',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 3 PK - RB011',
+            'sku' => 'RB011',
+            'location' => 'LOBBY UTAMA',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 2 PK - RB012',
+            'sku' => 'RB012',
+            'location' => 'R. RINJANI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 2 PK - RB013',
+            'sku' => 'RB013',
+            'location' => 'R. SEMERU',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 2 PK - RB014',
+            'sku' => 'RB014',
+            'location' => 'R. SEMERU',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - RB021',
+            'sku' => 'RB021',
+            'location' => 'R. MERAPI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - RB022',
+            'sku' => 'RB022',
+            'location' => 'R. CEREMAI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - RB023',
+            'sku' => 'RB023',
+            'location' => 'R. GALUNGGUNG',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - RB024',
+            'sku' => 'RB024',
+            'location' => 'R. GUDANG PURCH',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1.5 PK - RB025',
+            'sku' => 'RB025',
+            'location' => 'POS 2',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GB001',
+            'sku' => 'GB001',
+            'location' => 'MAINTENANCE',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GB002',
+            'sku' => 'GB002',
+            'location' => 'MAINTENANCE',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB003',
+            'sku' => 'GB003',
+            'location' => 'ASSET MANAGEMENT',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1,5 PK - GB004',
+            'sku' => 'GB004',
+            'location' => 'GUDANG ATK',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 2 PK - GB005',
+            'sku' => 'GB005',
+            'location' => 'DOJO',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC CASSET 2 PK - GB006',
+            'sku' => 'GB006',
+            'location' => 'DOJO',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1,5 PK - GB007',
+            'sku' => 'GB007',
+            'location' => 'DOJO',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GB008',
+            'sku' => 'GB008',
+            'location' => 'DOJO',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GB009',
+            'sku' => 'GB009',
+            'location' => 'KOPERASI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB010',
+            'sku' => 'GB010',
+            'location' => 'KOPERASI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GB011',
+            'sku' => 'GB011',
+            'location' => 'MANUFACTUR',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GB012',
+            'sku' => 'GB012',
+            'location' => 'MANUFACTUR',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB013',
+            'sku' => 'GB013',
+            'location' => 'MANUFACTUR',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB014',
+            'sku' => 'GB014',
+            'location' => 'MANUFACTUR',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB015',
+            'sku' => 'GB015',
+            'location' => 'R. QA',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GB016',
+            'sku' => 'GB016',
+            'location' => 'R. QA',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GB017',
+            'sku' => 'GB017',
+            'location' => 'R. QA',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB018',
+            'sku' => 'GB018',
+            'location' => 'R. QA',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1,5 PK - GB025',
+            'sku' => 'GB025',
+            'location' => 'R. LAB METALURGI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1,5 PK - GB026',
+            'sku' => 'GB026',
+            'location' => 'R. LAB METALURGI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1,5 PK - GB028',
+            'sku' => 'GB028',
+            'location' => 'R. ENG 2W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB031',
+            'sku' => 'GB031',
+            'location' => 'R. ENG 2W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GB032',
+            'sku' => 'GB032',
+            'location' => 'R. ENG 2W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GB034',
+            'sku' => 'GB034',
+            'location' => 'OFFICE 4W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB035',
+            'sku' => 'GB035',
+            'location' => 'OFFICE 4W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB036',
+            'sku' => 'GB036',
+            'location' => 'OFFICE 4 W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB038',
+            'sku' => 'GB038',
+            'location' => 'DOJO MTC',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB039',
+            'sku' => 'GB039',
+            'location' => 'DOJO',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB040',
+            'sku' => 'GB040',
+            'location' => 'OFFICE QUALITY BARU',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GB041',
+            'sku' => 'GB041',
+            'location' => 'OFFICE QUALITY BARU',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GB042',
+            'sku' => 'GB042',
+            'location' => 'OFFICE QUALITY BARU',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GB043',
+            'sku' => 'GB043',
+            'location' => 'OFFICE QUALITY BARU',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GC007',
+            'sku' => 'GC007',
+            'location' => 'R. CHEMICAL ( CED )',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GC008',
+            'sku' => 'GC008',
+            'location' => 'R. INCOMING ( CED )',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GC011',
+            'sku' => 'GC011',
+            'location' => 'KOPERASI GEDUNG BARU',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GD002',
+            'sku' => 'GD002',
+            'location' => 'R. OBEYA ( ENG 4W )',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GD003',
+            'sku' => 'GD003',
+            'location' => 'SERVER ENG 4W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GD004',
+            'sku' => 'GD004',
+            'location' => 'R. OBEYA ( ENG 4W )',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GD005',
+            'sku' => 'GD005',
+            'location' => 'R. OFFICE ENG 4W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GD006',
+            'sku' => 'GD006',
+            'location' => 'DESIGN ENG 4W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GD007',
+            'sku' => 'GD007',
+            'location' => 'PP MEMBER ENG 4W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1,5 PK - GD011',
+            'sku' => 'GD011',
+            'location' => 'R. ENG 4W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GD012',
+            'sku' => 'GD012',
+            'location' => 'R. ENG 4W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GD013',
+            'sku' => 'GD013',
+            'location' => 'R. ENG 4W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GD014',
+            'sku' => 'GD014',
+            'location' => 'R. ENG 4W',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GD015',
+            'sku' => 'GD015',
+            'location' => 'R. PE FAST',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GD017',
+            'sku' => 'GD017',
+            'location' => 'R. OFFICE FAST DOKING',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GD018',
+            'sku' => 'GD018',
+            'location' => 'R. OFFICE FAST DOKING',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GD019',
+            'sku' => 'GD019',
+            'location' => 'R. OFFICE FAST DOKING',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GD020',
+            'sku' => 'GD020',
+            'location' => 'R. OFFICE FAST DOKING',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GD030',
+            'sku' => 'GD030',
+            'location' => 'R. PANEL CHILLER BATRE PAC',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GD031',
+            'sku' => 'GD031',
+            'location' => 'PENDINGIN DUCTING HT 01',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GE001',
+            'sku' => 'GE001',
+            'location' => 'R. OFFICE AZP',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GE002',
+            'sku' => 'GE002',
+            'location' => 'R. OFFICE AZP',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GE003',
+            'sku' => 'GE003',
+            'location' => 'PANEL AZP',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GE004',
+            'sku' => 'GE004',
+            'location' => 'OFFICE LAB AZP',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GE005',
+            'sku' => 'GE005',
+            'location' => 'OFFICE AZP',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GF001',
+            'sku' => 'GF001',
+            'location' => 'OFFICE HYUNDAI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GF002',
+            'sku' => 'GF002',
+            'location' => 'OFFICE HYUNDAI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 1 PK - GF003',
+            'sku' => 'GF003',
+            'location' => 'OFFICE HYUNDAI',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GG001',
+            'sku' => 'GG001',
+            'location' => 'OFFICE D 03',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - GG002',
+            'sku' => 'GG002',
+            'location' => 'OFFICE D 03',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - 3W001',
+            'sku' => '3W001',
+            'location' => 'OFFICE ATAS',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - 3W002',
+            'sku' => '3W002',
+            'location' => 'OFFICE ATAS',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - 3W003',
+            'sku' => '3W003',
+            'location' => 'OFFICE ATAS',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC SPLITE 2 PK - 3W004',
+            'sku' => '3W004',
+            'location' => 'OFFICE ATAS',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC  15 PK - AICOOL1',
+            'sku' => 'AICOOL1',
+            'location' => 'GEDUNG C',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC  15 PK - AICOOL2',
+            'sku' => 'AICOOL2',
+            'location' => 'GEDUNG C',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+        $assets[] = Asset::create([
+            'name' => 'AC  15 PK - AICOOL3',
+            'sku' => 'AICOOL3',
+            'location' => 'GEDUNG C',
+            'brand' => 'Unknown',
+            'category' => 'Air Conditioner',
+            'maintenance_interval_days' => 30,
+            'status' => 'active',
+        ]);
+
+
+        // 4. Periods
+        $period1 = MaintenancePeriod::create(['name' => 'Januari 2026', 'month' => 1, 'year' => 2026, 'status' => 'completed']);
+        $period2 = MaintenancePeriod::create(['name' => 'Februari 2026', 'month' => 2, 'year' => 2026, 'status' => 'active']);
+
+        // 5. Tickets
+        $ticket1 = Ticket::create([
+            'title' => 'AC Kurang Dingin',
+            'description' => 'AC di ruang meeting kurang dingin.',
+            'status' => 'open',
+            'issue_category' => 'repair',
+            'priority' => 'high',
+            'asset_id' => $assets[0]->id,
+            'reporter_name' => 'Budi',
+            'assigned_technician_id' => $tech->id,
+            'assigned_technician_name' => $tech->name,
+        ]);
+
+        // 6. Maintenance Schedules
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[0]->id,
+            'scheduled_date' => '2026-01-16',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[1]->id,
+            'scheduled_date' => '2026-01-16',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[2]->id,
+            'scheduled_date' => '2026-01-16',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[3]->id,
+            'scheduled_date' => '2026-01-16',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[4]->id,
+            'scheduled_date' => '2026-01-16',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[5]->id,
+            'scheduled_date' => '2026-01-16',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[6]->id,
+            'scheduled_date' => '2026-01-16',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[7]->id,
+            'scheduled_date' => '2026-01-16',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[8]->id,
+            'scheduled_date' => '2026-01-17',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[9]->id,
+            'scheduled_date' => '2026-01-17',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[10]->id,
+            'scheduled_date' => '2026-01-17',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[11]->id,
+            'scheduled_date' => '2026-01-17',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[12]->id,
+            'scheduled_date' => '2026-01-17',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[13]->id,
+            'scheduled_date' => '2026-01-17',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[14]->id,
+            'scheduled_date' => '2026-01-17',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[15]->id,
+            'scheduled_date' => '2026-01-17',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[16]->id,
+            'scheduled_date' => '2026-01-24',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[17]->id,
+            'scheduled_date' => '2026-01-24',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[18]->id,
+            'scheduled_date' => '2026-01-24',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[19]->id,
+            'scheduled_date' => '2026-01-24',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[20]->id,
+            'scheduled_date' => '2026-01-24',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[21]->id,
+            'scheduled_date' => '2026-01-24',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[22]->id,
+            'scheduled_date' => '2026-01-24',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[23]->id,
+            'scheduled_date' => '2026-01-24',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[24]->id,
+            'scheduled_date' => '2026-01-24',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[25]->id,
+            'scheduled_date' => '2026-01-24',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[26]->id,
+            'scheduled_date' => '2026-01-28',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[27]->id,
+            'scheduled_date' => '2026-01-28',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[28]->id,
+            'scheduled_date' => '2026-01-28',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[29]->id,
+            'scheduled_date' => '2026-01-28',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[30]->id,
+            'scheduled_date' => '2026-01-28',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[31]->id,
+            'scheduled_date' => '2026-01-28',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[32]->id,
+            'scheduled_date' => '2026-01-28',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[33]->id,
+            'scheduled_date' => '2026-01-28',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[34]->id,
+            'scheduled_date' => '2026-01-13',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[35]->id,
+            'scheduled_date' => '2026-01-13',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[36]->id,
+            'scheduled_date' => '2026-01-13',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[37]->id,
+            'scheduled_date' => '2026-01-13',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[38]->id,
+            'scheduled_date' => '2026-01-13',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[39]->id,
+            'scheduled_date' => '2026-01-13',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[40]->id,
+            'scheduled_date' => '2026-01-13',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[41]->id,
+            'scheduled_date' => '2026-01-13',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[42]->id,
+            'scheduled_date' => '2026-01-15',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[43]->id,
+            'scheduled_date' => '2026-01-15',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[44]->id,
+            'scheduled_date' => '2026-01-15',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[45]->id,
+            'scheduled_date' => '2026-01-15',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[46]->id,
+            'scheduled_date' => '2026-01-15',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[47]->id,
+            'scheduled_date' => '2026-01-15',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[48]->id,
+            'scheduled_date' => '2026-01-15',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[49]->id,
+            'scheduled_date' => '2026-01-15',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[50]->id,
+            'scheduled_date' => '2026-01-20',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[51]->id,
+            'scheduled_date' => '2026-01-20',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[52]->id,
+            'scheduled_date' => '2026-01-20',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[53]->id,
+            'scheduled_date' => '2026-01-20',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[54]->id,
+            'scheduled_date' => '2026-01-20',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[55]->id,
+            'scheduled_date' => '2026-01-20',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[56]->id,
+            'scheduled_date' => '2026-01-20',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[57]->id,
+            'scheduled_date' => '2026-01-20',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[58]->id,
+            'scheduled_date' => '2026-01-22',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[59]->id,
+            'scheduled_date' => '2026-01-22',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[60]->id,
+            'scheduled_date' => '2026-01-22',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[61]->id,
+            'scheduled_date' => '2026-01-22',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[62]->id,
+            'scheduled_date' => '2026-01-22',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[63]->id,
+            'scheduled_date' => '2026-01-22',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[64]->id,
+            'scheduled_date' => '2026-01-22',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[65]->id,
+            'scheduled_date' => '2026-01-22',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[66]->id,
+            'scheduled_date' => '2026-01-27',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[67]->id,
+            'scheduled_date' => '2026-01-27',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[68]->id,
+            'scheduled_date' => '2026-01-27',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[69]->id,
+            'scheduled_date' => '2026-01-27',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[70]->id,
+            'scheduled_date' => '2026-01-27',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[71]->id,
+            'scheduled_date' => '2026-01-27',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[72]->id,
+            'scheduled_date' => '2026-01-27',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[73]->id,
+            'scheduled_date' => '2026-01-27',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[74]->id,
+            'scheduled_date' => '2026-01-29',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[75]->id,
+            'scheduled_date' => '2026-01-29',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[76]->id,
+            'scheduled_date' => '2026-01-29',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[77]->id,
+            'scheduled_date' => '2026-01-29',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[78]->id,
+            'scheduled_date' => '2026-01-29',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[79]->id,
+            'scheduled_date' => '2026-01-29',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[80]->id,
+            'scheduled_date' => '2026-01-29',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[81]->id,
+            'scheduled_date' => '2026-01-29',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[82]->id,
+            'scheduled_date' => '2026-01-09',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[83]->id,
+            'scheduled_date' => '2026-01-09',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[84]->id,
+            'scheduled_date' => '2026-01-09',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[85]->id,
+            'scheduled_date' => '2026-01-09',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[86]->id,
+            'scheduled_date' => '2026-01-09',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[87]->id,
+            'scheduled_date' => '2026-01-09',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[88]->id,
+            'scheduled_date' => '2026-01-09',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[89]->id,
+            'scheduled_date' => '2026-01-09',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[90]->id,
+            'scheduled_date' => '2026-01-14',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[91]->id,
+            'scheduled_date' => '2026-01-14',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[92]->id,
+            'scheduled_date' => '2026-01-14',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[93]->id,
+            'scheduled_date' => '2026-01-14',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[94]->id,
+            'scheduled_date' => '2026-01-14',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[95]->id,
+            'scheduled_date' => '2026-01-14',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[96]->id,
+            'scheduled_date' => '2026-01-07',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[97]->id,
+            'scheduled_date' => '2026-01-07',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[98]->id,
+            'scheduled_date' => '2026-01-07',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[99]->id,
+            'scheduled_date' => '2026-01-07',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[100]->id,
+            'scheduled_date' => '2026-01-07',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[101]->id,
+            'scheduled_date' => '2026-01-07',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[102]->id,
+            'scheduled_date' => '2026-01-07',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[103]->id,
+            'scheduled_date' => '2026-01-07',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[104]->id,
+            'scheduled_date' => '2026-01-14',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[105]->id,
+            'scheduled_date' => '2026-01-14',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[106]->id,
+            'scheduled_date' => '2026-01-19',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[107]->id,
+            'scheduled_date' => '2026-01-19',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[108]->id,
+            'scheduled_date' => '2026-01-19',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[109]->id,
+            'scheduled_date' => '2026-01-19',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[110]->id,
+            'scheduled_date' => '2026-01-19',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[111]->id,
+            'scheduled_date' => '2026-01-19',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+        MaintenanceSchedule::create([
+            'asset_id' => $assets[112]->id,
+            'scheduled_date' => '2026-01-19',
+            'status' => 'scheduled',
+            'period_id' => $period1->id,
+        ]);
+
+
+        $this->command->info('Dummy and Real data seeded successfully! Login with admin123 / admin123');
+    }
+}

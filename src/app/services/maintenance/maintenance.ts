@@ -1,21 +1,26 @@
 import { Injectable } from '@angular/core';
-import { SupabaseService } from '../supabase/supabase';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { TicketService } from '../ticket/ticket';
 import { AuditService } from '../audit/audit';
+import { ErrorHandlerService } from '../error-handler/error-handler.service';
 
 export interface MaintenanceSchedule {
     id?: number;
     asset_id: number;
     scheduled_date: string;
     completed_date?: string;
-    status: 'scheduled' | 'in_progress' | 'completed' | 'missed' | 'skipped';
+    status: 'scheduled' | 'in_progress' | 'completed' | 'missed' | 'skipped' | string;
     ticket_id?: number;
     technician_notes?: string;
+    period_id?: number;
     created_at?: string;
     updated_at?: string;
 
     // Joins
-    assets?: {
+    asset?: {
+        id: number;
         name: string;
         location: string;
         sku: string;
@@ -23,105 +28,113 @@ export interface MaintenanceSchedule {
         pk?: string;
         maintenance_interval_days: number;
     };
+    assets?: any; // Compatibility
 }
 
 @Injectable({
     providedIn: 'root'
 })
 export class MaintenanceService {
+    private apiUrl = `${environment.apiUrl}/maintenance`;
 
     constructor(
-        private supabase: SupabaseService,
+        private http: HttpClient,
         private ticketService: TicketService,
-        private audit: AuditService
+        private audit: AuditService,
+        private errorHandler: ErrorHandlerService
     ) { }
 
     /**
      * Get maintenance schedules.
-     * @param filter 'upcoming' | 'history' | 'all'
+     * @param filter 'upcoming' | 'history' | 'all' | 'period'
      */
     async getSchedules(filter: 'upcoming' | 'history' | 'all' | 'period' = 'upcoming', periodId?: number) {
-        let query = this.supabase.client
-            .from('maintenance_schedules')
-            .select('*, assets(name, location, sku, brand, pk, maintenance_interval_days)')
-            .order('scheduled_date', { ascending: true });
+        try {
+            let url = this.apiUrl;
+            if (filter === 'period' && periodId) {
+                url += `?period_id=${periodId}`;
+            }
 
-        // IMPORTANT: For 'all' tab, we want EVERYTHING (including past scheduled items)
-        if (filter === 'period' && periodId) {
-            query = query.eq('period_id', periodId);
-        } else if (filter === 'upcoming') {
-            // Only show non-completed items
-            query = query.neq('status', 'completed').neq('status', 'skipped');
-        } else if (filter === 'history') {
-            query = query.in('status', ['completed', 'skipped']);
+            const schedules = await firstValueFrom(this.http.get<MaintenanceSchedule[]>(url));
+
+            // Map asset relationship to keep compatibility with old code relying on 'assets'
+            let processedSchedules = schedules.map(s => {
+                if (s.asset) s.assets = s.asset;
+                return s;
+            });
+
+            // Client-side filtering to mimic Supabase logic
+            if (filter === 'upcoming') {
+                processedSchedules = processedSchedules.filter(s => s.status !== 'completed' && s.status !== 'skipped');
+            } else if (filter === 'history') {
+                processedSchedules = processedSchedules.filter(s => s.status === 'completed' || s.status === 'skipped');
+            }
+
+            return { data: processedSchedules, error: null };
+        } catch (error: any) {
+            this.errorHandler.handleError(error, 'Gagal mengambil jadwal maintenance');
+            return { data: null, error };
         }
-        // else: filter === 'all', no additional filters
-
-        return await query;
-    }
-
-    /**
-     * TEST: Direct query without filters
-     */
-    async testDirectQuery() {
-        return await this.supabase.client
-            .from('maintenance_schedules')
-            .select('*, assets(name, sku)', { count: 'exact' })
-            .limit(5);
     }
 
     /**
      * Get assets due for maintenance in the next X days.
-     * This checks the `next_maintenance_date` on the ASSETS table.
+     * Note: This fetches all assets and filters client-side for MVP simplicity
      */
     async getAssetsDue(days: number = 7) {
-        const today = new Date();
-        const futureDate = new Date();
-        futureDate.setDate(today.getDate() + days);
+        try {
+            const today = new Date();
+            const futureDate = new Date();
+            futureDate.setDate(today.getDate() + days);
+            const targetDateStr = futureDate.toISOString().split('T')[0];
 
-        return await this.supabase.client
-            .from('assets')
-            .select('*')
-            .lte('next_maintenance_date', futureDate.toISOString().split('T')[0])
-            .order('next_maintenance_date', { ascending: true });
+            const response = await firstValueFrom(this.http.get<any[]>(`${environment.apiUrl}/assets`));
+
+            const dueAssets = response.filter(asset => {
+                if (!asset.next_maintenance_date) return false;
+                return asset.next_maintenance_date <= targetDateStr;
+            }).sort((a, b) => new Date(a.next_maintenance_date).getTime() - new Date(b.next_maintenance_date).getTime());
+
+            return { data: dueAssets, error: null };
+        } catch (error: any) {
+            return { data: null, error };
+        }
     }
 
     /**
      * Generate a PM Ticket for an asset.
-     * 1. Create Ticket
-     * 2. Create Maintenance Schedule Record
      */
     async generatePMTicket(asset: any) {
         try {
             // 1. Create Ticket
             const description = `Preventive Maintenance Rutin untuk ${asset.name} (${asset.maintenance_interval_days} hari)`;
-            const { data: ticket, error: ticketError } = await this.ticketService.createTicket({
+            const ticketResult = await this.ticketService.createTicket({
                 asset_id: asset.id,
-                issue_category: 'preventive_maintenance', // Need to handle this new category in UI maybe
+                issue_category: 'preventive_maintenance',
                 description: description,
                 reporter_name: 'System Auto-Scheduler',
-                status: 'open', // Direct to open for technician
+                status: 'open',
                 reporter_nik: 'SYSTEM'
-            } as any); // Type cast if needed
+            } as any);
 
-            if (ticketError) throw ticketError;
-            if (!ticket) throw new Error("Failed to create ticket");
+            if (ticketResult.error) throw ticketResult.error;
+            if (!ticketResult.data) throw new Error("Failed to create ticket");
 
-            const ticketId = (ticket as any)[0]?.id || (ticket as any).id; // Handle array return if any
+            const ticketId = ticketResult.data.id;
 
             // 2. Create Schedule Record
-            const { error: scheduleError } = await this.supabase.client
-                .from('maintenance_schedules')
-                .insert({
-                    asset_id: asset.id,
-                    scheduled_date: new Date().toISOString().split('T')[0], // Scheduled for Today
-                    status: 'in_progress', // Created and immediately active
-                    ticket_id: ticketId
-                });
+            const payload = {
+                asset_id: asset.id,
+                scheduled_date: new Date().toISOString().split('T')[0],
+                status: 'in_progress',
+                ticket_id: ticketId
+            };
 
-            if (scheduleError) throw scheduleError;
+            await firstValueFrom(this.http.post(this.apiUrl, payload));
 
-            await this.audit.logAction('PM_GENERATED', 'maintenance_schedules', asset.id, { ticket_id: ticketId });
+            try {
+                await this.audit.logAction('PM_GENERATED', 'maintenance_schedules', asset.id, { ticket_id: ticketId });
+            } catch (e) { }
 
             return { success: true };
 
@@ -135,106 +148,97 @@ export class MaintenanceService {
      * Create a single maintenance schedule manually
      */
     async createSchedule(assetId: number, scheduledDate: string, periodId?: number) {
-        const payload: any = {
-            asset_id: assetId,
-            scheduled_date: scheduledDate,
-            status: 'scheduled'
-        };
+        try {
+            const payload: any = {
+                asset_id: assetId,
+                scheduled_date: scheduledDate,
+                status: 'scheduled'
+            };
 
-        if (periodId) {
-            payload.period_id = periodId;
+            if (periodId) {
+                payload.period_id = periodId;
+            }
+
+            const data = await firstValueFrom(this.http.post<MaintenanceSchedule>(this.apiUrl, payload));
+
+            try {
+                await this.audit.logAction('SCHEDULE_CREATED', 'maintenance_schedules', assetId, {
+                    scheduled_date: scheduledDate
+                });
+            } catch (e) { }
+
+            return { data: [data], error: null }; // Wrap in array for compatibility if needed
+        } catch (error: any) {
+            this.errorHandler.handleError(error, 'Gagal membuat jadwal');
+            return { data: null, error };
         }
-
-        const { data, error } = await this.supabase.client
-            .from('maintenance_schedules')
-            .insert(payload)
-            .select();
-
-        if (error) return { error };
-
-        await this.audit.logAction('SCHEDULE_CREATED', 'maintenance_schedules', assetId, {
-            scheduled_date: scheduledDate
-        });
-
-        return { data };
     }
 
     /**
      * Create multiple schedules for the same date (bulk creation)
      */
     async createBulkSchedules(assetIds: number[], scheduledDate: string, periodId?: number) {
-        const schedules = assetIds.map(assetId => {
-            const payload: any = {
-                asset_id: assetId,
-                scheduled_date: scheduledDate,
-                status: 'scheduled' as const
-            };
-            if (periodId) {
-                payload.period_id = periodId;
-            }
-            return payload;
-        });
+        try {
+            // Laravel MVP doesn't have bulk store yet, loop through them
+            const promises = assetIds.map(assetId => this.createSchedule(assetId, scheduledDate, periodId));
+            const results = await Promise.all(promises);
 
-        const { data, error } = await this.supabase.client
-            .from('maintenance_schedules')
-            .insert(schedules)
-            .select();
+            // Check for errors
+            const hasError = results.find(r => r.error);
+            if (hasError) throw hasError.error;
 
-        if (error) return { error };
+            try {
+                await this.audit.logAction('BULK_SCHEDULE_CREATED', 'maintenance_schedules', 0, {
+                    count: assetIds.length,
+                    scheduled_date: scheduledDate
+                });
+            } catch (e) { }
 
-        await this.audit.logAction('BULK_SCHEDULE_CREATED', 'maintenance_schedules', 0, {
-            count: assetIds.length,
-            scheduled_date: scheduledDate
-        });
+            return { data: results.map(r => r.data?.[0]), error: null };
+        } catch (error: any) {
+            this.errorHandler.handleError(error, 'Gagal membuat jadwal massal');
+            return { data: null, error };
+        }
+    }
 
-        return { data };
+    /**
+     * Create multiple schedules with INDIVIDUAL dates (Mixed Bulk)
+     */
+    async createVariedBulkSchedule(items: { asset_id: number, scheduled_date: string }[]) {
+        try {
+            const promises = items.map(item => this.createSchedule(item.asset_id, item.scheduled_date));
+            const results = await Promise.all(promises);
+
+            const hasError = results.find(r => r.error);
+            if (hasError) throw hasError.error;
+
+            try {
+                await this.audit.logAction('BULK_SCHEDULE_VARIED', 'maintenance_schedules', 0, {
+                    count: items.length
+                });
+            } catch (e) { }
+
+            return { data: results.map(r => r.data?.[0]), error: null };
+        } catch (error: any) {
+            this.errorHandler.handleError(error, 'Gagal membuat jadwal massal bervariasi');
+            return { data: null, error };
+        }
     }
 
     /**
      * Complete a maintenance schedule
      */
     async completeMaintenance(id: number, notes: string) {
-        // 1. Update Schedule
-        const { error } = await this.supabase.client
-            .from('maintenance_schedules')
-            .update({
-                status: 'completed',
-                completed_date: new Date().toISOString(),
-                technician_notes: notes
-            })
-            .eq('id', id);
-
-        if (error) return { error };
-
-        // 2. Trigger DB Trigger usually updates next_maintenance_date, 
-        // but since we don't have triggers yet, let's update asset manually in client or ensure DB does it.
-        // Let's rely on client logic for MVP to be safe.
-
-        // Fetch schedule to get asset_id
-        const { data: schedule } = await this.supabase.client.from('maintenance_schedules').select('asset_id').eq('id', id).single();
-        if (schedule) {
-            await this.updateNextMaintenanceDate(schedule.asset_id);
+        try {
+            const data = await firstValueFrom(this.http.post(`${this.apiUrl}/${id}/complete`, { notes }));
+            return { data: true, error: null };
+        } catch (error: any) {
+            this.errorHandler.handleError(error, 'Gagal menyelesaikan jadwal');
+            return { data: null, error };
         }
-
-        return { data: true };
     }
 
     async updateNextMaintenanceDate(assetId: number) {
-        // Get asset interval
-        const { data: asset } = await this.supabase.client
-            .from('assets')
-            .select('maintenance_interval_days')
-            .eq('id', assetId)
-            .single();
-
-        if (!asset || !asset.maintenance_interval_days) return;
-
-        const nextDate = new Date();
-        nextDate.setDate(nextDate.getDate() + asset.maintenance_interval_days);
-
-        await this.supabase.client.from('assets').update({
-            last_maintenance_date: new Date().toISOString(),
-            next_maintenance_date: nextDate.toISOString()
-        }).eq('id', assetId);
+        // Handled entirely by Laravel backend endpoint /complete
     }
 }

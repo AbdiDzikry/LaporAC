@@ -23,7 +23,7 @@ export class LoginComponent {
     private route: ActivatedRoute
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
@@ -37,7 +37,7 @@ export class LoginComponent {
 
     try {
       const result = await this.authService.signIn(email, password);
-      
+
       if (result.success) {
         // Smart Redirect
         const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';

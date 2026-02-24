@@ -64,6 +64,24 @@ export class PeriodsListComponent implements OnInit {
 
             if (error) throw error;
             this.periods = data || [];
+
+            // Identify overdue periods
+            const today = new Date();
+            const currentMonth = today.getMonth() + 1;
+            const currentYear = today.getFullYear();
+
+            this.periods.forEach(p => {
+                if (p.status === 'active' || p.status === 'draft') {
+                    if (p.year < currentYear || (p.year === currentYear && p.month < currentMonth)) {
+                        const total = p.total_schedules || 0;
+                        const completed = p.completed_schedules || 0;
+                        if (completed < total || total === 0) {
+                            p.status = 'overdue';
+                        }
+                    }
+                }
+            });
+
         } catch (err) {
             console.error(err);
             this.toast.show('Gagal memuat periode', 'error');
@@ -125,14 +143,12 @@ export class PeriodsListComponent implements OnInit {
     async migrateData() {
         this.loading = true;
         try {
-            const result = await this.periodService.migrateJan2026();
-            if (result.error) throw new Error(result.error instanceof Object ? JSON.stringify(result.error) : result.error);
-
-            this.toast.show('Data Januari 2026 berhasil dimigrasi', 'success');
+            // this.periodService.migrateJan2026(); 
+            this.toast.show('Migrasi data dinonaktifkan di backend lokal', 'warning');
             await this.loadPeriods();
         } catch (err) {
             console.error(err);
-            this.toast.show('Gagal migrasi data (Cek apakah tabel maintenance_periods sudah ada?)', 'error');
+            this.toast.show('Gagal migrasi data', 'error');
         } finally {
             this.loading = false;
         }
@@ -162,7 +178,8 @@ export class PeriodsListComponent implements OnInit {
             'draft': 'bg-gray-100 text-gray-700 border-gray-300',
             'active': 'bg-blue-100 text-blue-700 border-blue-300',
             'completed': 'bg-green-100 text-green-700 border-green-300',
-            'archived': 'bg-purple-100 text-purple-700 border-purple-300'
+            'archived': 'bg-purple-100 text-purple-700 border-purple-300',
+            'overdue': 'bg-red-100 text-red-700 border-red-300'
         };
         return colors[status] || colors['draft'];
     }
@@ -172,7 +189,8 @@ export class PeriodsListComponent implements OnInit {
             'draft': 'Draft',
             'active': 'Aktif',
             'completed': 'Selesai',
-            'archived': 'Arsip'
+            'archived': 'Arsip',
+            'overdue': 'Terlewat'
         };
         return labels[status] || status;
     }

@@ -45,56 +45,66 @@
                     </div>
                 </div>
 
-                <!-- ROW 2: JENIS & KAPASITAS -->
+                <!-- ROW 2: JENIS & MERK -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Jenis
-                            Unit</label>
+                            Unit (Package)</label>
                         <div class="relative">
-                            <input formControlName="brand" type="text" list="jenisOptions" placeholder="SPLITE / CASSET"
+                            <input formControlName="category" type="text" list="jenisOptions"
+                                placeholder="SPLITE / CASSETTE / STANDING"
                                 class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
                             <datalist id="jenisOptions">
                                 <option value="SPLITE">
-                                <option value="CASSET">
+                                <option value="CASSETTE">
                                 <option value="STANDING">
+                                <option value="PORTABLE">
                             </datalist>
                         </div>
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Kapasitas
-                            (PK)</label>
-                        <input formControlName="pk" type="text" placeholder="2 PK"
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Merk
+                            AC</label>
+                        <input formControlName="brand" type="text" placeholder="DAIKIN / SHARP / PANASONIC"
                             class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
                     </div>
                 </div>
 
-                <!-- ROW 3: PURCHASE & VENDOR -->
+                <!-- ROW 3: PK & VENDOR -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Kapasitas
+                            (PK)</label>
+                        <input formControlName="pk" type="text" placeholder="1 PK / 2 PK"
+                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
+                    </div>
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nama
                             Vendor</label>
                         <input formControlName="vendor_name" type="text" placeholder="CV. AC Sejahtera"
                             class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
                     </div>
+                </div>
+
+                <!-- ROW 4: PRICE & WARRANTY DATE -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Harga Beli
                             (Rp)</label>
                         <input formControlName="purchase_price" type="number" placeholder="4500000"
                             class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
                     </div>
-                </div>
-
-                <!-- ROW 4: WARRANTY DATE -->
-                <div class="space-y-1.5">
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Habis Masa
-                        Garansi</label>
-                    <mat-form-field appearance="outline" class="w-full custom-datepicker">
-                        <mat-label>Pilih Tanggal</mat-label>
-                        <input matInput [matDatepicker]="warrantyPicker" formControlName="warranty_expiry_date">
-                        <mat-datepicker-toggle matIconSuffix [for]="warrantyPicker"></mat-datepicker-toggle>
-                        <mat-datepicker #warrantyPicker></mat-datepicker>
-                    </mat-form-field>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Habis Masa
+                            Garansi</label>
+                        <mat-form-field appearance="outline" class="w-full custom-datepicker">
+                            <mat-label>Pilih Tanggal</mat-label>
+                            <input matInput [matDatepicker]="warrantyPicker" formControlName="warranty_expiry_date">
+                            <mat-datepicker-toggle matIconSuffix [for]="warrantyPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #warrantyPicker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">

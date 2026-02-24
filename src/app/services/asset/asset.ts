@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { SupabaseService } from '../supabase/supabase';
-import { AuditService } from '../audit/audit'; // Import
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { AuditService } from '../audit/audit';
 import { ErrorHandlerService } from '../error-handler/error-handler.service';
 
 export interface Asset {
@@ -9,12 +11,13 @@ export interface Asset {
   sku: string;
   name: string;
   brand: string;
+  category?: string;
   location: string;
   pk: string;
   purchase_date?: string;
   last_maintenance_date?: string;
   next_maintenance_date?: string; // Next scheduled maintenance date (YYYY-MM-DD)
-  status: 'good' | 'broken' | 'maintenance';
+  status: 'good' | 'broken' | 'maintenance' | 'active' | string;
 
   // Lifecycle Financials
   purchase_price?: number;
@@ -23,6 +26,8 @@ export interface Asset {
   useful_life_years?: number; // Default 5
   residual_value?: number; // Scrap value
   is_active?: boolean; // False if disposed
+
+  maintenance_interval_days?: number;
 }
 
 export interface AssetDisposal {
@@ -39,107 +44,91 @@ export interface AssetDisposal {
   providedIn: 'root'
 })
 export class AssetService {
+  private apiUrl = `${environment.apiUrl}/assets`;
 
   constructor(
-    private supabase: SupabaseService,
-    private audit: AuditService, // Inject
+    private http: HttpClient,
+    private audit: AuditService,
     private errorHandler: ErrorHandlerService
   ) { }
 
   async getAssets() {
     try {
-      return await this.supabase.client
-        .from('assets')
-        .select('*')
-        .order('created_at', { ascending: false });
-    } catch (error) {
+      const data = await firstValueFrom(this.http.get<Asset[]>(this.apiUrl));
+      return { data, error: null };
+    } catch (error: any) {
       this.errorHandler.handleError(error, 'Gagal mengambil daftar aset');
-      throw error;
+      return { data: null, error };
     }
   }
 
   async getAssetById(id: number) {
     try {
-      return await this.supabase.client
-        .from('assets')
-        .select('*')
-        .eq('id', id)
-        .single();
-    } catch (error) {
+      const data = await firstValueFrom(this.http.get<Asset>(`${this.apiUrl}/${id}`));
+      return { data, error: null };
+    } catch (error: any) {
       this.errorHandler.handleError(error, 'Gagal mengambil detail aset');
-      throw error;
+      return { data: null, error };
     }
   }
 
   async createAsset(asset: Asset) {
     try {
-      const response = await this.supabase.client
-        .from('assets')
-        .insert(asset)
-        .select()
-        .single();
+      const data = await firstValueFrom(this.http.post<Asset>(this.apiUrl, asset));
 
-      if (!response.error && response.data) {
-        await this.audit.logAction('ASSET_CREATED', 'assets', response.data.id, { sku: asset.sku, name: asset.name });
+      if (data && data.id) {
+        try {
+          await this.audit.logAction('ASSET_CREATED', 'assets', data.id, { sku: asset.sku, name: asset.name });
+        } catch (e) { }
       }
-      
-      return response;
-    } catch (error) {
+
+      return { data, error: null };
+    } catch (error: any) {
       this.errorHandler.handleError(error, 'Gagal membuat aset baru');
-      throw error;
+      return { data: null, error };
     }
   }
 
   async updateAsset(id: number, asset: Partial<Asset>) {
     try {
-      const response = await this.supabase.client
-        .from('assets')
-        .update(asset)
-        .eq('id', id);
+      const data = await firstValueFrom(this.http.put<Asset>(`${this.apiUrl}/${id}`, asset));
 
-      if (!response.error) {
-        await this.audit.logAction('ASSET_UPDATED', 'assets', id, { changes: asset });
+      if (data) {
+        try {
+          await this.audit.logAction('ASSET_UPDATED', 'assets', id, { changes: asset });
+        } catch (e) { }
       }
-      
-      return response;
-    } catch (error) {
+
+      return { data, error: null };
+    } catch (error: any) {
       this.errorHandler.handleError(error, 'Gagal memperbarui aset');
-      throw error;
+      return { data: null, error };
     }
   }
 
   async deleteAsset(id: number) {
     try {
-      // Soft delete preferred for lifecycle, but if hard delete requested:
-      const response = await this.supabase.client
-        .from('assets')
-        .delete()
-        .eq('id', id);
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/${id}`));
 
-      if (!response.error) {
+      try {
         await this.audit.logAction('ASSET_DELETED', 'assets', id, { hard_delete: true });
-      }
-      
-      return response;
-    } catch (error) {
+      } catch (e) { }
+
+      return { data: true, error: null };
+    } catch (error: any) {
       this.errorHandler.handleError(error, 'Gagal menghapus aset');
-      throw error;
+      return { data: null, error };
     }
   }
 
   // --- Lifecycle Methods ---
 
-  /**
-   * Calculate Book Value using Straight-Line Depreciation
-   * Formula: Cost - ((Cost - Residual) / UsefulLife * YearsUsed)
-   */
   calculateBookValue(asset: Asset): number {
     if (!asset.purchase_price || !asset.purchase_date) return 0;
 
     const purchaseDate = new Date(asset.purchase_date);
     const now = new Date();
 
-    // Calculate years passed (fractional)
     const diffTime = Math.abs(now.getTime() - purchaseDate.getTime());
     const yearsUsed = diffTime / (1000 * 60 * 60 * 24 * 365.25);
 
@@ -158,27 +147,22 @@ export class AssetService {
 
   async disposeAsset(disposal: AssetDisposal) {
     try {
-      // 1. Create disposal record
-      const { error: disposalError } = await this.supabase.client
-        .from('asset_disposals')
-        .insert(disposal);
-
-      if (disposalError) throw disposalError;
-
-      // 2. Mark asset as inactive
+      // For now, since we don't have a dedicated disposal API yet, we just update the asset status
       const response = await this.updateAsset(disposal.asset_id, {
         is_active: false,
-        status: 'broken' // or a new status 'disposed' if enum allowed
+        status: 'broken' // marked as not active
       });
 
       if (!response.error) {
-        await this.audit.logAction('ASSET_DISPOSED', 'assets', disposal.asset_id, { type: disposal.disposal_type, price: disposal.sale_price });
+        try {
+          await this.audit.logAction('ASSET_DISPOSED', 'assets', disposal.asset_id, { type: disposal.disposal_type, price: disposal.sale_price });
+        } catch (e) { }
       }
 
       return response;
-    } catch (error) {
+    } catch (error: any) {
       this.errorHandler.handleError(error, 'Gagal membuang aset');
-      throw error;
+      return { data: null, error };
     }
   }
 }

@@ -39,7 +39,8 @@ export class AssetFormComponent implements OnInit {
     this.assetForm = this.fb.group({
       sku: ['', Validators.required],
       name: [''], // Name is optional, will auto-gen
-      brand: ['', Validators.required], // Maps to JENIS
+      brand: ['', Validators.required], // Merk AC
+      category: ['', Validators.required], // Jenis AC (SPLITE, CASSET, etc)
       location: ['', Validators.required],
       pk: ['', Validators.required],
       status: ['good', Validators.required],
@@ -82,9 +83,9 @@ export class AssetFormComponent implements OnInit {
     try {
       const formVal = this.assetForm.value;
 
-      // Auto-generate name if empty: "AC [Location] [SKU]"
+      // Auto-generate name if empty: "AC [Jenis] [PK] [Brand] [Location] [SKU]"
       if (!formVal.name) {
-        formVal.name = `AC ${formVal.location} ${formVal.sku}`;
+        formVal.name = `AC ${formVal.category || ''} ${formVal.pk || ''} ${formVal.brand || ''} ${formVal.location || ''}`.replace(/\s+/g, ' ').trim();
       }
 
       if (this.isEditMode && this.assetId) {

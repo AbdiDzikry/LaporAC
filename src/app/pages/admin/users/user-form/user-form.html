@@ -1,0 +1,113 @@
+<div class="p-6 max-w-[800px] mx-auto">
+    <!-- HEADER -->
+    <div class="mb-6">
+        <button [routerLink]="['/admin/users']"
+            class="text-sm font-bold text-gray-500 hover:text-gray-900 mb-2 flex items-center gap-1 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+                stroke-width="2" viewBox="0 0 24 24">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Back to Users
+        </button>
+        <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ isEditing ? 'Edit User' : 'Create New User' }}
+        </h1>
+        <p class="text-sm text-gray-500 mt-1">Manage user details and assign roles.</p>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+        <form (ngSubmit)="saveUser()">
+            <div class="grid gap-6">
+
+                <!-- Email (Read-only for edit) -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Email Address</label>
+                    <input [(ngModel)]="userData.email" name="email" type="email" [disabled]="isEditing"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none disabled:opacity-70 disabled:cursor-not-allowed"
+                        placeholder="user@example.com">
+                    <p *ngIf="isEditing" class="text-[10px] text-gray-400 mt-1">Email cannot be changed directly.</p>
+                </div>
+
+                <!-- Password (New User Only) -->
+                <div *ngIf="!isEditing">
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Password</label>
+                    <input [(ngModel)]="userData.password" name="password" type="password"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+                        placeholder="••••••••">
+                </div>
+
+                <!-- Full Name -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Full Name</label>
+                    <input [(ngModel)]="userData.full_name" name="full_name" type="text"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+                        placeholder="John Doe">
+                </div>
+
+                <!-- Role Selection -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Role</label>
+                    <div class="relative">
+                        <select [(ngModel)]="userData.role_id" name="role_id"
+                            class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none appearance-none bg-white">
+                            <option value="" disabled>Select a role</option>
+                            <option *ngFor="let role of roles" [value]="role.id">
+                                {{ role.name }}
+                            </option>
+                        </select>
+                        <div
+                            class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">
+                        Assigning a role grants specific permissions defined in <a [routerLink]="['/admin/users/roles']"
+                            class="text-blue-600 hover:underline">Role Management</a>.
+                    </p>
+                </div>
+
+                <!-- ALERT for Create Mode -->
+                <div *ngIf="!isEditing"
+                    class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg flex gap-3 text-yellow-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                        </path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <div class="text-sm">
+                        <p class="font-bold">Note on User Creation</p>
+                        <p>Creating a new user requires backend admin access. This form is a placeholder. Please use
+                            Supabase Dashboard or invite the user via email.</p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex justify-end pt-4 border-t border-gray-100">
+                    <button type="button" [routerLink]="['/admin/users']"
+                        class="px-4 py-2 mr-3 rounded-lg text-gray-600 font-bold hover:bg-gray-100 transition-colors text-sm">
+                        Cancel
+                    </button>
+                    <button type="submit" [disabled]="saving || loading"
+                        class="px-6 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors text-sm shadow-sm disabled:opacity-50 flex items-center">
+                        <svg *ngIf="saving" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        {{ saving ? 'Saving...' : 'Save User' }}
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>

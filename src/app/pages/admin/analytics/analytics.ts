@@ -1,21 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { AssetService } from '../../../services/asset/asset';
 import { TicketService } from '../../../services/ticket/ticket';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-analytics',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective, RouterLink],
+  imports: [CommonModule, BaseChartDirective, RouterLink, FormsModule],
   templateUrl: './analytics.html',
   styleUrl: './analytics.css',
 })
 export class AnalyticsComponent implements OnInit {
   loading = false;
   currentDate = new Date();
+
+  // Date Range Filter
+  startDate: string = '';
+  endDate: string = '';
+  activePreset: string = 'all';
 
   // Summary Stats
   stats = {
@@ -26,7 +34,8 @@ export class AnalyticsComponent implements OnInit {
     maintenanceAssets: 0,
     brokenAssets: 0,
     totalMaintenanceCost: 0,
-    avgResolutionTime: 0
+    avgResolutionTime: 0,
+    avgResolutionLabel: '0 jam'
   };
 
   // Asset Status Chart
@@ -92,7 +101,7 @@ export class AnalyticsComponent implements OnInit {
 
   // Monthly Trend Chart
   monthlyTrendChartData: ChartData<'line'> = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
+    labels: [],
     datasets: [
       {
         label: 'Tiket Baru',
@@ -197,6 +206,57 @@ export class AnalyticsComponent implements OnInit {
     this.loadAnalytics();
   }
 
+  // Date Filter Presets
+  setPreset(preset: string) {
+    this.activePreset = preset;
+    const now = new Date();
+    switch (preset) {
+      case 'week':
+        const weekAgo = new Date(now);
+        weekAgo.setDate(now.getDate() - 7);
+        this.startDate = weekAgo.toISOString().split('T')[0];
+        this.endDate = now.toISOString().split('T')[0];
+        break;
+      case 'month':
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        this.startDate = monthStart.toISOString().split('T')[0];
+        this.endDate = now.toISOString().split('T')[0];
+        break;
+      case '3months':
+        const threeMonthsAgo = new Date(now);
+        threeMonthsAgo.setMonth(now.getMonth() - 3);
+        this.startDate = threeMonthsAgo.toISOString().split('T')[0];
+        this.endDate = now.toISOString().split('T')[0];
+        break;
+      case 'all':
+      default:
+        this.startDate = '';
+        this.endDate = '';
+        break;
+    }
+    this.loadAnalytics();
+  }
+
+  applyDateFilter() {
+    this.activePreset = 'custom';
+    this.loadAnalytics();
+  }
+
+  private filterByDateRange(items: any[], dateField: string): any[] {
+    if (!this.startDate && !this.endDate) return items;
+    return items.filter((item: any) => {
+      if (!item[dateField]) return false;
+      const date = new Date(item[dateField]);
+      if (this.startDate && date < new Date(this.startDate)) return false;
+      if (this.endDate) {
+        const end = new Date(this.endDate);
+        end.setHours(23, 59, 59);
+        if (date > end) return false;
+      }
+      return true;
+    });
+  }
+
   async loadAnalytics() {
     this.loading = true;
     try {
@@ -228,8 +288,10 @@ export class AnalyticsComponent implements OnInit {
       }
 
       // Load Tickets
-      const { data: tickets } = await this.ticketService.getTickets();
-      if (tickets) {
+      const { data: allTickets } = await this.ticketService.getTickets();
+      if (allTickets) {
+        // Apply date filter to tickets
+        const tickets = this.filterByDateRange(allTickets, 'created_at');
         this.stats.totalTickets = tickets.length;
 
         // Count by status
@@ -248,11 +310,104 @@ export class AnalyticsComponent implements OnInit {
         this.stats.totalMaintenanceCost = tickets.reduce((sum: number, t: any) => {
           return sum + (Number(t.repair_cost) || 0);
         }, 0);
+
+        // #4: Calculate Average Resolution Time
+        const resolvedTickets = tickets.filter((t: any) =>
+          (t.status === 'resolved' || t.status === 'closed') && t.created_at && t.completed_at
+        );
+        if (resolvedTickets.length > 0) {
+          const totalHours = resolvedTickets.reduce((sum: number, t: any) => {
+            const created = new Date(t.created_at).getTime();
+            const completed = new Date(t.completed_at).getTime();
+            return sum + (completed - created) / (1000 * 60 * 60); // hours
+          }, 0);
+          this.stats.avgResolutionTime = Math.round(totalHours / resolvedTickets.length);
+          // Format label
+          const avgHours = this.stats.avgResolutionTime;
+          if (avgHours >= 24) {
+            this.stats.avgResolutionLabel = `${Math.round(avgHours / 24)} hari`;
+          } else {
+            this.stats.avgResolutionLabel = `${avgHours} jam`;
+          }
+        } else {
+          this.stats.avgResolutionTime = 0;
+          this.stats.avgResolutionLabel = '-';
+        }
+
+        // #3: Dynamic Monthly Trend (last 6 months from actual data)
+        this.buildMonthlyTrend(allTickets);
       }
     } catch (error) {
       console.error('Error loading analytics:', error);
     } finally {
       this.loading = false;
     }
+  }
+
+  private buildMonthlyTrend(tickets: any[]) {
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    const now = new Date();
+    const labels: string[] = [];
+    const newTickets: number[] = [];
+    const resolvedTickets: number[] = [];
+
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const year = d.getFullYear();
+      const month = d.getMonth();
+      labels.push(`${monthNames[month]} ${year.toString().slice(-2)}`);
+
+      newTickets.push(tickets.filter((t: any) => {
+        if (!t.created_at) return false;
+        const cd = new Date(t.created_at);
+        return cd.getFullYear() === year && cd.getMonth() === month;
+      }).length);
+
+      resolvedTickets.push(tickets.filter((t: any) => {
+        if (!t.completed_at) return false;
+        const cd = new Date(t.completed_at);
+        return cd.getFullYear() === year && cd.getMonth() === month &&
+          (t.status === 'resolved' || t.status === 'closed');
+      }).length);
+    }
+
+    this.monthlyTrendChartData.labels = labels;
+    this.monthlyTrendChartData.datasets[0].data = newTickets;
+    this.monthlyTrendChartData.datasets[1].data = resolvedTickets;
+  }
+
+  // #9: Export Analytics PDF
+  exportPDF() {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text('Laporan Analitik LaporAC', 14, 22);
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    const dateStr = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    doc.text(`Dicetak pada: ${dateStr}`, 14, 30);
+    if (this.startDate || this.endDate) {
+      doc.text(`Periode: ${this.startDate || 'awal'} s/d ${this.endDate || 'sekarang'}`, 14, 36);
+    }
+
+    const summaryData = [
+      ['Total Aset', this.stats.totalAssets.toString()],
+      ['Total Tiket', this.stats.totalTickets.toString()],
+      ['Tiket Aktif', this.stats.openTickets.toString()],
+      ['Tiket Selesai', this.stats.resolvedTickets.toString()],
+      ['Aset Rusak', this.stats.brokenAssets.toString()],
+      ['Aset Maintenance', this.stats.maintenanceAssets.toString()],
+      ['Estimasi Biaya', `Rp ${this.stats.totalMaintenanceCost.toLocaleString('id-ID')}`],
+      ['Rata-rata Resolusi', this.stats.avgResolutionLabel]
+    ];
+
+    autoTable(doc, {
+      head: [['Metrik', 'Nilai']],
+      body: summaryData,
+      startY: this.startDate || this.endDate ? 42 : 36,
+      theme: 'grid',
+      headStyles: { fillColor: [37, 99, 235] }
+    });
+
+    doc.save(`Analitik_LaporAC_${new Date().toISOString().split('T')[0]}.pdf`);
   }
 }

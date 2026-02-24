@@ -12,6 +12,7 @@ import { ToastService } from '../../../../services/toast/toast';
 })
 export class MaintenanceCalendarComponent implements OnInit {
   currentDate = new Date();
+  selectedDate: Date | null = null;
   calendarDays: any[] = [];
   schedules: MaintenanceSchedule[] = [];
   loading = false;
@@ -22,6 +23,7 @@ export class MaintenanceCalendarComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.selectedDate = new Date(); // Set today as initially selected
     this.generateCalendar();
     this.loadSchedules();
   }
@@ -88,7 +90,7 @@ export class MaintenanceCalendarComponent implements OnInit {
     this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1);
     this.generateCalendar();
     this.mapSchedulesToCalendar(); // Re-map existing loaded data (assuming we fetched all/enough)
-    // Ideally we should re-fetch for the new range if dataset is large, 
+    // Ideally we should re-fetch for the new range if dataset is large,
     // but getSchedules('all') is fine for MVP size.
   }
 
@@ -98,10 +100,55 @@ export class MaintenanceCalendarComponent implements OnInit {
     this.mapSchedulesToCalendar();
   }
 
+  today() {
+    this.currentDate = new Date();
+    this.selectedDate = new Date(); // Also select today
+    this.generateCalendar();
+    this.mapSchedulesToCalendar();
+  }
+
+  isToday(date: Date): boolean {
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+           date.getMonth() === today.getMonth() &&
+           date.getFullYear() === today.getFullYear();
+  }
+
+  isSelectedDay(date: Date): boolean {
+    if (!this.selectedDate) return false;
+    return date.getDate() === this.selectedDate.getDate() &&
+           date.getMonth() === this.selectedDate.getMonth() &&
+           date.getFullYear() === this.selectedDate.getFullYear();
+  }
+
+  selectEvent(event: MaintenanceSchedule) {
+    // Could navigate to event details or show modal
+    this.toast.show(`Selected: ${event.assets?.name}`, 'info');
+  }
+
+  allEventsCompleted(events: MaintenanceSchedule[]): boolean {
+    return events.every(event => event.status === 'completed');
+  }
+
+  hasInProgressEvents(events: MaintenanceSchedule[]): boolean {
+    return events.some(event => event.status === 'in_progress');
+  }
+
+  hasScheduledEvents(events: MaintenanceSchedule[]): boolean {
+    return events.some(event => event.status === 'scheduled');
+  }
+
   getEventClass(status: string) {
     if (status === 'completed') return 'bg-green-100 text-green-700';
     if (status === 'missed') return 'bg-red-100 text-red-700';
     if (status === 'in_progress') return 'bg-blue-100 text-blue-700';
     return 'bg-gray-100 text-gray-700';
+  }
+
+  getEventIndicatorClass(status: string) {
+    if (status === 'completed') return 'bg-green-500';
+    if (status === 'missed') return 'bg-red-500';
+    if (status === 'in_progress') return 'bg-blue-500';
+    return 'bg-gray-400';
   }
 }

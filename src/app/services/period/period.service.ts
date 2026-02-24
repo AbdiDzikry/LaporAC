@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { SupabaseService } from '../supabase/supabase';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface MaintenancePeriod {
     id?: number;
     name: string;
     month: number;
     year: number;
-    status: 'draft' | 'active' | 'completed' | 'archived';
+    status: 'draft' | 'active' | 'completed' | 'archived' | 'overdue';
     total_schedules?: number;
     completed_schedules?: number;
     created_by?: number;
@@ -26,224 +28,111 @@ export interface PeriodStats {
     providedIn: 'root'
 })
 export class PeriodService {
+    private apiUrl = `${environment.apiUrl}/periods`;
 
-    constructor(private supabase: SupabaseService) { }
+    constructor(private http: HttpClient) { }
 
     /**
      * Get all maintenance periods with optional filters
      */
     async getPeriods(year?: number, status?: string) {
-        let query = this.supabase.client
-            .from('maintenance_periods')
-            .select('*')
-            .order('year', { ascending: false })
-            .order('month', { ascending: false });
+        try {
+            let params = new HttpParams();
+            if (year) params = params.set('year', year);
+            if (status && status !== 'all') params = params.set('status', status);
 
-        if (year) {
-            query = query.eq('year', year);
+            const data = await firstValueFrom(this.http.get<MaintenancePeriod[]>(this.apiUrl, { params }));
+            return { data, error: null };
+        } catch (error: any) {
+            return { data: null, error };
         }
-
-        if (status && status !== 'all') {
-            query = query.eq('status', status);
-        }
-
-        return await query;
     }
 
     /**
      * Get a single period by ID
      */
     async getPeriodById(id: number) {
-        return await this.supabase.client
-            .from('maintenance_periods')
-            .select('*')
-            .eq('id', id)
-            .single();
+        try {
+            const data = await firstValueFrom(this.http.get<MaintenancePeriod>(`${this.apiUrl}/${id}`));
+            return { data, error: null };
+        } catch (error: any) {
+            return { data: null, error };
+        }
     }
 
     /**
      * Create a new maintenance period
      */
     async createPeriod(month: number, year: number, templatePeriodId?: number) {
-        const monthNames = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
+        try {
+            const monthNames = [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+            const name = `${monthNames[month - 1]} ${year}`;
 
-        const name = `${monthNames[month - 1]} ${year}`;
+            const payload: any = { name, month, year, status: 'draft' };
+            if (templatePeriodId) {
+                payload.template_period_id = templatePeriodId;
+            }
 
-        // Create the period
-        const { data: period, error } = await this.supabase.client
-            .from('maintenance_periods')
-            .insert({
-                name,
-                month,
-                year,
-                status: 'draft'
-            })
-            .select()
-            .single();
-
-        if (error) return { data: null, error };
-
-        // If template is provided, copy schedules from template period
-        if (templatePeriodId && period) {
-            await this.copySchedulesFromTemplate(period.id, templatePeriodId, month, year);
+            const data = await firstValueFrom(this.http.post<MaintenancePeriod>(this.apiUrl, payload));
+            return { data, error: null };
+        } catch (error: any) {
+            return { data: null, error };
         }
-
-        return { data: period, error: null };
-    }
-
-    /**
-     * Copy schedules from a template period
-     */
-    private async copySchedulesFromTemplate(
-        newPeriodId: number,
-        templatePeriodId: number,
-        targetMonth: number,
-        targetYear: number
-    ) {
-        // Get schedules from template period
-        const { data: templateSchedules, error } = await this.supabase.client
-            .from('maintenance_schedules')
-            .select('asset_id, scheduled_date, status')
-            .eq('period_id', templatePeriodId);
-
-        if (error || !templateSchedules) return { data: null, error };
-
-        // Create new schedules with adjusted dates
-        const newSchedules = templateSchedules.map((schedule: any) => {
-            const originalDate = new Date(schedule.scheduled_date);
-            const day = originalDate.getDate();
-
-            // Create new date with target month/year
-            const newDate = new Date(targetYear, targetMonth - 1, day);
-
-            return {
-                period_id: newPeriodId,
-                asset_id: schedule.asset_id,
-                scheduled_date: newDate.toISOString().split('T')[0],
-                status: 'scheduled'
-            };
-        });
-
-        return await this.supabase.client
-            .from('maintenance_schedules')
-            .insert(newSchedules);
     }
 
     /**
      * Update a period
      */
     async updatePeriod(id: number, updates: Partial<MaintenancePeriod>) {
-        return await this.supabase.client
-            .from('maintenance_periods')
-            .update({
-                ...updates,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', id)
-            .select()
-            .single();
+        try {
+            const data = await firstValueFrom(this.http.put<MaintenancePeriod>(`${this.apiUrl}/${id}`, updates));
+            return { data, error: null };
+        } catch (error: any) {
+            return { data: null, error };
+        }
     }
 
     /**
      * Delete a period (only if no schedules)
      */
     async deletePeriod(id: number) {
-        // Check if period has schedules
-        const { data: schedules } = await this.supabase.client
-            .from('maintenance_schedules')
-            .select('id')
-            .eq('period_id', id)
-            .limit(1);
-
-        if (schedules && schedules.length > 0) {
-            return {
-                data: null,
-                error: { message: 'Tidak dapat menghapus periode yang memiliki jadwal' }
-            };
+        try {
+            await firstValueFrom(this.http.delete(`${this.apiUrl}/${id}`));
+            return { data: true, error: null };
+        } catch (error: any) {
+            return { data: null, error };
         }
-
-        return await this.supabase.client
-            .from('maintenance_periods')
-            .delete()
-            .eq('id', id);
     }
 
     /**
      * Update period statistics
      */
     async updatePeriodStats(periodId: number) {
-        const { data: schedules } = await this.supabase.client
-            .from('maintenance_schedules')
-            .select('status')
-            .eq('period_id', periodId);
-
-        if (!schedules) return;
-
-        const total = schedules.length;
-        const completed = schedules.filter((s: any) => s.status === 'completed').length;
-
-        await this.supabase.client
-            .from('maintenance_periods')
-            .update({
-                total_schedules: total,
-                completed_schedules: completed,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', periodId);
+        try {
+            await firstValueFrom(this.http.post(`${this.apiUrl}/${periodId}/recalculate-stats`, {}));
+        } catch (e) { }
     }
 
     /**
      * Sync period statuses based on current date
-     * - Activate current month if exists and draft
-     * - Complete past active periods
      */
     async syncPeriodStatuses() {
-        const now = new Date();
-        const currentMonth = now.getMonth() + 1;
-        const currentYear = now.getFullYear();
-
-        // 1. Get current month period
-        const { data: currentPeriod } = await this.supabase.client
-            .from('maintenance_periods')
-            .select('*')
-            .eq('month', currentMonth)
-            .eq('year', currentYear)
-            .single();
-
-        // Activate current period if draft
-        if (currentPeriod && currentPeriod.status === 'draft') {
-            await this.updatePeriod(currentPeriod.id, { status: 'active' });
-        }
-
-        // 2. Get past active periods
-        // Logic: Year < CurrentYear OR (Year == CurrentYear AND Month < CurrentMonth)
-        // AND status = 'active'
-        const { data: pastActivePeriods } = await this.supabase.client
-            .from('maintenance_periods')
-            .select('*')
-            .eq('status', 'active')
-            .or(`year.lt.${currentYear},and(year.eq.${currentYear},month.lt.${currentMonth})`);
-
-        if (pastActivePeriods && pastActivePeriods.length > 0) {
-            for (const period of pastActivePeriods) {
-                await this.updatePeriod(period.id, { status: 'completed' });
-            }
-        }
+        try {
+            await firstValueFrom(this.http.post(`${this.apiUrl}/sync-statuses`, {}));
+        } catch (e) { }
     }
 
     /**
      * Get statistics for a specific year
      */
     async getYearStats(year: number): Promise<PeriodStats> {
-        const { data: periods } = await this.supabase.client
-            .from('maintenance_periods')
-            .select('*')
-            .eq('year', year);
-
-        if (!periods || periods.length === 0) {
+        try {
+            const data = await firstValueFrom(this.http.get<PeriodStats>(`${this.apiUrl}/stats`, { params: { year } }));
+            return data;
+        } catch (error: any) {
             return {
                 total_periods: 0,
                 active_periods: 0,
@@ -252,66 +141,17 @@ export class PeriodService {
                 completion_rate: 0
             };
         }
-
-        const total_periods = periods.length;
-        const active_periods = periods.filter((p: MaintenancePeriod) => p.status === 'active').length;
-        const total_schedules = periods.reduce((sum: number, p: MaintenancePeriod) => sum + (p.total_schedules || 0), 0);
-        const completed_schedules = periods.reduce((sum: number, p: MaintenancePeriod) => sum + (p.completed_schedules || 0), 0);
-        const completion_rate = total_schedules > 0
-            ? Math.round((completed_schedules / total_schedules) * 100)
-            : 0;
-
-        return {
-            total_periods,
-            active_periods,
-            total_schedules,
-            completed_schedules,
-            completion_rate
-        };
     }
 
     /**
      * Get available years
      */
     async getAvailableYears(): Promise<number[]> {
-        const { data } = await this.supabase.client
-            .from('maintenance_periods')
-            .select('year')
-            .order('year', { ascending: false });
-
-        if (!data) return [];
-
-        const uniqueYears = [...new Set(data.map((p: any) => p.year))] as number[];
-        return uniqueYears;
-    }
-    /**
-     * Migrate existing Jan 2026 data
-     */
-    async migrateJan2026() {
-        // 1. Check if period exists
-        const { data: existing } = await this.supabase.client
-            .from('maintenance_periods')
-            .select('id')
-            .eq('month', 1)
-            .eq('year', 2026)
-            .single();
-
-        let periodId = existing?.id;
-
-        // 2. Create if not exists
-        if (!periodId) {
-            const { data: newPeriod } = await this.createPeriod(1, 2026);
-            if (newPeriod) periodId = newPeriod.id;
+        try {
+            const data = await firstValueFrom(this.http.get<number[]>(`${this.apiUrl}/available-years`));
+            return data;
+        } catch (error: any) {
+            return [new Date().getFullYear()];
         }
-
-        if (!periodId) return { error: 'Failed to create period' };
-
-        // 3. Update schedules
-        return await this.supabase.client
-            .from('maintenance_schedules')
-            .update({ period_id: periodId })
-            .gte('scheduled_date', '2026-01-01')
-            .lt('scheduled_date', '2026-02-01')
-            .is('period_id', null);
     }
 }

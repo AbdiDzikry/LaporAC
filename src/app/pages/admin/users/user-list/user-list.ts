@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService, UserProfile } from '../../../../services/user/user';
-import { ToastService } from '../../../../services/toast/toast'; // Import Toast
-import { FormsModule } from '@angular/forms'; // For ngModel
+import { ToastService } from '../../../../services/toast/toast';
+import { FormsModule } from '@angular/forms';
+import { RoleListComponent } from '../role-list/role-list';
 
 @Component({
     selector: 'app-user-list',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, RoleListComponent],
     templateUrl: './user-list.html',
 })
 export class UserListComponent implements OnInit {
@@ -15,17 +16,27 @@ export class UserListComponent implements OnInit {
     filteredUsers: UserProfile[] = [];
     loading = false;
 
+    // Tab system: 'roles' first, then 'users'
+    activeTab: 'roles' | 'users' = 'roles';
+
     // Filters
     searchQuery = '';
     selectedRole = 'Semua';
 
     constructor(
         private userService: UserService,
-        private toast: ToastService // Inject
+        private toast: ToastService
     ) { }
 
     ngOnInit() {
         this.loadUsers();
+    }
+
+    setActiveTab(tab: 'roles' | 'users') {
+        this.activeTab = tab;
+        if (tab === 'users') {
+            this.loadUsers();
+        }
     }
 
     async loadUsers() {
@@ -68,7 +79,6 @@ export class UserListComponent implements OnInit {
 
         try {
             await this.userService.updateUserRole(user.id, newRole);
-            // Optimistic update or reload
             await this.loadUsers();
             this.toast.show(`Role ${user.full_name} diupdate menjadi ${newRole}`, 'success');
         } catch (e) {

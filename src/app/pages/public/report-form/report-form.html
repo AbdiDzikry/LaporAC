@@ -1,190 +1,310 @@
 <div class="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-inter text-gray-800">
 
     <!-- Main Container -->
-    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+    <div
+        class="w-full max-w-lg bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 flex flex-col max-h-[90vh]">
 
         <!-- Corporate Header -->
-        <div class="bg-white border-b border-gray-100 p-6 text-center">
-            <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-50 text-blue-600 rounded-xl mb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path
-                        d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-                </svg>
-            </div>
+        <div class="bg-white border-b border-gray-100 p-6 text-center shrink-0 z-10 relative">
             <h1 class="text-xl font-bold tracking-tight text-gray-900">Lapor Kerusakan AC</h1>
             <p class="text-xs text-gray-500 mt-1 uppercase tracking-wide font-medium">Sistem Pelaporan Terintegrasi</p>
+
+            <!-- Progress Bar -->
+            <div class="mt-6 flex items-center justify-between gap-1 max-w-xs mx-auto">
+                <div *ngFor="let s of [1,2,3,4,5]" class="h-1.5 rounded-full flex-1 transition-all duration-500"
+                    [ngClass]="s <= currentStep ? 'bg-blue-600' : 'bg-gray-200'">
+                </div>
+            </div>
+            <p class="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-widest">Langkah {{currentStep}} dari
+                {{totalSteps}}</p>
         </div>
 
-        <div class="p-6 md:p-8">
+        <!-- SCROLLABLE CONTENT AREA -->
+        <div class="p-6 md:p-8 overflow-y-auto flex-1 scroll-smooth">
 
-            <!-- 1. ASSET IDENTIFIED STATE -->
-            <div *ngIf="asset">
-                <!-- Asset Tag Card -->
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-start gap-4 mb-8">
-                    <div
-                        class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-blue-600 shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-                            <line x1="8" y1="21" x2="16" y2="21" />
-                            <line x1="12" y1="17" x2="12" y2="21" />
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span
-                                class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 uppercase tracking-wide">Terdeteksi</span>
+            <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
+
+                <!-- STEP 1: IDENTITAS (Who are you?) -->
+                <div *ngIf="currentStep === 1" class="animate-fade-in space-y-6">
+                    <div class="text-center mb-8">
+                        <div
+                            class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl mx-auto flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
                         </div>
-                        <h3 class="font-bold text-gray-900 leading-tight">{{ asset.name }}</h3>
-                        <p class="text-xs text-gray-500 font-mono mt-1">{{ asset.sku }} • {{ asset.location }}</p>
+                        <h2 class="text-2xl font-black text-gray-900">Siapa Anda?</h2>
+                        <p class="text-gray-500 mt-2">Masukkan NIK Anda untuk memulai laporan.</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <label class="block text-sm font-bold text-gray-700">Nomor Induk Karyawan (NIK)</label>
+                        <div class="flex gap-2">
+                            <input formControlName="nik" type="text" placeholder="Contoh: 12345"
+                                class="w-full h-14 px-4 rounded-xl border-2 border-gray-200 bg-white text-gray-900 text-lg font-bold focus:border-blue-500 focus:ring-4 focus:ring-blue-50/50 outline-none transition-all placeholder:text-gray-300 placeholder:font-normal">
+                        </div>
+
+                        <!-- Validation Message -->
+                        <div *ngIf="employeeName"
+                            class="p-4 rounded-xl flex items-center gap-3 animate-slide-up transition-all"
+                            [ngClass]="employeeName === 'Karyawan (Umum)' ? 'bg-blue-50 border border-blue-200 text-blue-700' : 'bg-green-50 border border-green-200 text-green-700'">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                                [ngClass]="employeeName === 'Karyawan (Umum)' ? 'bg-blue-100' : 'bg-green-100'">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black uppercase opacity-60 tracking-widest">Identitas Terbaca
+                                </p>
+                                <p class="font-black text-lg leading-tight">{{ employeeName }}</p>
+                            </div>
+                        </div>
+
+                        <div *ngIf="reportForm.get('nik')?.value?.length >= 3 && !employeeName && checkingNik"
+                            class="p-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-500 text-sm flex items-center gap-3">
+                            <span
+                                class="w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></span>
+                            Mengecek identitas...
+                        </div>
                     </div>
                 </div>
 
-                <!-- Report Form -->
-                <form [formGroup]="reportForm" (ngSubmit)="onSubmit()" class="space-y-6">
-
-                    <!-- NIK Input -->
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Identitas Pelapor
-                            (NIK)</label>
-                        <div class="flex gap-2">
-                            <input formControlName="nik" type="text" placeholder="Contoh: 12345"
-                                class="w-full h-12 px-4 rounded-xl border border-gray-200 bg-white text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-50/50 outline-none transition-all font-medium placeholder:text-gray-300"
-                                (blur)="checkNik()">
-                            <button type="button" (click)="checkNik()"
-                                class="h-12 px-5 rounded-xl bg-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-200 transition-colors border border-gray-200">
-                                Cek
-                            </button>
-                        </div>
-                        <!-- Validation Message -->
-                        <div *ngIf="employeeName"
-                            class="flex items-center gap-1.5 text-green-600 text-xs font-bold px-1 animate-fade-in">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7"></path>
+                <!-- STEP 2: ASET (Which AC?) -->
+                <div *ngIf="currentStep === 2" class="animate-fade-in space-y-6">
+                    <div class="text-center mb-6">
+                        <div
+                            class="w-16 h-16 bg-purple-50 text-purple-600 rounded-2xl mx-auto flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                                <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                                <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                                <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                                <rect x="7" y="7" width="10" height="10" rx="1"></rect>
                             </svg>
-                            Hai, {{ employeeName }}
                         </div>
+                        <h2 class="text-2xl font-black text-gray-900">Scan QR Code</h2>
+                        <p class="text-gray-500 mt-2">Scan QR code yang tertempel pada unit AC.</p>
                     </div>
 
-                    <!-- Category -->
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Jenis
-                            Kendala</label>
-                        <div class="relative">
-                            <select formControlName="issue_category"
-                                class="w-full h-12 px-4 rounded-xl border border-gray-200 bg-white text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-50/50 outline-none transition-all font-medium appearance-none cursor-pointer">
-                                <option value="" disabled selected>Pilih kategori...</option>
-                                <option value="panas">AC Tidak Dingin / Panas</option>
-                                <option value="bocor">Bocor Air / Menetes</option>
-                                <option value="berisik">Suara Berisik / Aneh</option>
-                                <option value="mati">Mati Total</option>
-                                <option value="bau">Bau Tidak Sedap</option>
-                                <option value="lainnya">Lainnya</option>
-                            </select>
-                            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7"></path>
+                    <!-- Asset Found Card -->
+                    <div *ngIf="asset"
+                        class="p-6 bg-blue-50 border-2 border-blue-100 rounded-2xl text-center relative overflow-hidden group cursor-pointer hover:border-blue-300 transition-all">
+                        <div class="absolute top-3 right-3 text-blue-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <p class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">Aset Terdeteksi</p>
+                        <h3 class="text-xl font-black text-gray-900 mb-1">{{ asset.name }}</h3>
+                        <p class="text-sm font-mono text-gray-600 bg-white/50 inline-block px-2 py-1 rounded">{{
+                            asset.sku }}</p>
+                        <p class="text-sm text-gray-500 mt-2 flex justify-center items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            {{ asset.location }}
+                        </p>
+                    </div>
+
+                    <!-- No Asset Yet -->
+                    <div *ngIf="!asset" class="space-y-4">
+                        <div
+                            class="p-8 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center text-gray-400 bg-gray-50">
+                            <p class="font-bold text-sm">Belum ada aset yang di-scan</p>
+                            <p class="text-xs mt-1">Gunakan kamera HP Anda untuk scan QR</p>
+                        </div>
+
+                        <!-- Manual Simulation Link -->
+                        <div class="text-center">
+                            <p class="text-xs text-gray-400 mb-2 font-bold uppercase">Atau coba simulasi:</p>
+                            <a href="/report?sku=GB001"
+                                class="inline-block px-4 py-2 bg-gray-100 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-200">
+                                Simulasi Scan (GB001)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: KATEGORI (What's wrong?) -->
+                <div *ngIf="currentStep === 3" class="animate-fade-in space-y-6">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-black text-gray-900">Apa Masalahnya?</h2>
+                        <p class="text-gray-500 mt-1">Pilih salah satu keluhan utama.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <label *ngFor="let cat of categories"
+                            class="relative flex flex-col items-center justify-center p-4 rounded-2xl border-2 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg h-32 text-center group"
+                            [ngClass]="reportForm.get('issue_category')?.value === cat.value ? 'border-blue-500 bg-blue-50/50 ring-2 ring-blue-200' : 'border-gray-200 bg-white hover:border-blue-300'">
+
+                            <input type="radio" formControlName="issue_category" [value]="cat.value" class="sr-only"
+                                (change)="selectCategory(cat.value)">
+
+                            <span
+                                class="text-4xl mb-2 filter drop-shadow-sm group-hover:scale-110 transition-transform">{{
+                                cat.icon }}</span>
+                            <span class="font-bold text-sm text-gray-900 leading-tight">{{ cat.label }}</span>
+                            <!-- <span class="text-[10px] text-gray-500 mt-1 leading-tight">{{ cat.desc }}</span> -->
+
+                            <div *ngIf="reportForm.get('issue_category')?.value === cat.value"
+                                class="absolute top-2 right-2 text-blue-500">
+                                <svg class="w-5 h-5 bg-white rounded-full" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clip-rule="evenodd"></path>
                                 </svg>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- STEP 4: DETAIL (More info) -->
+                <div *ngIf="currentStep === 4" class="animate-fade-in space-y-6">
+                    <div class="text-center mb-6">
+                        <div
+                            class="w-16 h-16 bg-amber-50 text-amber-600 rounded-2xl mx-auto flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-black text-gray-900">Detail Tambahan</h2>
+                        <p class="text-gray-500 mt-2">Ceritakan sedikit lebih detail (Opsional).</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <label class="block text-sm font-bold text-gray-700">Keterangan</label>
+                        <textarea formControlName="description" rows="5"
+                            placeholder="Contoh: AC bunyi kletek-kletek setiap 5 menit..."
+                            class="w-full p-4 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-50/50 outline-none transition-all placeholder:text-gray-300 resize-none text-base"></textarea>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-xl flex items-start gap-3">
+                        <div class="text-blue-500 mt-1">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-gray-500 leading-relaxed">
+                            Tips: Penjelasan yang detail membantu teknisi membawa peralatan yang tepat.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- STEP 5: REVIEW (Check before submit) -->
+                <div *ngIf="currentStep === 5" class="animate-fade-in space-y-6">
+                    <div class="text-center mb-6">
+                        <div
+                            class="w-16 h-16 bg-green-50 text-green-600 rounded-2xl mx-auto flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-black text-gray-900">Periksa Kembali</h2>
+                        <p class="text-gray-500 mt-2">Pastikan data yang Anda isi sudah benar.</p>
+                    </div>
+
+                    <div class="space-y-4 bg-white border border-gray-100 rounded-2xl p-2 shadow-sm">
+                        <!-- Summary Items -->
+                        <div class="flex items-center gap-4 p-3 border-b border-gray-50">
+                            <div
+                                class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-gray-400">Pelapor</p>
+                                <p class="font-bold text-gray-900">{{ employeeName }} <span
+                                        class="text-gray-400 font-normal">({{ reportForm.get('nik')?.value }})</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-3 border-b border-gray-50">
+                            <div
+                                class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-gray-400">Aset AC</p>
+                                <p class="font-bold text-gray-900">{{ asset?.name }}</p>
+                                <p class="text-xs text-gray-500">{{ asset?.sku }} • {{ asset?.location }}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-3">
+                            <div
+                                class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-gray-400">Masalah</p>
+                                <p class="font-bold text-gray-900">{{ selectedCategoryLabel }}</p>
+                                <p class="text-xs text-gray-500 line-clamp-2">{{ reportForm.get('description')?.value ||
+                                    'Tidak ada keterangan tambahan.' }}</p>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Description -->
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Keterangan
-                            Tambahan (Opsional)</label>
-                        <textarea formControlName="description" rows="3" placeholder="Ceritakan detail kerusakan..."
-                            class="w-full p-4 rounded-xl border border-gray-200 bg-white text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-50/50 outline-none transition-all font-medium placeholder:text-gray-300 resize-none"></textarea>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" [disabled]="loading || reportForm.invalid"
-                        class="w-full h-14 bg-gray-900 text-white font-bold rounded-xl shadow-lg shadow-gray-200 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 mt-4">
-                        <span *ngIf="loading"
-                            class="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
-                        <span *ngIf="!loading">Kirim Laporan</span>
-                        <svg *ngIf="!loading" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                        </svg>
-                    </button>
-
-                </form>
-            </div>
-
-            <!-- 2. ERROR STATE (Invalid SKU) -->
-            <div *ngIf="!asset && !loading && sku" class="text-center py-8">
-                <div class="w-20 h-20 bg-red-50 text-red-500 rounded-3xl mx-auto flex items-center justify-center mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="12" y1="8" x2="12" y2="12" />
-                        <line x1="12" y1="16" x2="12.01" y2="16" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold text-gray-900">Aset Tidak Ditemukan</h3>
-                <p class="text-gray-500 mt-2 text-sm leading-relaxed">Kode aset <span
-                        class="font-mono bg-gray-100 px-1 py-0.5 rounded text-gray-700">{{ sku }}</span> tidak terdaftar
-                    di database kami.</p>
-                <a href="/report" class="inline-block mt-6 text-sm font-bold text-blue-600 hover:text-blue-700">Coba
-                    Scan Ulang</a>
-            </div>
-
-            <!-- 3. PRE-SCAN STATE (No SKU) -->
-            <div *ngIf="!sku && !loading" class="text-center py-12">
-                <div
-                    class="w-24 h-24 bg-gray-50 border border-gray-200 text-gray-400 rounded-3xl mx-auto flex items-center justify-center mb-8 relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="7" height="7" />
-                        <rect x="14" y="3" width="7" height="7" />
-                        <rect x="14" y="14" width="7" height="7" />
-                        <rect x="3" y="14" width="7" height="7" />
-                    </svg>
-                    <!-- Corner Accents -->
-                    <div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-gray-300 rounded-tl-lg">
-                    </div>
-                    <div class="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-gray-300 rounded-tr-lg">
-                    </div>
-                    <div class="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-gray-300 rounded-bl-lg">
-                    </div>
-                    <div
-                        class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-gray-300 rounded-br-lg">
-                    </div>
                 </div>
 
-                <h3 class="text-xl font-bold text-gray-900 mb-3">Scan QR Code Dulu</h3>
-                <p class="text-gray-500 text-sm leading-relaxed px-4">
-                    Untuk melaporkan kerusakan, silakan scan <strong>QR Code fisik</strong> yang menempel pada unit AC.
-                </p>
-
-                <div class="mt-8 pt-8 border-t border-gray-100">
-                    <p class="text-xs text-gray-400 text-center uppercase tracking-widest font-bold mb-4">Atau Gunakan
-                        Link Simulasi</p>
-                    <a href="/report?sku=GB001"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-100 transition-colors">
-                        Simulasi Scan (GB001)
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Loading State -->
-            <div *ngIf="loading && !asset" class="py-20 flex flex-col items-center justify-center">
-                <div class="w-10 h-10 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
-                <p class="text-sm font-bold text-gray-400 mt-4 uppercase tracking-widest">Memuat Data...</p>
-            </div>
-
+            </form>
         </div>
+
+        <!-- FOOTER: NAVIGATION BUTTONS -->
+        <div class="p-6 border-t border-gray-100 bg-white shrink-0 z-10 flex gap-4">
+            <button *ngIf="currentStep > 1" type="button" (click)="prevStep()"
+                class="flex-1 h-12 rounded-xl border-2 border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-colors">
+                Kembali
+            </button>
+
+            <button *ngIf="currentStep < totalSteps" type="button" (click)="nextStep()"
+                class="flex-[2] h-12 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition-colors shadow-lg shadow-gray-200 flex items-center justify-center gap-2">
+                Lanjut
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3">
+                    </path>
+                </svg>
+            </button>
+
+            <button *ngIf="currentStep === totalSteps" (click)="onSubmit()" [disabled]="loading"
+                class="flex-[2] h-12 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                <span *ngIf="loading"
+                    class="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+                <span *ngIf="!loading">Kirim Laporan</span>
+            </button>
+        </div>
+
     </div>
 
-    <!-- Footer -->
-    <p class="mt-8 text-xs font-medium text-gray-400 font-mono">LaporAC v1.0 • Magang Dharma</p>
+    <!-- Footer Credit -->
+    <p class="mt-8 text-xs font-medium text-gray-400 font-mono">LaporAC v2.0 • Magang Dharma</p>
 
 </div>

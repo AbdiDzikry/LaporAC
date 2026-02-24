@@ -37,6 +37,24 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/admin/users/user-list/user-list').then(m => m.UserListComponent)
             },
             {
+                path: 'admin/users/roles',
+                loadComponent: () => import('./pages/admin/users/role-list/role-list').then(m => m.RoleListComponent)
+            },
+            {
+                path: 'admin/users/create',
+                loadComponent: () => import('./pages/admin/users/user-form/user-form').then(m => m.UserFormComponent)
+            },
+            {
+                path: 'admin/users/edit/:id',
+                loadComponent: () => import('./pages/admin/users/user-form/user-form').then(m => m.UserFormComponent),
+                title: 'Edit User'
+            },
+            {
+                path: 'admin/maintenance/generate',
+                loadComponent: () => import('./pages/admin/maintenance/maintenance-wizard/maintenance-wizard').then(m => m.MaintenanceWizardComponent),
+                title: 'Generate Jadwal Rutin'
+            },
+            {
                 path: 'admin/logs',
                 loadComponent: () => import('./pages/admin/logs/logs').then(m => m.LogsComponent)
             },
