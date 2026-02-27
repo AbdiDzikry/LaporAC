@@ -1,0 +1,310 @@
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Manajemen Vendor</h1>
+            <p class="text-sm text-gray-500 mt-1">Kelola vendor dan mitra perbaikan AC</p>
+        </div>
+        <button
+            (click)="openAddVendorModal()"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Tambah Vendor
+        </button>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+            <div class="text-sm text-blue-600 font-medium">Total Vendor</div>
+            <div class="text-2xl font-bold text-blue-900 mt-1">{{ totalVendors }}</div>
+        </div>
+        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
+            <div class="text-sm text-green-600 font-medium">Vendor Aktif</div>
+            <div class="text-2xl font-bold text-green-900 mt-1">{{ activeVendors }}</div>
+        </div>
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
+            <div class="text-sm text-purple-600 font-medium">Total Pekerjaan</div>
+            <div class="text-2xl font-bold text-purple-900 mt-1">{{ totalJobs }}</div>
+        </div>
+        <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-4 border border-yellow-200">
+            <div class="text-sm text-yellow-600 font-medium">Rating Rata-rata</div>
+            <div class="text-2xl font-bold text-yellow-900 mt-1">{{ averageRating }}</div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-col md:flex-row gap-4 mb-6">
+        <div class="flex-1">
+            <input
+                type="text"
+                [(ngModel)]="searchQuery"
+                (input)="applyFilters()"
+                placeholder="Cari vendor, company, atau email..."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <div class="flex gap-2">
+            <select
+                [(ngModel)]="statusFilter"
+                (change)="applyFilters()"
+                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">Semua Status</option>
+                <option value="active">Aktif</option>
+                <option value="inactive">Nonaktif</option>
+                <option value="suspended">Suspended</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- Table -->
+    <div *ngIf="!loading && filteredVendors.length > 0" class="overflow-x-auto">
+        <table class="w-full">
+            <thead>
+                <tr class="border-b border-gray-200">
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Vendor</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Company</th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Kontak</th>
+                    <th class="text-center py-3 px-4 text-sm font-semibold text-gray-700">Pekerjaan</th>
+                    <th class="text-center py-3 px-4 text-sm font-semibold text-gray-700">Rating</th>
+                    <th class="text-center py-3 px-4 text-sm font-semibold text-gray-700">Status</th>
+                    <th class="text-center py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let vendor of filteredVendors" class="border-b border-gray-100 hover:bg-gray-50">
+                    <td class="py-3 px-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
+                                {{ getInitials(vendor.user?.name) }}
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">{{ vendor.user?.name }}</div>
+                                <div class="text-xs text-gray-500">{{ vendor.user?.email }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <div class="text-sm text-gray-900">{{ vendor.company_name || '-' }}</div>
+                        <div class="text-xs text-gray-500">{{ vendor.specialties?.[0] || '-' }}</div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <div class="text-sm text-gray-900">{{ vendor.phone || '-' }}</div>
+                        <div class="text-xs text-gray-500">{{ vendor.bank_name || '-' }}</div>
+                    </td>
+                    <td class="text-center py-3 px-4">
+                        <span class="text-sm font-medium text-gray-900">{{ vendor.completed_jobs }}</span>
+                        <span class="text-xs text-gray-500"> jobs</span>
+                    </td>
+                    <td class="text-center py-3 px-4">
+                        <div class="flex items-center justify-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FBBF24" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <span class="text-sm font-medium text-gray-900">{{ vendor.rating }}</span>
+                        </div>
+                    </td>
+                    <td class="text-center py-3 px-4">
+                        <span
+                            [class]="{
+                                'bg-green-100 text-green-700': vendor.status === 'active',
+                                'bg-gray-100 text-gray-700': vendor.status === 'inactive',
+                                'bg-red-100 text-red-700': vendor.status === 'suspended'
+                            }"
+                            class="px-2 py-1 rounded-full text-xs font-medium">
+                            {{ getStatusLabel(vendor.status) }}
+                        </span>
+                    </td>
+                    <td class="text-center py-3 px-4">
+                        <div class="flex items-center justify-center gap-2">
+                            <button
+                                (click)="viewVendor(vendor)"
+                                class="p-1 text-blue-600 hover:bg-blue-50 rounded"
+                                title="Lihat Detail">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                            <button
+                                (click)="editVendor(vendor)"
+                                class="p-1 text-green-600 hover:bg-green-50 rounded"
+                                title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a1 1 0 00-1 1v14a1 1 0 001 1h14a1 1 0 001-1v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                            </button>
+                            <button
+                                (click)="deleteVendor(vendor)"
+                                class="p-1 text-red-600 hover:bg-red-50 rounded"
+                                title="Hapus">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && filteredVendors.length === 0" class="text-center py-12">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" stroke="#CBD5E1" stroke-width="1.5" viewBox="0 0 24 24" class="mx-auto mb-4">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+            <path d="M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 mb-1">Belum ada vendor</h3>
+        <p class="text-sm text-gray-500 mb-4">Mulai dengan menambahkan vendor baru</p>
+        <button
+            (click)="openAddVendorModal()"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+            Tambah Vendor
+        </button>
+    </div>
+</div>
+
+<!-- Modal Detail Vendor -->
+<div *ngIf="showDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200 flex items-center justify-between sticky top-0 bg-white rounded-t-xl">
+            <h2 class="text-xl font-bold text-gray-900">Detail Vendor</h2>
+            <button (click)="closeDetailModal()" class="text-gray-400 hover:text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div class="p-6" *ngIf="selectedVendor">
+            <!-- Profile Header -->
+            <div class="flex items-start gap-4 mb-6">
+                <div class="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-2xl">
+                    {{ getInitials(selectedVendor.user?.name) }}
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900">{{ selectedVendor.user?.name }}</h3>
+                    <p class="text-sm text-gray-500">{{ selectedVendor.user?.email }}</p>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span
+                            [class]="{
+                                'bg-green-100 text-green-700': selectedVendor.status === 'active',
+                                'bg-gray-100 text-gray-700': selectedVendor.status === 'inactive',
+                                'bg-red-100 text-red-700': selectedVendor.status === 'suspended'
+                            }"
+                            class="px-2 py-1 rounded-full text-xs font-medium">
+                            {{ getStatusLabel(selectedVendor.status) }}
+                        </span>
+                        <span class="text-sm text-gray-600">• {{ selectedVendor.completed_jobs }} pekerjaan selesai</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Grid -->
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-700 mb-3">Informasi Company</h4>
+                    <div class="space-y-2">
+                        <div>
+                            <div class="text-xs text-gray-500">Company Name</div>
+                            <div class="text-sm font-medium text-gray-900">{{ selectedVendor.company_name || '-' }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500">Alamat</div>
+                            <div class="text-sm font-medium text-gray-900">{{ selectedVendor.company_address || '-' }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500">NPWP</div>
+                            <div class="text-sm font-medium text-gray-900">{{ selectedVendor.npwp || '-' }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-700 mb-3">Informasi Bank</h4>
+                    <div class="space-y-2">
+                        <div>
+                            <div class="text-xs text-gray-500">Bank</div>
+                            <div class="text-sm font-medium text-gray-900">{{ selectedVendor.bank_name || '-' }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500">No. Rekening</div>
+                            <div class="text-sm font-medium text-gray-900">{{ selectedVendor.bank_account || '-' }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500">Atas Nama</div>
+                            <div class="text-sm font-medium text-gray-900">{{ selectedVendor.account_holder || '-' }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-700 mb-3">Kontak</h4>
+                    <div class="space-y-2">
+                        <div>
+                            <div class="text-xs text-gray-500">Telepon</div>
+                            <div class="text-sm font-medium text-gray-900">{{ selectedVendor.phone || '-' }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500">Email</div>
+                            <div class="text-sm font-medium text-gray-900">{{ selectedVendor.email || selectedVendor.user?.email }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-700 mb-3">Specialties</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span *ngFor="let spec of (selectedVendor.specialties || [])"
+                              class="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium">
+                            {{ spec }}
+                        </span>
+                        <span *ngIf="!selectedVendor.specialties?.length" class="text-sm text-gray-500">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div *ngIf="vendorStats" class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="text-sm font-semibold text-gray-700 mb-3">Statistik Performa</h4>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600">{{ vendorStats.total_spks }}</div>
+                        <div class="text-xs text-gray-500">Total SPK</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-green-600">{{ vendorStats.completed_spks }}</div>
+                        <div class="text-xs text-gray-500">Selesai</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-purple-600">{{ vendorStats.total_earnings | currency:'IDR':'Rp ' }}</div>
+                        <div class="text-xs text-gray-500">Total Pendapatan</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div *ngIf="selectedVendor.notes" class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <h4 class="text-sm font-semibold text-yellow-800 mb-2">Catatan</h4>
+                <p class="text-sm text-yellow-700">{{ selectedVendor.notes }}</p>
+            </div>
+        </div>
+        <div class="p-6 border-t border-gray-200 flex justify-end gap-2 sticky bottom-0 bg-white rounded-b-xl">
+            <button (click)="closeDetailModal()" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium">
+                Tutup
+            </button>
+            <button (click)="editVendor(selectedVendor!)" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">
+                Edit Vendor
+            </button>
+        </div>
+    </div>
+</div>

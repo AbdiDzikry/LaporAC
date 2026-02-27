@@ -1,0 +1,22 @@
+-Top kategori yang sering rusak pada aplikasi (ac rusak karna apa)
+-Vendor performance
+Garansi apakah perlu di reset tiap 3 bulan
+Kasih notif WA
+Nanti juga perlu ditambahkan karena kira kira ada 2 vendor pada saat create jdwl maintenance kita bisa milih vendor mana yang handle unit ini
+lalu perlu di konfim
+
+update UI
+
+bedakan proses antara perlisisan dokumen SPK, BAP, dan Invoice yang pelaporan dan maintenance
+
+lalu juga pada dokumen ini nanti musti dipastikan rilisnya itu pada saat di proses apa
+
+pokoknya nanti perlu dipastikan lagi kepada GA terkait vendor itu bagaimana
+
+analitik nya nanti betulkan
+
+history perbaikan per unit juga nanti ditunjukkan pada detail unit
+
+
+
+
