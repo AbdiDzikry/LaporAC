@@ -1,18 +1,41 @@
-<div class="max-w-7xl mx-auto font-sans p-4 space-y-6" (click)="closeAllDropdowns()">
+<div class="max-w-7xl mx-auto font-sans p-8 space-y-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen"
+    (click)="closeAllDropdowns()">
 
-    <!-- HEADER -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <!-- HEADER - Enhanced with gradient -->
+    <div
+        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-6 border-b border-gray-200">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Data Aset AC</h1>
-            <p class="text-sm text-gray-500 mt-1">Kelola {{ allAssets.length }} unit pendingin ruangan terdaftar.</p>
+            <h1
+                class="text-3xl font-black text-gray-900 tracking-tight bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent flex items-center gap-3">
+                <span
+                    class="p-3 bg-gradient-to-br from-green-600 to-emerald-700 rounded-xl text-white shadow-xl shadow-green-500/30 transform hover:scale-105 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <path
+                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                        </path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                </span>
+                Data Aset AC
+            </h1>
+            <p class="text-gray-600 text-sm mt-2 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24" class="text-green-500">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                Kelola {{ allAssets.length }} unit pendingin ruangan terdaftar.
+            </p>
         </div>
 
         <div class="flex items-center gap-3">
-            <!-- VIEW SWITCHER -->
-            <div class="border border-gray-200 p-1 rounded-xl flex items-center text-xs font-bold bg-white">
+            <!-- VIEW SWITCHER - Modernized -->
+            <div class="border-0 p-1 rounded-xl flex items-center text-xs font-bold bg-white shadow-md">
                 <button (click)="viewMode = 'list'"
                     class="px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2"
-                    [ngClass]="viewMode === 'list' ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-sm' : 'text-gray-400 hover:text-gray-600'">
+                    [ngClass]="viewMode === 'list' ? 'bg-gradient-to-r from-blue-50 to-blue-100/50 text-blue-700 border border-blue-200 shadow-sm' : 'text-gray-400 hover:text-gray-600'">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
                         stroke-width="2" viewBox="0 0 24 24">
                         <line x1="8" y1="6" x2="21" y2="6"></line>
@@ -26,7 +49,7 @@
                 </button>
                 <button (click)="viewMode = 'visual'"
                     class="px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2"
-                    [ngClass]="viewMode === 'visual' ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-sm' : 'text-gray-400 hover:text-gray-600'">
+                    [ngClass]="viewMode === 'visual' ? 'bg-gradient-to-r from-blue-50 to-blue-100/50 text-blue-700 border border-blue-200 shadow-sm' : 'text-gray-400 hover:text-gray-600'">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
                         stroke-width="2" viewBox="0 0 24 24">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -38,7 +61,7 @@
             </div>
 
             <a routerLink="/admin/assets/new"
-                class="flex border-2 border-blue-700 text-blue-700 hover:bg-blue-50 px-5 py-2.5 rounded-xl font-bold items-center gap-2 transition-all shadow-sm">
+                class="flex border-0 bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 px-5 py-2.5 rounded-xl font-bold items-center gap-2 transition-all shadow-md hover:shadow-lg transform hover:scale-105">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                     stroke-width="3" viewBox="0 0 24 24">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -321,12 +344,15 @@
                         <thead>
                             <tr
                                 class="bg-gray-50 border-b border-gray-200 text-gray-500 text-[11px] uppercase tracking-wider font-bold">
-                                <th class="px-6 py-4 w-12 text-center">#</th>
-                                <th class="px-6 py-4">Informasi Aset</th>
-                                <th class="px-6 py-4">Lokasi</th>
-                                <th class="px-6 py-4">Status</th>
-                                <th class="px-6 py-4">Nilai Buku (Est)</th>
-                                <th class="px-6 py-4 text-right">Aksi</th>
+                                <th class="px-6 py-4 w-12 text-center whitespace-nowrap">#</th>
+                                <th class="px-6 py-4 whitespace-nowrap min-w-[200px]">Kode AC (SKU)</th>
+                                <th class="px-6 py-4 whitespace-nowrap">Lokasi</th>
+                                <th class="px-6 py-4 whitespace-nowrap">Kategori AC</th>
+                                <th class="px-6 py-4 whitespace-nowrap">Kapasitas PK</th>
+                                <th class="px-6 py-4 whitespace-nowrap">Merek</th>
+                                <th class="px-6 py-4 whitespace-nowrap">Usia Aset</th>
+                                <th class="px-6 py-4 whitespace-nowrap">Status</th>
+                                <th class="px-6 py-4 text-right whitespace-nowrap">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -338,16 +364,17 @@
                                         itemsPerPage + i + 1 }}</span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="relative">
-                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center border p-2"
+                                    <div class="flex items-center gap-4">
+                                        <!-- Icon Type Container -->
+                                        <div class="relative flex-shrink-0">
+                                            <div class="w-12 h-12 rounded-xl flex items-center justify-center border-2"
                                                 [ngClass]="hasActiveTicket(asset)
                                                     ? 'bg-purple-50 text-purple-700 border-purple-200'
                                                     : 'bg-blue-50 text-blue-700 border-blue-100'">
                                                 <!-- Icon Switcher based on Type -->
                                                 <ng-container [ngSwitch]="getAssetType(asset)">
                                                     <svg *ngSwitchCase="'cassette'" xmlns="http://www.w3.org/2000/svg"
-                                                        width="20" height="20" fill="currentColor"
+                                                        width="24" height="24" fill="currentColor"
                                                         viewBox="0 0 256 256">
                                                         <path
                                                             d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,176H48V48H208V208ZM128,48v160m-80-80H208"
@@ -355,7 +382,7 @@
                                                             stroke-linejoin="round" stroke-width="16"></path>
                                                     </svg>
                                                     <svg *ngSwitchCase="'standing'" xmlns="http://www.w3.org/2000/svg"
-                                                        width="20" height="20" fill="currentColor"
+                                                        width="24" height="24" fill="currentColor"
                                                         viewBox="0 0 256 256">
                                                         <rect x="56" y="32" width="144" height="192" rx="8" fill="none"
                                                             stroke="currentColor" stroke-linecap="round"
@@ -367,8 +394,8 @@
                                                             stroke="currentColor" stroke-linecap="round"
                                                             stroke-linejoin="round" stroke-width="16"></line>
                                                     </svg>
-                                                    <svg *ngSwitchDefault xmlns="http://www.w3.org/2000/svg" width="20"
-                                                        height="20" fill="currentColor" viewBox="0 0 256 256">
+                                                    <svg *ngSwitchDefault xmlns="http://www.w3.org/2000/svg" width="24"
+                                                        height="24" fill="currentColor" viewBox="0 0 256 256">
                                                         <path
                                                             d="M224,112V88a16,16,0,0,0-16-16H48A16,16,0,0,0,32,88v24a16,16,0,0,0,16,16h4.13A40,40,0,0,0,88,168h80a40,40,0,0,0,35.87-40H208A16,16,0,0,0,224,112ZM168,152H88a24,24,0,0,1-23.47-19.1A8.25,8.25,0,0,0,64,132a8,8,0,0,0-8-8H48V88H208v36h-8a8,8,0,0,0-8,8,8.25,8.25,0,0,0-.53.9A24,24,0,0,1,168,152Z">
                                                         </path>
@@ -377,32 +404,23 @@
                                             </div>
                                             <!-- Ticket Indicator Dot -->
                                             <div *ngIf="hasActiveTicket(asset)"
-                                                class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-purple-500 rounded-full border-2 border-white flex items-center justify-center">
-                                                <span class="text-[7px] text-white font-black">{{
+                                                class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-purple-500 rounded-full border-2 border-white flex items-center justify-center shadow-md">
+                                                <span class="text-[10px] text-white font-black">{{
                                                     getTicketInfo(asset)?.count }}</span>
                                             </div>
                                         </div>
-                                        <div>
-                                            <div class="font-bold text-gray-900 text-sm flex items-center gap-2">
-                                                {{ asset.name }}
+
+                                        <!-- Asset Details Container -->
+                                        <div class="flex-1 min-w-0">
+                                            <!-- Main Title (SKU) -->
+                                            <div class="font-bold text-gray-900 text-[15px] truncate max-w-[200px]"
+                                                [title]="asset.sku">
+                                                {{ asset.sku }}
                                             </div>
-                                            <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                                                <span *ngIf="asset.category"
-                                                    class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-[9px] font-black uppercase tracking-wider border border-gray-200">
-                                                    {{ asset.category }}
-                                                </span>
-                                                <span *ngIf="asset.pk"
-                                                    class="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-[9px] font-black uppercase tracking-wider border border-blue-100">
-                                                    {{ asset.pk }}
-                                                </span>
-                                                <span
-                                                    class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                                                    {{ asset.brand ? asset.brand + ' • ' : '' }}{{ asset.sku }}
-                                                </span>
-                                            </div>
-                                            <!-- Ticket Badge -->
+
+                                            <!-- Ticket Badge (If Any) -->
                                             <div *ngIf="hasActiveTicket(asset)"
-                                                class="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 bg-purple-100 text-purple-700 rounded-md text-[9px] font-black uppercase tracking-wide">
+                                                class="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 bg-purple-50 text-purple-700 rounded-lg text-[10px] font-bold tracking-wide border border-purple-100 w-fit whitespace-nowrap">
                                                 <span
                                                     class="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse"></span>
                                                 Tiket #{{ getTicketInfo(asset)?.ticketId }} — {{
@@ -411,8 +429,9 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-1.5 text-gray-600 text-xs font-semibold">
+                                <!-- Lokasi -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center gap-1.5 text-gray-600 text-sm font-semibold">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none"
                                             stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -421,30 +440,49 @@
                                         {{ asset.location }}
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">
+                                <!-- Kategori AC -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span *ngIf="asset.category" class="text-sm font-semibold text-gray-700">{{
+                                        asset.category }}</span>
+                                    <span *ngIf="!asset.category" class="text-sm text-gray-400">-</span>
+                                </td>
+                                <!-- Kapasitas PK -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span *ngIf="asset.pk"
+                                        class="text-sm font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg">{{
+                                        asset.pk }}</span>
+                                    <span *ngIf="!asset.pk" class="text-sm text-gray-400">-</span>
+                                </td>
+                                <!-- Merek -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span *ngIf="asset.brand" class="text-sm font-medium text-gray-700">{{ asset.brand
+                                        }}</span>
+                                    <span *ngIf="!asset.brand" class="text-sm text-gray-400">-</span>
+                                </td>
+                                <!-- Usia Aset -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm font-medium"
+                                        [ngClass]="getAssetAgeLabel(asset) === '-' ? 'text-gray-400' : 'text-gray-700'">
+                                        {{ getAssetAgeLabel(asset) }}
+                                    </span>
+                                </td>
+                                <!-- Status -->
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <span
-                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border-2 text-[10px] font-extrabold uppercase tracking-wider bg-white"
+                                        class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg border-2 text-[10px] font-black uppercase tracking-wider min-w-[90px] w-fit"
                                         [ngClass]="{
-                                            'text-green-600 border-green-600': asset.status === 'good',
-                                            'text-red-600 border-red-600': asset.status === 'broken',
-                                            'text-amber-600 border-amber-600': asset.status === 'maintenance'
+                                            'text-green-600 border-green-200 bg-green-50/50': asset.status === 'good',
+                                            'text-red-700 border-red-200 bg-red-50/50': asset.status === 'broken',
+                                            'text-amber-600 border-amber-200 bg-amber-50/50': asset.status === 'maintenance'
                                         }">
-                                        <div class="w-1.5 h-1.5 rounded-full" [ngClass]="{
+                                        <div class="w-1.5 h-1.5 rounded-full flex-shrink-0" [ngClass]="{
                                             'bg-green-600': asset.status === 'good',
                                             'bg-red-600': asset.status === 'broken',
                                             'bg-amber-600': asset.status === 'maintenance'
                                         }"></div>
-                                        {{ asset.status === 'good' ? 'Normal' : (asset.status === 'broken' ? 'Rusak' :
-                                        'Service') }}
+                                        <span>{{ asset.status === 'good' ? 'Normal' : (asset.status ===
+                                            'broken' ? 'Rusak' : 'Maintenance') }}</span>
                                     </span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="text-xs font-bold text-gray-700">
-                                        {{ calculateBookValue(asset) | currency:'IDR':'symbol':'1.0-0' }}
-                                    </div>
-                                    <div class="text-[10px] text-gray-400 font-medium">
-                                        Beli: {{ (asset.purchase_price || 0) | currency:'IDR':'symbol':'1.0-0' }}
-                                    </div>
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
@@ -481,6 +519,15 @@
                                                 </path>
                                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
                                                 </path>
+                                            </svg>
+                                        </a>
+                                        <a [routerLink]="['/admin/assets', asset.id, 'history']"
+                                            class="p-2 rounded-lg border border-gray-200 text-purple-600 hover:border-purple-600 hover:bg-purple-50 transition-all bg-white"
+                                            title="Lihat Riwayat">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
                                             </svg>
                                         </a>
                                         <button (click)="openDisposalModal(asset)" type="button"

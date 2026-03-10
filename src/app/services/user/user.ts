@@ -8,10 +8,11 @@ export interface UserProfile {
     email?: string;
     full_name?: string;
     name?: string; // Laravel default
-    role: 'super_admin' | 'admin' | 'technician' | 'staff' | string;
+    role: 'super_admin' | 'admin' | 'technician' | 'staff' | 'vendor' | string;
     avatar_url?: string;
     created_at?: string;
     nik?: string;
+    company_name?: string; // For vendors
 }
 
 @Injectable({
@@ -41,6 +42,18 @@ export class UserService {
     async getTechnicians() {
         try {
             const data = await firstValueFrom(this.http.get<UserProfile[]>(`${this.apiUrl}?role=technician`));
+            return { data, error: null };
+        } catch (error: any) {
+            return { data: null, error };
+        }
+    }
+
+    /**
+     * Get only vendors
+     */
+    async getVendors() {
+        try {
+            const data = await firstValueFrom(this.http.get<UserProfile[]>(`${this.apiUrl}?role=vendor`));
             return { data, error: null };
         } catch (error: any) {
             return { data: null, error };

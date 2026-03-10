@@ -1,24 +1,33 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { AssetService } from '../../../services/asset/asset';
 import { TicketService } from '../../../services/ticket/ticket';
+import { SpkService, Spk } from '../../../services/spk/spk';
+import { MaintenanceService, MaintenanceSchedule } from '../../../services/maintenance/maintenance';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+
+// Chart.js types
+const lineChartType: ChartType = 'line';
+const doughnutChartType: ChartType = 'doughnut';
+const barChartType: ChartType = 'bar';
+const pieChartType: ChartType = 'pie';
 
 @Component({
   selector: 'app-analytics',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective, RouterLink, FormsModule],
+  imports: [CommonModule, BaseChartDirective, FormsModule],
   templateUrl: './analytics.html',
   styleUrl: './analytics.css',
 })
 export class AnalyticsComponent implements OnInit {
   loading = false;
   currentDate = new Date();
+  Math = Math; // Expose Math to template for dynamic height calculations
+
 
   // Date Range Filter
   startDate: string = '';
@@ -38,15 +47,33 @@ export class AnalyticsComponent implements OnInit {
     avgResolutionLabel: '0 jam'
   };
 
-  // Asset Status Chart
+  // Top 5 Most Serviced AC Units
+  topServicedAssets: Array<{ name: string, location: string, serviceCount: number, sku: string }> = [];
+
+  // Top 5 Highest Cost AC Units
+  topCostAssets: Array<{ name: string, location: string, totalCost: number, sku: string }> = [];
+
+  // Issues by Location
+  issuesByLocation: Array<{ location: string, count: number }> = [];
+
+  // Issues by Brand
+  issuesByBrand: Array<{ brand: string, count: number }> = [];
+
+  // NEW METRICS
+  issuesByCategory: Array<{ category: string, count: number }> = [];
+  topVendors: Array<{ vendor_name: string, count: number }> = [];
+  topSpareParts: Array<{ item_name: string, qty: number }> = [];
+  upcomingMaintenance: MaintenanceSchedule[] = [];
+
+  // Asset Status Chart (Donut)
   assetStatusChartData: ChartData<'doughnut'> = {
     labels: ['Normal', 'Maintenance', 'Rusak'],
     datasets: [{
-      data: [], // Empty initially
-      backgroundColor: ['#10B981', '#F59E0B', '#EF4444'], // Keep semantic colors but maybe slightly muted in UI
+      data: [],
+      backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
       hoverBackgroundColor: ['#059669', '#D97706', '#DC2626'],
       borderColor: '#ffffff',
-      borderWidth: 2
+      borderWidth: 3
     }]
   };
 
@@ -55,79 +82,78 @@ export class AnalyticsComponent implements OnInit {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'right',
+        position: 'bottom',
         labels: {
           usePointStyle: true,
           pointStyle: 'circle',
-          padding: 20,
-          font: { size: 12, family: 'Inter' }
+          padding: 16,
+          font: { size: 12, family: 'Inter, sans-serif' }
         }
       }
     },
-    cutout: '75%' // Thinner ring
+    cutout: '72%'
   };
 
-  // Ticket Status Chart
+  // Ticket Status Chart (Vertical Bar)
   ticketStatusChartData: ChartData<'bar'> = {
     labels: ['Open', 'In Progress', 'Resolved', 'Closed'],
     datasets: [{
       label: 'Jumlah Tiket',
       data: [],
-      backgroundColor: ['#DBEAFE', '#60A5FA', '#2563EB', '#1E40AF'], // Monochromatic Blue scale
-      borderRadius: 4,
-      barThickness: 40
+      backgroundColor: ['#FEF3C7', '#BFDBFE', '#BBF7D0', '#E0E7FF'],
+      borderColor: ['#F59E0B', '#3B82F6', '#10B981', '#6366F1'],
+      borderWidth: 2,
+      borderRadius: 8,
+      barThickness: 44
     }]
   };
 
   ticketStatusChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false }
-    },
+    plugins: { legend: { display: false } },
     scales: {
-      x: {
-        grid: { display: false },
-        ticks: { font: { family: 'Inter' } }
-      },
+      x: { grid: { display: false }, ticks: { font: { family: 'Inter, sans-serif', size: 12 } } },
       y: {
         beginAtZero: true,
-        grid: { color: '#f3f4f6' },
-        ticks: { stepSize: 1, font: { family: 'Inter' } },
+        grid: { color: '#F3F4F6' },
+        ticks: { stepSize: 1, font: { family: 'Inter, sans-serif' } },
         border: { display: false }
       }
     }
   };
 
-  // Monthly Trend Chart
+  // Monthly Trend Chart (Area / Line)
   monthlyTrendChartData: ChartData<'line'> = {
     labels: [],
     datasets: [
       {
         label: 'Tiket Baru',
         data: [],
-        borderColor: '#2563EB', // Blue-600
-        backgroundColor: 'rgba(37, 99, 235, 0.05)',
-        borderWidth: 2,
+        borderColor: '#6366F1',
+        backgroundColor: 'rgba(99, 102, 241, 0.08)',
+        borderWidth: 2.5,
         tension: 0.4,
         fill: true,
-        pointBackgroundColor: '#2563EB',
+        pointBackgroundColor: '#6366F1',
         pointBorderColor: '#fff',
         pointBorderWidth: 2,
-        pointRadius: 4
+        pointRadius: 4,
+        pointHoverRadius: 6
       },
       {
         label: 'Tiket Selesai',
         data: [],
-        borderColor: '#10B981', // Green-500
-        backgroundColor: 'rgba(16, 185, 129, 0.05)',
-        borderWidth: 2,
+        borderColor: '#10B981',
+        backgroundColor: 'rgba(16, 185, 129, 0.08)',
+        borderWidth: 2.5,
         tension: 0.4,
         fill: true,
         pointBackgroundColor: '#10B981',
         pointBorderColor: '#fff',
         pointBorderWidth: 2,
-        pointRadius: 4
+        pointRadius: 4,
+        pointHoverRadius: 6
       }
     ]
   };
@@ -139,46 +165,133 @@ export class AnalyticsComponent implements OnInit {
       legend: {
         position: 'top',
         align: 'end',
-        labels: {
-          usePointStyle: true,
-          boxWidth: 8,
-          padding: 20,
-          font: { size: 12, family: 'Inter' }
-        }
+        labels: { usePointStyle: true, boxWidth: 8, padding: 20, font: { size: 12, family: 'Inter, sans-serif' } }
       }
     },
     scales: {
-      x: {
-        grid: { display: false },
-        ticks: { font: { family: 'Inter' } }
-      },
+      x: { grid: { display: false }, ticks: { font: { family: 'Inter, sans-serif' } } },
       y: {
         beginAtZero: true,
-        grid: { color: '#f3f4f6', }, // dashed?
-        border: { display: false }
+        grid: { color: '#F3F4F6' },
+        border: { display: false },
+        ticks: { font: { family: 'Inter, sans-serif' } }
       }
     },
-    interaction: {
-      mode: 'index',
-      intersect: false,
-    },
+    interaction: { mode: 'index', intersect: false }
   };
 
-  // Location Distribution Chart
-  locationChartData: ChartData<'pie'> = {
+  // Issues by Location Chart (Horizontal Bar)
+  locationBarChartData: ChartData<'bar'> = {
     labels: [],
     datasets: [{
+      label: 'Jumlah Masalah',
       data: [],
-      // Professional Palette (Blues, Teals, Grays) instead of Rainbow
-      backgroundColor: [
-        '#1E3A8A', '#1E40AF', '#1D4ED8', '#2563EB', '#3B82F6',
-        '#60A5FA', '#93C5FD', '#BFDBFE', '#DBEAFE', '#EFF6FF'
-      ],
-      hoverOffset: 4
+      backgroundColor: 'rgba(99, 102, 241, 0.15)',
+      borderColor: '#6366F1',
+      borderWidth: 2,
+      borderRadius: 6,
+      barThickness: 18
     }]
   };
 
-  locationChartOptions: ChartConfiguration['options'] = {
+  locationBarChartOptions: ChartConfiguration<'bar'>['options'] = {
+    indexAxis: 'y' as const,
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        beginAtZero: true,
+        grid: { color: '#F3F4F6' },
+        ticks: { stepSize: 1, font: { family: 'Inter, sans-serif', size: 11 } },
+        border: { display: false }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { font: { family: 'Inter, sans-serif', size: 11 } }
+      }
+    }
+  };
+
+  // Issues by Brand Chart (Horizontal Bar)
+  brandBarChartData: ChartData<'bar'> = {
+    labels: [],
+    datasets: [{
+      label: 'Jumlah Masalah',
+      data: [],
+      backgroundColor: 'rgba(245, 158, 11, 0.15)',
+      borderColor: '#F59E0B',
+      borderWidth: 2,
+      borderRadius: 6,
+      barThickness: 18
+    }]
+  };
+
+  brandBarChartOptions: ChartConfiguration<'bar'>['options'] = {
+    indexAxis: 'y' as const,
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        beginAtZero: true,
+        grid: { color: '#F3F4F6' },
+        ticks: { stepSize: 1, font: { family: 'Inter, sans-serif', size: 11 } },
+        border: { display: false }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { font: { family: 'Inter, sans-serif', size: 11 } }
+      }
+    }
+  };
+
+  // Issues by Category Chart (Horizontal Bar)
+  categoryBarChartData: ChartData<'bar'> = {
+    labels: [],
+    datasets: [{
+      label: 'Kategori Keluhan',
+      data: [],
+      backgroundColor: 'rgba(236, 72, 153, 0.15)',
+      borderColor: '#EC4899',
+      borderWidth: 2,
+      borderRadius: 6,
+      barThickness: 18
+    }]
+  };
+
+  categoryBarChartOptions: ChartConfiguration<'bar'>['options'] = {
+    indexAxis: 'y' as const,
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        beginAtZero: true,
+        grid: { color: '#F3F4F6' },
+        ticks: { stepSize: 1, font: { family: 'Inter, sans-serif', size: 11 } },
+        border: { display: false }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { font: { family: 'Inter, sans-serif', size: 11 } }
+      }
+    }
+  };
+
+  // Asset Age Chart (Pie Chart)
+  assetAgeChartData: ChartData<'pie'> = {
+    labels: ['< 1 Tahun', '1 - 3 Tahun', '3 - 5 Tahun', '> 5 Tahun', 'Tidak Diketahui'],
+    datasets: [{
+      data: [],
+      backgroundColor: ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#9CA3AF'],
+      hoverBackgroundColor: ['#059669', '#2563EB', '#D97706', '#DC2626', '#6B7280'],
+      borderColor: '#ffffff',
+      borderWidth: 2
+    }]
+  };
+
+  assetAgeChartOptions: ChartConfiguration<'pie'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -186,20 +299,19 @@ export class AnalyticsComponent implements OnInit {
         position: 'right',
         labels: {
           usePointStyle: true,
-          boxWidth: 8,
-          padding: 15,
-          font: { size: 11, family: 'Inter' }
+          pointStyle: 'circle',
+          padding: 16,
+          font: { size: 12, family: 'Inter, sans-serif' }
         }
       }
-    },
-    layout: {
-      padding: { left: 0, right: 20 }
     }
   };
 
   constructor(
     private assetService: AssetService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private spkService: SpkService,
+    private maintenanceService: MaintenanceService
   ) { }
 
   ngOnInit() {
@@ -276,15 +388,16 @@ export class AnalyticsComponent implements OnInit {
         // Update asset status chart
         this.assetStatusChartData.datasets[0].data = [goodCount, maintenanceCount, brokenCount];
 
-        // Count by location
+        // count by location
         const locationMap = new Map<string, number>();
         assets.forEach((asset: any) => {
           const loc = asset.location || 'Unknown';
           locationMap.set(loc, (locationMap.get(loc) || 0) + 1);
         });
+        // Asset location distribution is now handled by calculateIssuesByLocation() below
 
-        this.locationChartData.labels = Array.from(locationMap.keys()).slice(0, 10);
-        this.locationChartData.datasets[0].data = Array.from(locationMap.values()).slice(0, 10);
+        // NEW: Asset Age Distribution
+        this.calculateAssetAges(assets);
       }
 
       // Load Tickets
@@ -336,7 +449,47 @@ export class AnalyticsComponent implements OnInit {
 
         // #3: Dynamic Monthly Trend (last 6 months from actual data)
         this.buildMonthlyTrend(allTickets);
+
+        // Calculate Top 5 Most Serviced AC Units
+        this.calculateTopServicedAssets(allTickets, assets || []);
+
+        // Calculate Top 5 Highest Cost AC Units
+        this.calculateTopCostAssets(allTickets, assets || []);
+
+        // Calculate Issues by Location
+        this.calculateIssuesByLocation(allTickets, assets || []);
+
+        // Calculate Issues by Brand
+        this.calculateIssuesByBrand(allTickets, assets || []);
+
+        // NEW: Calculate Issues by Category
+        this.calculateIssuesByCategory(allTickets);
       }
+
+      // 3. Load SPKs for Vendor & Parts Analytics
+      const { data: allSpks } = await this.spkService.getSpks();
+      if (allSpks) {
+        const spks = this.filterByDateRange(allSpks, 'created_at');
+        this.calculateTopVendors(spks);
+        this.calculateTopSpareParts(spks);
+
+        // Calculate total maintenance cost from SPKs directly for more accurate costing
+        if (spks.length > 0) {
+          this.stats.totalMaintenanceCost = spks.reduce((sum: number, s: any) => {
+            return sum + (Number(s.total_cost) || 0);
+          }, 0);
+        }
+      }
+
+      // 4. Load Upcoming Maintenance
+      const { data: maintenance } = await this.maintenanceService.getSchedules('upcoming');
+      if (maintenance) {
+        this.upcomingMaintenance = maintenance
+          .filter(m => m.status === 'scheduled')
+          .sort((a, b) => new Date(a.scheduled_date).getTime() - new Date(b.scheduled_date).getTime())
+          .slice(0, 5); // 5 antrean terdekat
+      }
+
     } catch (error) {
       console.error('Error loading analytics:', error);
     } finally {
@@ -410,4 +563,199 @@ export class AnalyticsComponent implements OnInit {
 
     doc.save(`Analitik_LaporAC_${new Date().toISOString().split('T')[0]}.pdf`);
   }
+
+  // Calculate Top 5 Most Serviced AC Units
+  private calculateTopServicedAssets(tickets: any[], assets: any[]) {
+    const serviceCountMap = new Map<string, { name: string, location: string, sku: string, serviceCount: number }>();
+
+    tickets.forEach(ticket => {
+      if (!ticket.asset_id) return;
+
+      const asset = assets.find(a => a.id === ticket.asset_id);
+      if (!asset) return;
+
+      const key = asset.id.toString();
+      const existing = serviceCountMap.get(key);
+
+      if (existing) {
+        existing.serviceCount++;
+      } else {
+        serviceCountMap.set(key, {
+          name: asset.name,
+          location: asset.location,
+          sku: asset.sku,
+          serviceCount: 1
+        });
+      }
+    });
+
+    // Convert to array and sort by serviceCount
+    this.topServicedAssets = Array.from(serviceCountMap.values())
+      .sort((a, b) => b.serviceCount - a.serviceCount)
+      .slice(0, 5);
+  }
+
+  // Calculate Top 5 Highest Cost AC Units
+  private calculateTopCostAssets(tickets: any[], assets: any[]) {
+    const costMap = new Map<string, { name: string, location: string, sku: string, totalCost: number }>();
+
+    tickets.forEach(ticket => {
+      if (!ticket.asset_id || !ticket.repair_cost) return;
+
+      const asset = assets.find(a => a.id === ticket.asset_id);
+      if (!asset) return;
+
+      const key = asset.id.toString();
+      const existing = costMap.get(key);
+      const cost = Number(ticket.repair_cost) || 0;
+
+      if (existing) {
+        existing.totalCost += cost;
+      } else {
+        costMap.set(key, {
+          name: asset.name,
+          location: asset.location,
+          sku: asset.sku,
+          totalCost: cost
+        });
+      }
+    });
+
+    // Convert to array and sort by cost
+    this.topCostAssets = Array.from(costMap.values())
+      .sort((a, b) => b.totalCost - a.totalCost)
+      .slice(0, 5);
+  }
+
+  // Calculate Issues by Location
+  private calculateIssuesByLocation(tickets: any[], assets: any[]) {
+    const locationMap = new Map<string, number>();
+
+    tickets.forEach(ticket => {
+      if (!ticket.asset_id) return;
+
+      const asset = assets.find(a => a.id === ticket.asset_id);
+      if (!asset) return;
+
+      const location = asset.location || 'Unknown';
+      locationMap.set(location, (locationMap.get(location) || 0) + 1);
+    });
+
+    const sorted = Array.from(locationMap.entries())
+      .map(([location, count]) => ({ location, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 8);
+    this.issuesByLocation = sorted;
+    this.locationBarChartData = {
+      ...this.locationBarChartData,
+      labels: sorted.map(l => l.location),
+      datasets: [{ ...this.locationBarChartData.datasets[0], data: sorted.map(l => l.count) }]
+    };
+  }
+
+  // Calculate Issues by Brand
+  private calculateIssuesByBrand(tickets: any[], assets: any[]) {
+    const brandMap = new Map<string, number>();
+
+    tickets.forEach(ticket => {
+      if (!ticket.asset_id) return;
+
+      const asset = assets.find(a => a.id === ticket.asset_id);
+      if (!asset) return;
+
+      const brand = asset.brand || 'Unknown';
+      brandMap.set(brand, (brandMap.get(brand) || 0) + 1);
+    });
+
+    const sorted = Array.from(brandMap.entries())
+      .map(([brand, count]) => ({ brand, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 8);
+    this.issuesByBrand = sorted;
+    this.brandBarChartData = {
+      ...this.brandBarChartData,
+      labels: sorted.map(b => b.brand),
+      datasets: [{ ...this.brandBarChartData.datasets[0], data: sorted.map(b => b.count) }]
+    };
+  }
+
+  // Calculate Asset Ages (Pie Chart logic)
+  private calculateAssetAges(assets: any[]) {
+    let less1 = 0, oneTo3 = 0, threeTo5 = 0, over5 = 0, unknown = 0;
+    const now = new Date();
+
+    assets.forEach(asset => {
+      if (!asset.purchase_date) {
+        unknown++;
+        return;
+      }
+      const purchaseDate = new Date(asset.purchase_date);
+      const diffTime = Math.abs(now.getTime() - purchaseDate.getTime());
+      const diffYears = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 365));
+
+      if (diffYears < 1) less1++;
+      else if (diffYears >= 1 && diffYears <= 3) oneTo3++;
+      else if (diffYears > 3 && diffYears <= 5) threeTo5++;
+      else over5++;
+    });
+
+    this.assetAgeChartData.datasets[0].data = [less1, oneTo3, threeTo5, over5, unknown];
+  }
+
+  // Calculate Issues by Category (Horizontal Bar logic)
+  private calculateIssuesByCategory(tickets: any[]) {
+    const categoryMap = new Map<string, number>();
+
+    tickets.forEach(ticket => {
+      const category = ticket.issue_category || 'Lain-lain';
+      categoryMap.set(category, (categoryMap.get(category) || 0) + 1);
+    });
+
+    const sorted = Array.from(categoryMap.entries())
+      .map(([category, count]) => ({ category, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 8);
+
+    this.issuesByCategory = sorted;
+    this.categoryBarChartData = {
+      ...this.categoryBarChartData,
+      labels: sorted.map(c => c.category),
+      datasets: [{ ...this.categoryBarChartData.datasets[0], data: sorted.map(c => c.count) }]
+    };
+  }
+
+  // Calculate Top Vendors (Completion Count)
+  private calculateTopVendors(spks: Spk[]) {
+    const vendorMap = new Map<string, number>();
+
+    spks.forEach(spk => {
+      if (!spk.vendor || spk.status !== 'completed') return;
+      const vendorName = spk.vendor.name || 'Vendor Tidak Dikenal';
+      vendorMap.set(vendorName, (vendorMap.get(vendorName) || 0) + 1);
+    });
+
+    this.topVendors = Array.from(vendorMap.entries())
+      .map(([vendor_name, count]) => ({ vendor_name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+  }
+
+  // Calculate Top Replaced Spare Parts
+  private calculateTopSpareParts(spks: Spk[]) {
+    const partsMap = new Map<string, number>();
+
+    spks.forEach(spk => {
+      if (!spk.items || spk.items.length === 0) return;
+      spk.items.forEach(item => {
+        const itemName = item.item_name || 'Part Tidak Dikenal';
+        partsMap.set(itemName, (partsMap.get(itemName) || 0) + (Number(item.qty) || 1));
+      });
+    });
+
+    this.topSpareParts = Array.from(partsMap.entries())
+      .map(([item_name, qty]) => ({ item_name, qty }))
+      .sort((a, b) => b.qty - a.qty)
+      .slice(0, 5);
+  }
 }
+

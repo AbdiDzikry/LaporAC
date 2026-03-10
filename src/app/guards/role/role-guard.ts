@@ -17,8 +17,13 @@ export const roleGuard: CanActivateFn = async (route, state) => {
 
   // Check Role
   const userRole = sessionService.getCurrentUserRole();
-  if (userRole && (userRole === 'super_admin' || userRole === 'admin' || userRole === 'technician')) {
-    // Technician can access dashboard
+  if (userRole && (userRole === 'super_admin' || userRole === 'admin' || userRole === 'technician' || userRole === 'vendor')) {
+    // Check if the current route is allowed for vendor
+    if (userRole === 'vendor' && state.url.match(/admin\/(analytics|assets|maintenance|users|logs)/)) {
+      alert('Akses Ditolak. Halaman ini bukan untuk vendor.');
+      router.navigate(['/dashboard']);
+      return false;
+    }
     return true;
   }
 

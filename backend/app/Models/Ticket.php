@@ -31,4 +31,14 @@ class Ticket extends Model
     {
         return $this->belongsTo(User::class, 'validated_by_id');
     }
+
+    public function assignedVendor()
+    {
+        return $this->belongsTo(User::class, 'assigned_vendor_id');
+    }
+
+    public function spks()
+    {
+        return $this->hasMany(Spk::class);
+    }
 }

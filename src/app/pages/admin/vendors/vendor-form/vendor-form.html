@@ -1,16 +1,17 @@
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
     <div class="mb-6">
         <div class="flex items-center gap-3 mb-2">
-            <button
-                (click)="goBack()"
-                class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+            <button (click)="goBack()" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
                 </svg>
             </button>
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">{{ isEditMode ? 'Edit Vendor' : 'Tambah Vendor Baru' }}</h1>
-                <p class="text-sm text-gray-500 mt-1">{{ isEditMode ? 'Update informasi vendor' : 'Tambahkan vendor baru ke sistem' }}</p>
+                <h1 class="text-2xl font-bold text-gray-900">{{ isEditMode ? 'Edit Vendor' : 'Tambah Vendor Baru' }}
+                </h1>
+                <p class="text-sm text-gray-500 mt-1">{{ isEditMode ? 'Update informasi vendor' : 'Tambahkan vendor baru
+                    ke sistem' }}</p>
             </div>
         </div>
     </div>
@@ -19,60 +20,84 @@
         <!-- Personal Information -->
         <div class="mb-8">
             <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
                 </svg>
                 Informasi Pribadi
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
-                    <input
-                        type="text"
-                        formControlName="name"
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap <span
+                            class="text-red-500">*</span></label>
+                    <input type="text" formControlName="name"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         [class.border-red-500]="vendorForm.get('name')?.invalid && vendorForm.get('name')?.touched">
-                    <p *ngIf="vendorForm.get('name')?.invalid && vendorForm.get('name')?.touched" class="text-red-500 text-xs mt-1">
+                    <p *ngIf="vendorForm.get('name')?.invalid && vendorForm.get('name')?.touched"
+                        class="text-red-500 text-xs mt-1">
                         Nama wajib diisi
                     </p>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Email <span class="text-red-500">*</span></label>
-                    <input
-                        type="email"
-                        formControlName="email"
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email <span
+                            class="text-red-500">*</span></label>
+                    <input type="email" formControlName="email"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         [class.border-red-500]="vendorForm.get('email')?.invalid && vendorForm.get('email')?.touched">
-                    <p *ngIf="vendorForm.get('email')?.errors?.['required'] && vendorForm.get('email')?.touched" class="text-red-500 text-xs mt-1">
+                    <p *ngIf="vendorForm.get('email')?.errors?.['required'] && vendorForm.get('email')?.touched"
+                        class="text-red-500 text-xs mt-1">
                         Email wajib diisi
                     </p>
-                    <p *ngIf="vendorForm.get('email')?.errors?.['email'] && vendorForm.get('email')?.touched" class="text-red-500 text-xs mt-1">
+                    <p *ngIf="vendorForm.get('email')?.errors?.['email'] && vendorForm.get('email')?.touched"
+                        class="text-red-500 text-xs mt-1">
                         Format email tidak valid
                     </p>
                 </div>
 
-                <div *ngIf="!isEditMode">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Password <span class="text-red-500">*</span></label>
-                    <input
-                        type="password"
-                        formControlName="password"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        [class.border-red-500]="vendorForm.get('password')?.invalid && vendorForm.get('password')?.touched">
-                    <p *ngIf="vendorForm.get('password')?.errors?.['required'] && vendorForm.get('password')?.touched" class="text-red-500 text-xs mt-1">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Password <span *ngIf="!isEditMode" class="text-red-500">*</span>
+                        <span *ngIf="isEditMode" class="text-gray-400 font-normal text-xs ml-1">(Isi bila ingin
+                            diubah)</span>
+                    </label>
+                    <div class="relative">
+                        <input [type]="hidePassword ? 'password' : 'text'" formControlName="password"
+                            [placeholder]="isEditMode ? 'Abaikan jika password tidak diganti' : 'Minimal 8 karakter'"
+                            class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            [class.border-red-500]="vendorForm.get('password')?.invalid && vendorForm.get('password')?.touched">
+                        <button type="button" (click)="hidePassword = !hidePassword"
+                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none">
+                            <svg *ngIf="hidePassword" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                                </path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                            <svg *ngIf="!hidePassword" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <p *ngIf="vendorForm.get('password')?.errors?.['required'] && vendorForm.get('password')?.touched"
+                        class="text-red-500 text-xs mt-1">
                         Password wajib diisi
                     </p>
-                    <p *ngIf="vendorForm.get('password')?.errors?.['minlength'] && vendorForm.get('password')?.touched" class="text-red-500 text-xs mt-1">
+                    <p *ngIf="vendorForm.get('password')?.errors?.['minlength'] && vendorForm.get('password')?.touched"
+                        class="text-red-500 text-xs mt-1">
                         Password minimal 8 karakter
                     </p>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">NIK</label>
-                    <input
-                        type="text"
-                        formControlName="nik"
+                    <input type="text" formControlName="nik"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
@@ -81,41 +106,34 @@
         <!-- Company Information -->
         <div class="mb-8">
             <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 21h18M5 21V7l8-4 8 4v14M8 21v-4a2 2 0 012-2h4a2 2 0 012 2v4"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M3 21h18M5 21V7l8-4 8 4v14M8 21v-4a2 2 0 012-2h4a2 2 0 012 2v4" />
                 </svg>
                 Informasi Company
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Nama Company</label>
-                    <input
-                        type="text"
-                        formControlName="company_name"
+                    <input type="text" formControlName="company_name"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Company</label>
-                    <textarea
-                        formControlName="company_address"
-                        rows="3"
+                    <textarea formControlName="company_address" rows="3"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">NPWP</label>
-                    <input
-                        type="text"
-                        formControlName="npwp"
-                        placeholder="00.000.000.0-000.000"
+                    <input type="text" formControlName="npwp" placeholder="00.000.000.0-000.000"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <select
-                        formControlName="status"
+                    <select formControlName="status"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="active">Aktif</option>
                         <option value="inactive">Nonaktif</option>
@@ -128,49 +146,41 @@
         <!-- Contact & Bank -->
         <div class="mb-8">
             <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path
+                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
                 Kontak & Bank
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Telepon</label>
-                    <input
-                        type="text"
-                        formControlName="phone"
+                    <input type="text" formControlName="phone"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Email (untuk vendor)</label>
-                    <input
-                        type="email"
-                        formControlName="vendor_email"
+                    <input type="email" formControlName="vendor_email"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Nama Bank</label>
-                    <input
-                        type="text"
-                        formControlName="bank_name"
+                    <input type="text" formControlName="bank_name"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Rekening</label>
-                    <input
-                        type="text"
-                        formControlName="bank_account"
+                    <input type="text" formControlName="bank_account"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Atas Nama Rekening</label>
-                    <input
-                        type="text"
-                        formControlName="account_holder"
+                    <input type="text" formControlName="account_holder"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
@@ -179,39 +189,33 @@
         <!-- Specialties -->
         <div class="mb-8">
             <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
                 Specialties (Keahlian)
             </h3>
             <div class="mb-2">
                 <div class="flex gap-2">
-                    <input
-                        type="text"
-                        [(ngModel)]="newSpecialty"
-                        [ngModelOptions]="{standalone: true}"
+                    <input type="text" [(ngModel)]="newSpecialty" [ngModelOptions]="{standalone: true}"
                         (keyup.enter)="addSpecialty()"
                         placeholder="Tambah specialty (contoh: AC Repair, Electrical, Plumbing)"
                         class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <button
-                        type="button"
-                        (click)="addSpecialty()"
+                    <button type="button" (click)="addSpecialty()"
                         class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
                         Tambah
                     </button>
                 </div>
             </div>
             <div class="flex flex-wrap gap-2 mt-3">
-                <span
-                    *ngFor="let spec of specialties"
+                <span *ngFor="let spec of specialties"
                     class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium flex items-center gap-2">
                     {{ spec }}
-                    <button
-                        type="button"
-                        (click)="removeSpecialty(spec)"
-                        class="hover:bg-blue-100 rounded-full p-0.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 6L6 18M6 6l12 12"/>
+                    <button type="button" (click)="removeSpecialty(spec)" class="hover:bg-blue-100 rounded-full p-0.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M18 6L6 18M6 6l12 12" />
                         </svg>
                     </button>
                 </span>
@@ -222,30 +226,25 @@
         <!-- Notes -->
         <div class="mb-8">
             <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M11 4H4a1 1 0 00-1 1v14a1 1 0 001 1h14a1 1 0 001-1v-7"/>
-                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M11 4H4a1 1 0 00-1 1v14a1 1 0 001 1h14a1 1 0 001-1v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
                 Catatan
             </h3>
-            <textarea
-                formControlName="notes"
-                rows="3"
+            <textarea formControlName="notes" rows="3"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Catatan tambahan tentang vendor..."></textarea>
         </div>
 
         <!-- Submit Buttons -->
         <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
-            <button
-                type="button"
-                (click)="goBack()"
+            <button type="button" (click)="goBack()"
                 class="px-6 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium">
                 Batal
             </button>
-            <button
-                type="submit"
-                [disabled]="loading || vendorForm.invalid"
+            <button type="submit" [disabled]="loading || vendorForm.invalid"
                 class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                 <span *ngIf="loading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
                 {{ loading ? 'Menyimpan...' : (isEditMode ? 'Update Vendor' : 'Tambah Vendor') }}

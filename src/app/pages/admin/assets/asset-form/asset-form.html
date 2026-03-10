@@ -22,122 +22,154 @@
 
     <div class="bg-white rounded-3xl border border-gray-100 p-8 md:p-12 shadow-sm relative">
         <div class="relative z-10">
-            <div class="flex items-center gap-3 mb-10 pb-6 border-b border-gray-50">
-                <div class="w-1.5 h-8 bg-blue-600 rounded-full"></div>
-                <h3 class="text-xl font-extrabold text-gray-900">Informasi Teknis AC</h3>
+            <!-- Peringatan Validasi (Muncul jika Submit Gagal tapi Data Kurang Tepat) -->
+            <div *ngIf="assetForm.invalid && (assetForm.touched || assetForm.dirty)"
+                class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl">
+                <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="text-red-500 w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <p class="text-red-700 text-sm font-bold">Harap lengkapi semua (atau perbaiki) isian yang wajib
+                        diisi terlebih dahulu sebelum menyimpan!</p>
+                </div>
             </div>
-            <form [formGroup]="assetForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+            <!-- SECTION: SPESIFIKASI DASAR -->
+            <div class="flex flex-col gap-2 mb-8 border-b border-gray-100 pb-4">
+                <h3 class="text-lg font-extrabold text-gray-900 flex items-center gap-2">
+                    <span class="p-2 bg-blue-100 text-blue-700 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                            </path>
+                        </svg>
+                    </span>
+                    Spesifikasi Dasar AC
+                </h3>
+            </div>
+
+            <form [formGroup]="assetForm" (ngSubmit)="onSubmit()" class="space-y-8">
 
                 <!-- ROW 1: SKU & LOCATION -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nomor Aset
-                            (SKU)</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest ml-1">Nomor Aset
+                            (SKU) <span class="text-red-500">*</span></label>
                         <input formControlName="sku" type="text" placeholder="Contoh: RA 001"
-                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
+                            class="w-full px-4 py-3 rounded-xl bg-white border focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300 shadow-sm"
+                            [ngClass]="assetForm.get('sku')?.invalid && assetForm.get('sku')?.touched ? 'border-red-300 ring-2 ring-red-50' : 'border-gray-200'">
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Ruangan /
-                            Lokasi</label>
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest ml-1">Ruangan /
+                            Lokasi <span class="text-red-500">*</span></label>
                         <input formControlName="location" type="text" placeholder="Contoh: AUDITORIUM"
-                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
+                            class="w-full px-4 py-3 rounded-xl bg-white border focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300 shadow-sm"
+                            [ngClass]="assetForm.get('location')?.invalid && assetForm.get('location')?.touched ? 'border-red-300 ring-2 ring-red-50' : 'border-gray-200'">
                     </div>
                 </div>
 
-                <!-- ROW 2: JENIS & MERK -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Jenis
-                            Unit (Package)</label>
+                <!-- ROW 2: JENIS, MERK, PK -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest ml-1">Kategori AC
+                            <span class="text-red-500">*</span></label>
+                        <select formControlName="category"
+                            class="w-full px-4 py-3 rounded-xl bg-white border focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 appearance-none shadow-sm cursor-pointer"
+                            [ngClass]="assetForm.get('category')?.invalid && assetForm.get('category')?.touched ? 'border-red-300 ring-2 ring-red-50' : 'border-gray-200'">
+                            <option value="" disabled selected>Pilih Kategori</option>
+                            <option value="SPLITE">SPLITE</option>
+                            <option value="CASSETTE">CASSETTE</option>
+                            <option value="STANDING">STANDING</option>
+                            <option value="PORTABLE">PORTABLE</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest ml-1">Merek</label>
+                        <input formControlName="brand" type="text" placeholder="Isi '-' jika tidak tahu"
+                            class="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300 shadow-sm">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest ml-1">Kapasitas
+                            (PK) <span class="text-red-500">*</span></label>
+                        <input formControlName="pk" type="text" placeholder="Contoh: 2 PK"
+                            class="w-full px-4 py-3 rounded-xl bg-white border focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300 shadow-sm"
+                            [ngClass]="assetForm.get('pk')?.invalid && assetForm.get('pk')?.touched ? 'border-red-300 ring-2 ring-red-50' : 'border-gray-200'">
+                    </div>
+                </div>
+
+                <!-- ROW 3: PURCHASE DATE & VENDOR -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest ml-1">Tanggal
+                            Pembelian / Instalasi</label>
                         <div class="relative">
-                            <input formControlName="category" type="text" list="jenisOptions"
-                                placeholder="SPLITE / CASSETTE / STANDING"
-                                class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
-                            <datalist id="jenisOptions">
-                                <option value="SPLITE">
-                                <option value="CASSETTE">
-                                <option value="STANDING">
-                                <option value="PORTABLE">
-                            </datalist>
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                    stroke="currentColor" stroke-width="2" class="text-gray-400" viewBox="0 0 24 24">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
+                            <input formControlName="purchase_date" type="date"
+                                class="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300 shadow-sm"
+                                [ngClass]="assetForm.get('purchase_date')?.invalid && assetForm.get('purchase_date')?.touched ? 'border-red-300 ring-2 ring-red-50' : 'border-gray-200'">
+                        </div>
+                        <p class="text-[11px] text-gray-500 font-bold mt-2 ml-1 flex items-center gap-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none"
+                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            Usia Aset: <span class="text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">{{ getAssetAge()
+                                }}</span>
+                        </p>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest ml-1">Pihak
+                            Kontraktor/Vendor Pemasang</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                    stroke="currentColor" stroke-width="2" class="text-gray-400" viewBox="0 0 24 24">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+                            <input formControlName="vendor_name" type="text" placeholder="(Opsional)"
+                                class="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300 shadow-sm">
                         </div>
                     </div>
-
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Merk
-                            AC</label>
-                        <input formControlName="brand" type="text" placeholder="DAIKIN / SHARP / PANASONIC"
-                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
-                    </div>
                 </div>
 
-                <!-- ROW 3: PK & VENDOR -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Kapasitas
-                            (PK)</label>
-                        <input formControlName="pk" type="text" placeholder="1 PK / 2 PK"
-                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nama
-                            Vendor</label>
-                        <input formControlName="vendor_name" type="text" placeholder="CV. AC Sejahtera"
-                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
-                    </div>
+
+
+
+
+                <!-- SECTION: STATUS OPERASIONAL -->
+                <div class="flex flex-col gap-2 mt-8 mb-4 border-b border-gray-100 pb-4">
+                    <h3 class="text-lg font-extrabold text-gray-900 flex items-center gap-2">
+                        <span class="p-2 bg-amber-100 text-amber-600 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                            </svg>
+                        </span>
+                        Kondisi Operasional
+                    </h3>
                 </div>
 
-                <!-- ROW 4: PRICE & WARRANTY DATE -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Harga Beli
-                            (Rp)</label>
-                        <input formControlName="purchase_price" type="number" placeholder="4500000"
-                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Habis Masa
-                            Garansi</label>
-                        <mat-form-field appearance="outline" class="w-full custom-datepicker">
-                            <mat-label>Pilih Tanggal</mat-label>
-                            <input matInput [matDatepicker]="warrantyPicker" formControlName="warranty_expiry_date">
-                            <mat-datepicker-toggle matIconSuffix [for]="warrantyPicker"></mat-datepicker-toggle>
-                            <mat-datepicker #warrantyPicker></mat-datepicker>
-                        </mat-form-field>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Masa Pakai
-                            (Tahun)</label>
-                        <input formControlName="useful_life_years" type="number" placeholder="5"
-                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
-                        <p class="text-[10px] text-gray-400 pl-1">*Untuk perhitungan depresiasi aset.</p>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nilai Sisa /
-                            Residu (Rp)</label>
-                        <input formControlName="residual_value" type="number" placeholder="500000"
-                            class="w-full px-5 py-3 rounded-xl bg-white border border-gray-200 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 outline-none transition-all text-sm font-bold text-gray-800 placeholder-gray-300">
-                    </div>
-                </div>
-
-                <hr class="border-gray-100 my-4">
-
-                <!-- Hidden Name Field (Auto Generated) but can show if needed -->
-                <div class="space-y-2 opacity-50 hover:opacity-100 transition-opacity">
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Nama Tampilan
-                        (Opsional)</label>
-                    <input formControlName="name" type="text" placeholder="(Auto-Generate: AC [Lokasi] [No AC])"
-                        class="w-full px-4 py-2 rounded-xl bg-gray-50 border border-gray-100 text-sm font-medium text-gray-500">
-                </div>
-
-                <hr class="border-gray-100 my-4">
-
-                <div class="space-y-4">
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Status
-                        Operasional</label>
+                <div class="space-y-3">
+                    <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest ml-1">Status
+                        Operasional <span class="text-red-500">*</span></label>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <label class="cursor-pointer group">
                             <input type="radio" formControlName="status" value="good" class="peer sr-only">
@@ -190,19 +222,82 @@
                     </div>
                 </div>
 
-                <hr class="border-gray-100 my-4">
 
-                <!-- MAINTENANCE SCHEDULE -->
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-gray-700 uppercase tracking-wide">Jadwal Maintenance
-                        Rutin</label>
-                    <mat-form-field appearance="outline" class="w-full custom-datepicker">
-                        <mat-label>Pilih Tanggal</mat-label>
-                        <input matInput [matDatepicker]="picker" formControlName="next_maintenance_date">
-                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                        <mat-datepicker #picker></mat-datepicker>
-                    </mat-form-field>
-                    <p class="text-[10px] text-gray-400">Status akan otomatis berubah pada tanggal yang ditentukan.</p>
+                <!-- HISTORY SECTION (Edit Mode Only) -->
+                <div *ngIf="isEditMode" class="pt-8 border-t border-gray-100">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-1.5 h-8 bg-purple-600 rounded-full"></div>
+                        <h3 class="text-xl font-extrabold text-gray-900">Riwayat Perbaikan Tertutup</h3>
+                    </div>
+
+                    <div *ngIf="isLoadingHistory" class="text-center py-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
+                        <p class="text-sm text-gray-500 mt-3">Memuat riwayat perbaikan...</p>
+                    </div>
+
+                    <div *ngIf="!isLoadingHistory && ticketHistory.length === 0"
+                        class="text-center py-8 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                        <p class="text-sm font-semibold text-gray-500">Belum ada riwayat perbaikan untuk aset ini.</p>
+                    </div>
+
+                    <div *ngIf="!isLoadingHistory && ticketHistory.length > 0"
+                        class="overflow-x-auto rounded-2xl border border-gray-200">
+                        <table class="w-full text-left bg-white">
+                            <thead
+                                class="bg-gray-50 text-gray-500 text-xs uppercase font-bold tracking-wider relative z-0">
+                                <tr>
+                                    <th class="px-6 py-4">Tiket</th>
+                                    <th class="px-6 py-4">Tanggal Lapor</th>
+                                    <th class="px-6 py-4">Status & Pelaksana</th>
+                                    <th class="px-6 py-4">Tindakan / SPK</th>
+                                    <th class="px-6 py-4 text-center">...</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 text-sm">
+                                <tr *ngFor="let ticket of ticketHistory" class="hover:bg-gray-50/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <p class="font-bold text-gray-900">#{{ ticket.id }}</p>
+                                        <p class="text-xs text-gray-500 mt-1 max-w-[150px] truncate"
+                                            title="{{ ticket.description }}">{{
+                                            ticket.description }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-500 font-mono text-xs">
+                                        {{ ticket.created_at | date:'dd MMM yyyy' }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-700">
+                                            {{ ticket.status.replace('_', ' ') }}
+                                        </span>
+                                        <p class="text-xs font-semibold text-gray-900 mt-2">
+                                            {{ ticket.action_type === 'internal' ? 'Internal (' +
+                                            ticket.assigned_technician?.name + ')' :
+                                            ticket.action_type === 'vendor' ? 'Vendor' : 'Belum Ditentukan' }}
+                                        </p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div *ngIf="ticket.action_type === 'internal'">
+                                            <p class="text-xs text-gray-500">Dikerjakan Internal.</p>
+                                        </div>
+                                        <div *ngIf="ticket.action_type === 'vendor'">
+                                            <div *ngIf="ticket.spks && ticket.spks.length > 0; else noSpk">
+                                                <p class="text-xs font-bold font-mono text-blue-600 mb-1"
+                                                    *ngFor="let spk of ticket.spks">{{ spk.spk_number }}</p>
+                                            </div>
+                                            <ng-template #noSpk>
+                                                <p class="text-xs text-amber-500 italic">Draft SPK Belum Tersedia</p>
+                                            </ng-template>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <a [routerLink]="['/admin/tickets', ticket.id]"
+                                            class="text-blue-600 hover:text-blue-800 text-xs font-bold hover:underline"
+                                            target="_blank">Detail</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="pt-8 flex items-center justify-end gap-4 border-t border-gray-50">
@@ -218,7 +313,6 @@
                             }}</span>
                     </button>
                 </div>
-
             </form>
         </div>
     </div>

@@ -1,299 +1,590 @@
-<div class="max-w-7xl mx-auto space-y-8 font-sans p-6 pb-20 bg-white min-h-screen">
+<div class="flex flex-col h-[calc(100vh-88px)] font-sans bg-[#F8F9FB] overflow-hidden">
 
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-gray-100 pb-6">
+    <!-- ===== TOP HEADER BAR ===== -->
+    <div class="flex-shrink-0 bg-white border-b border-gray-100 px-8 py-4 flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Executive Dashboard</h1>
-            <p class="text-gray-500 text-sm mt-1">Laporan performa dan monitoring aset real-time.</p>
+            <h1 class="text-xl font-black text-gray-900 tracking-tight">Analytics</h1>
+            <p class="text-xs text-gray-400 mt-0.5">{{ currentDate | date:'EEEE, dd MMMM yyyy' }} · Real-time data</p>
         </div>
         <div class="flex items-center gap-3">
+            <!-- Time Preset Pills -->
+            <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+                <button
+                    *ngFor="let p of [{key:'week',label:'7H'},{key:'month',label:'30H'},{key:'3months',label:'3B'},{key:'all',label:'Semua'}]"
+                    (click)="setPreset(p.key)" [class]="activePreset === p.key
+                        ? 'bg-white text-gray-900 shadow-sm'
+                        : 'text-gray-500 hover:text-gray-700'"
+                    class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all">
+                    {{ p.label }}
+                </button>
+            </div>
+
+            <!-- Custom Date Range -->
+            <div class="flex items-center gap-2">
+                <input type="date" [(ngModel)]="startDate"
+                    class="h-8 px-3 text-xs bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700">
+                <span class="text-gray-300 text-xs">—</span>
+                <input type="date" [(ngModel)]="endDate"
+                    class="h-8 px-3 text-xs bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700">
+                <button (click)="applyDateFilter()"
+                    class="h-8 px-3 text-xs bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+                    Terapkan
+                </button>
+            </div>
+
+            <!-- Export PDF -->
             <button (click)="exportPDF()"
-                class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-blue-700 transition-colors flex items-center gap-2">
+                class="h-8 px-4 text-xs bg-white border border-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-gray-300 transition flex items-center gap-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor"
                     stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
                 </svg>
                 Export PDF
             </button>
+        </div>
+    </div>
+
+    <!-- ===== SCROLLABLE BODY ===== -->
+    <div class="flex-1 overflow-y-auto px-8 py-6 space-y-6 scrollbar-thin">
+
+        <!-- ===== ROW 1: STAT CARDS ===== -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+
+            <!-- Total Aset -->
             <div
-                class="px-4 py-2 border border-blue-100 rounded-lg bg-blue-50 text-xs text-blue-700 font-semibold tracking-wide flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></div>
-                Live Data
-            </div>
-            <div class="text-xs text-gray-400 font-medium text-right">
-                Last Update<br>
-                <span class="text-gray-600">{{ currentDate | date:'dd MMM yyyy, HH:mm' }}</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Date Range Filter -->
-    <div class="flex flex-wrap items-center gap-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
-        <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Filter Periode:</span>
-        <div class="flex gap-2">
-            <button
-                *ngFor="let p of [{key:'week',label:'Minggu Ini'},{key:'month',label:'Bulan Ini'},{key:'3months',label:'3 Bulan'},{key:'all',label:'Semua'}]"
-                (click)="setPreset(p.key)"
-                [class]="activePreset === p.key ? 'px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-sm' : 'px-3 py-1.5 text-xs font-medium rounded-lg bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:text-blue-600 transition-colors'">
-                {{ p.label }}
-            </button>
-        </div>
-        <div class="flex items-center gap-2 ml-auto">
-            <input type="date" [(ngModel)]="startDate"
-                class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 focus:ring-blue-500 focus:border-blue-500">
-            <span class="text-xs text-gray-400">s/d</span>
-            <input type="date" [(ngModel)]="endDate"
-                class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 focus:ring-blue-500 focus:border-blue-500">
-            <button (click)="applyDateFilter()"
-                class="px-3 py-1.5 text-xs font-bold rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-colors">
-                Terapkan
-            </button>
-        </div>
-    </div>
-
-    <!-- Loading State -->
-    <div *ngIf="loading" class="flex items-center justify-center py-20">
-        <div class="text-center">
-            <div class="animate-spin rounded-full h-8 w-8 border-2 border-gray-200 border-t-blue-600 mx-auto"></div>
-            <p class="mt-4 text-xs text-gray-400 font-medium tracking-wide uppercase">Processing Data...</p>
-        </div>
-    </div>
-
-    <div *ngIf="!loading" class="space-y-8">
-
-        <!-- KPI Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-            <!-- Total Assets -->
-            <div
-                class="group p-6 rounded-xl border border-gray-200 hover:border-blue-600/30 hover:shadow-lg hover:shadow-blue-50 transition-all duration-300">
-                <div class="flex justify-between items-start mb-4">
-                    <div
-                        class="p-3 bg-gray-50 rounded-lg text-gray-400 group-hover:text-blue-600 group-hover:bg-blue-50 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                class="col-span-1 bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition-shadow group">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
                             stroke-width="2" viewBox="0 0 24 24">
                             <path
-                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-                            </path>
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                         </svg>
                     </div>
-                    <!-- <span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded-md">+2.5%</span> -->
                 </div>
-                <p class="text-3xl font-bold text-gray-900 tracking-tight">{{ stats.totalAssets }}</p>
-                <p class="text-xs font-semibold text-gray-400 mt-1 uppercase tracking-wide">Total Aset AC</p>
+                <p class="text-3xl font-black text-gray-900">{{ stats.totalAssets }}</p>
+                <p class="text-xs font-medium text-gray-400 mt-1">Total AC Asset</p>
             </div>
 
-            <!-- Total Tickets -->
-            <div
-                class="group p-6 rounded-xl border border-gray-200 hover:border-blue-600/30 hover:shadow-lg hover:shadow-blue-50 transition-all duration-300">
-                <div class="flex justify-between items-start mb-4">
-                    <div
-                        class="p-3 bg-gray-50 rounded-lg text-gray-400 group-hover:text-blue-600 group-hover:bg-blue-50 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+            <!-- Total Tiket -->
+            <div class="col-span-1 bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-9 h-9 rounded-xl bg-violet-50 flex items-center justify-center text-violet-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
                             stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
                         </svg>
                     </div>
                 </div>
-                <p class="text-3xl font-bold text-gray-900 tracking-tight">{{ stats.totalTickets }}</p>
-                <p class="text-xs font-semibold text-gray-400 mt-1 uppercase tracking-wide">Total Tiket Laporan</p>
+                <p class="text-3xl font-black text-gray-900">{{ stats.totalTickets }}</p>
+                <p class="text-xs font-medium text-gray-400 mt-1">Total Laporan</p>
             </div>
 
-            <!-- Open Tickets -->
-            <div
-                class="group p-6 rounded-xl border border-gray-200 hover:border-blue-600/30 hover:shadow-lg hover:shadow-blue-50 transition-all duration-300">
-                <div class="flex justify-between items-start mb-4">
-                    <div
-                        class="p-3 bg-gray-50 rounded-lg text-gray-400 group-hover:text-amber-600 group-hover:bg-amber-50 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+            <!-- Pending -->
+            <div class="col-span-1 bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
                             stroke-width="2" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
                         </svg>
                     </div>
                 </div>
-                <div class="flex items-baseline gap-2">
-                    <p class="text-3xl font-bold text-gray-900 tracking-tight">{{ stats.openTickets }}</p>
-                    <span class="text-xs font-medium text-amber-600">Active</span>
-                </div>
-                <p class="text-xs font-semibold text-gray-400 mt-1 uppercase tracking-wide">Tiket Belum Selesai</p>
+                <p class="text-3xl font-black text-gray-900">{{ stats.openTickets }}</p>
+                <p class="text-xs font-medium text-gray-400 mt-1">Pending</p>
             </div>
 
-            <!-- Total Cost -->
-            <div
-                class="group p-6 rounded-xl border border-gray-200 hover:border-blue-600/30 hover:shadow-lg hover:shadow-blue-50 transition-all duration-300">
-                <div class="flex justify-between items-start mb-4">
-                    <div
-                        class="p-3 bg-gray-50 rounded-lg text-gray-400 group-hover:text-green-600 group-hover:bg-green-50 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+            <!-- Selesai -->
+            <div class="col-span-1 bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
                             stroke-width="2" viewBox="0 0 24 24">
-                            <line x1="12" y1="1" x2="12" y2="23"></line>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            <polyline points="20 6 9 17 4 12" />
                         </svg>
                     </div>
                 </div>
-                <p class="text-3xl font-bold text-gray-900 tracking-tight">{{ stats.totalMaintenanceCost |
-                    currency:'IDR':'symbol':'1.0-0' }}</p>
-                <p class="text-xs font-semibold text-gray-400 mt-1 uppercase tracking-wide">Estimasi Biaya Perbaikan</p>
+                <p class="text-3xl font-black text-gray-900">{{ stats.resolvedTickets }}</p>
+                <p class="text-xs font-medium text-gray-400 mt-1">Selesai</p>
+            </div>
+
+            <!-- AC Rusak -->
+            <div class="col-span-1 bg-white rounded-2xl border border-red-100 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center text-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                            <line x1="12" y1="9" x2="12" y2="13" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-3xl font-black text-red-600">{{ stats.brokenAssets }}</p>
+                <p class="text-xs font-medium text-gray-400 mt-1">AC Rusak</p>
+            </div>
+
+            <!-- Avg Resolusi -->
+            <div class="col-span-1 bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-9 h-9 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-3xl font-black text-gray-900">{{ stats.avgResolutionLabel }}</p>
+                <p class="text-xs font-medium text-gray-400 mt-1">Avg Resolusi</p>
             </div>
 
         </div>
 
-        <!-- Secondary Stats Row -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Avg Resolution Time -->
-            <div class="p-5 rounded-xl border border-gray-200 flex items-center gap-4">
-                <div class="p-3 bg-purple-50 text-purple-600 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
-                        stroke-width="2" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                </div>
+        <!-- ===== ROW 2: AREA LINE CHART (full width) ===== -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-5">
                 <div>
-                    <p class="text-xl font-bold text-gray-900">{{ stats.avgResolutionLabel }}</p>
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Rata-rata Waktu Resolusi</p>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Tren Bulanan</p>
+                    <h2 class="text-base font-black text-gray-900">Laporan Masuk vs Selesai</h2>
                 </div>
+                <span
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full">
+                    <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                    Area Chart · 6 Bulan Terakhir
+                </span>
             </div>
-
-            <!-- Resolved Tickets -->
-            <div class="p-5 rounded-xl border border-gray-200 flex items-center gap-4">
-                <div class="p-3 bg-green-50 text-green-600 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
-                        stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-xl font-bold text-gray-900">{{ stats.resolvedTickets }}</p>
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Tiket Terselesaikan</p>
-                </div>
-            </div>
-
-            <!-- Maintenance Assets -->
-            <div class="p-5 rounded-xl border border-gray-200 flex items-center gap-4">
-                <div class="p-3 bg-amber-50 text-amber-600 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
-                        stroke-width="2" viewBox="0 0 24 24">
-                        <path
-                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
-                        </path>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-xl font-bold text-gray-900">{{ stats.maintenanceAssets }}</p>
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Dalam Perawatan</p>
-                </div>
+            <div class="h-56">
+                <canvas baseChart [data]="monthlyTrendChartData" [options]="monthlyTrendChartOptions"
+                    type="line"></canvas>
             </div>
         </div>
 
-        <!-- Charts Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- ===== ROW 3: DONUT + BAR CHART ===== -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-            <!-- Asset Status -->
-            <div class="p-6 rounded-xl border border-gray-200 bg-white">
-                <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-6 pb-4 border-b border-gray-100">
-                    Kondisi Aset</h3>
-                <div class="h-64 relative">
-                    <canvas baseChart [data]="assetStatusChartData" [options]="assetStatusChartOptions"
-                        type="doughnut"></canvas>
-                    <!-- Center label for doughnut -->
-                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span class="text-3xl font-black text-gray-900">{{ stats.totalAssets }}</span>
-                        <span class="text-[10px] uppercase font-bold text-gray-400">Unit</span>
+            <!-- Donut: Asset Status Distribution -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Distribusi</p>
+                        <h2 class="text-base font-black text-gray-900">Status Aset AC</h2>
                     </div>
+                    <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full">Donut
+                        Chart</span>
                 </div>
-            </div>
 
-            <!-- Ticket Status -->
-            <div class="p-6 rounded-xl border border-gray-200 bg-white">
-                <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-6 pb-4 border-b border-gray-100">
-                    Distribusi Status Tiket</h3>
-                <div class="h-64">
-                    <canvas baseChart [data]="ticketStatusChartData" [options]="ticketStatusChartOptions"
-                        type="bar"></canvas>
-                </div>
-            </div>
-
-            <!-- Trend -->
-            <div class="p-6 rounded-xl border border-gray-200 bg-white lg:col-span-2">
-                <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-                    <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider">Trend Laporan (6 Bulan
-                        Terakhir)</h3>
-                    <!-- <select class="text-xs border-gray-200 rounded-lg text-gray-500 font-medium focus:ring-blue-500">
-                        <option>Last 6 Months</option>
-                        <option>Last Year</option>
-                    </select> -->
-                </div>
-                <div class="h-72">
-                    <canvas baseChart [data]="monthlyTrendChartData" [options]="monthlyTrendChartOptions"
-                        type="line"></canvas>
-                </div>
-            </div>
-
-            <!-- Location -->
-            <div class="p-6 rounded-xl border border-gray-200 bg-white lg:col-span-2">
-                <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-6 pb-4 border-b border-gray-100">
-                    Top 10 Lokasi dengan Aset Terbanyak</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div class="h-64">
-                        <canvas baseChart [data]="locationChartData" [options]="locationChartOptions"
-                            type="pie"></canvas>
+                <!-- Center stat -->
+                <div class="relative flex">
+                    <div class="h-52 flex-1">
+                        <canvas baseChart [data]="assetStatusChartData" [options]="assetStatusChartOptions"
+                            type="doughnut"></canvas>
                     </div>
-                    <!-- Custom Legend/List for Locations could go here if design needed -->
-                    <div class="space-y-3">
-                        <div class="bg-blue-50 p-4 rounded-lg flex items-start gap-3">
-                            <div class="p-2 bg-blue-100 text-blue-600 rounded-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
-                                    stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                    <circle cx="12" cy="10" r="3"></circle>
-                                </svg>
-                            </div>
+                    <!-- Mini stat pills on side -->
+                    <div class="flex flex-col justify-center gap-2 pl-4 w-36">
+                        <div class="flex items-center gap-2 p-2 bg-emerald-50 rounded-xl">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
                             <div>
-                                <p class="text-sm font-bold text-gray-900">Insight Lokasi</p>
-                                <p class="text-xs text-gray-500 mt-1 leading-relaxed">
-                                    Sebagian besar aset terkonsentrasi di area operasional utama. Pastikan jadwal
-                                    maintenance di area ini (warna biru tua) diprioritaskan.
-                                </p>
+                                <p class="text-xs font-bold text-emerald-700">Normal</p>
+                                <p class="text-xs text-gray-400">{{ stats.totalAssets - stats.maintenanceAssets -
+                                    stats.brokenAssets }} unit</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 p-2 bg-amber-50 rounded-xl">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 flex-shrink-0"></span>
+                            <div>
+                                <p class="text-xs font-bold text-amber-700">Maintenance</p>
+                                <p class="text-xs text-gray-400">{{ stats.maintenanceAssets }} unit</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 p-2 bg-red-50 rounded-xl">
+                            <span class="w-2.5 h-2.5 rounded-full bg-red-500 flex-shrink-0"></span>
+                            <div>
+                                <p class="text-xs font-bold text-red-700">Rusak</p>
+                                <p class="text-xs text-gray-400">{{ stats.brokenAssets }} unit</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Bar: Ticket Status -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Breakdown</p>
+                        <h2 class="text-base font-black text-gray-900">Status Tiket</h2>
+                    </div>
+                    <span class="px-2.5 py-1 bg-sky-50 text-sky-700 text-xs font-semibold rounded-full">Bar Chart</span>
+                </div>
+                <div class="h-52">
+                    <canvas baseChart [data]="ticketStatusChartData" [options]="ticketStatusChartOptions"
+                        type="bar"></canvas>
+                </div>
+            </div>
+
         </div>
 
-        <!-- Footer / Operational Summary -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="p-6 rounded-xl border border-red-100 bg-red-50/30 flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-bold text-red-600 uppercase tracking-widest mb-1">Perhatian Diperlukan</p>
-                    <p class="text-lg font-bold text-gray-900">{{ stats.brokenAssets }} Unit Rusak</p>
-                    <p class="text-xs text-gray-500 mt-1">Memerlukan penggantian sparepart atau perbaikan mayor.</p>
+        <!-- NEW ROW: CATEGORY & ASSET AGE -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <!-- Source: Issues by Category -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Klasifikasi</p>
+                        <h2 class="text-base font-black text-gray-900">Kategori Keluhan Terbanyak</h2>
+                    </div>
+                    <span class="px-2.5 py-1 bg-pink-50 text-pink-700 text-xs font-semibold rounded-full">Bar
+                        Chart</span>
                 </div>
-                <a routerLink="/admin/assets" [queryParams]="{status: 'broken'}"
-                    class="px-4 py-2 bg-white border border-red-200 text-red-600 text-xs font-bold rounded-lg shadow-sm hover:bg-red-50 transition-colors">
-                    Lihat Unit
-                </a>
+                <div *ngIf="issuesByCategory.length > 0"
+                    [style.height.px]="Math.max(180, issuesByCategory.length * 32 + 20)">
+                    <canvas baseChart [data]="categoryBarChartData" [options]="categoryBarChartOptions"
+                        type="bar"></canvas>
+                </div>
+                <div *ngIf="issuesByCategory.length === 0" class="h-40 flex items-center justify-center text-gray-300">
+                    <p class="text-xs">Belum ada data</p>
+                </div>
             </div>
 
-            <div class="p-6 rounded-xl border border-blue-100 bg-blue-50/30 flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">Maintenance Aktif</p>
-                    <p class="text-lg font-bold text-gray-900">{{ stats.maintenanceAssets }} Unit dalam Perawatan</p>
-                    <p class="text-xs text-gray-500 mt-1">Sedang dikerjakan oleh tim teknisi atau vendor.</p>
+            <!-- Distribution: Asset Age -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Distribusi</p>
+                        <h2 class="text-base font-black text-gray-900">Usia Aset AC</h2>
+                    </div>
+                    <span class="px-2.5 py-1 bg-orange-50 text-orange-700 text-xs font-semibold rounded-full">Pie
+                        Chart</span>
                 </div>
-                <a routerLink="/admin/maintenance"
-                    class="px-4 py-2 bg-white border border-blue-200 text-blue-600 text-xs font-bold rounded-lg shadow-sm hover:bg-blue-50 transition-colors">
-                    Cek Jadwal
-                </a>
+                <div class="relative flex">
+                    <div class="h-52 flex-1">
+                        <canvas baseChart [data]="assetAgeChartData" [options]="assetAgeChartOptions"
+                            type="pie"></canvas>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <!-- ===== ROW 4: HORIZONTAL BAR CHARTS ===== -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+            <!-- Horizontal Bar: Issues by Location -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Geographic</p>
+                        <h2 class="text-base font-black text-gray-900">Masalah per Lokasi</h2>
+                    </div>
+                    <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full">Horizontal
+                        Bar</span>
+                </div>
+                <div *ngIf="issuesByLocation.length > 0"
+                    [style.height.px]="Math.max(180, issuesByLocation.length * 32 + 20)">
+                    <canvas baseChart [data]="locationBarChartData" [options]="locationBarChartOptions"
+                        type="bar"></canvas>
+                </div>
+                <div *ngIf="issuesByLocation.length === 0" class="h-40 flex items-center justify-center text-gray-300">
+                    <div class="text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="currentColor"
+                            stroke-width="1.5" viewBox="0 0 24 24" class="mx-auto mb-2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                            <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        <p class="text-xs">Belum ada data lokasi</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Horizontal Bar: Issues by Brand -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Source</p>
+                        <h2 class="text-base font-black text-gray-900">Masalah per Brand</h2>
+                    </div>
+                    <span class="px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded-full">Horizontal
+                        Bar</span>
+                </div>
+                <div *ngIf="issuesByBrand.length > 0" [style.height.px]="Math.max(180, issuesByBrand.length * 32 + 20)">
+                    <canvas baseChart [data]="brandBarChartData" [options]="brandBarChartOptions" type="bar"></canvas>
+                </div>
+                <div *ngIf="issuesByBrand.length === 0" class="h-40 flex items-center justify-center text-gray-300">
+                    <div class="text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="currentColor"
+                            stroke-width="1.5" viewBox="0 0 24 24" class="mx-auto mb-2">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <path d="M16 10a4 4 0 0 1-8 0" />
+                        </svg>
+                        <p class="text-xs">Belum ada data brand</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- NEW ROW: VENDOR & SPARE PARTS -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 pb-2">
+            <!-- Grid: Top Vendor -->
+            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Progress</p>
+                        <h2 class="text-base font-black text-gray-900">Vendor Terbanyak (SPK Selesai)</h2>
+                    </div>
+                    <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="white"
+                            stroke-width="2.5" viewBox="0 0 24 24">
+                            <path d="M12 20V10" />
+                            <path d="M18 20V4" />
+                            <path d="M6 20v-4" />
+                        </svg>
+                    </div>
+                </div>
+                <!-- Table header -->
+                <div
+                    class="grid grid-cols-12 px-6 py-2.5 bg-gray-50 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                    <span class="col-span-1">#</span>
+                    <span class="col-span-8">Nama Vendor</span>
+                    <span class="col-span-3 text-right">SPK</span>
+                </div>
+                <div *ngFor="let vendor of topVendors; let i = index"
+                    class="grid grid-cols-12 px-6 py-3.5 items-center border-b border-gray-50 last:border-0 hover:bg-gray-50/60 transition-colors">
+                    <div class="col-span-1">
+                        <span
+                            class="inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-black bg-gray-100 text-gray-500">
+                            {{ i + 1 }}
+                        </span>
+                    </div>
+                    <div class="col-span-8">
+                        <p class="text-sm font-semibold text-gray-900 truncate">{{ vendor.vendor_name }}</p>
+                    </div>
+                    <div class="col-span-3 text-right">
+                        <span class="inline-flex items-center gap-1 text-sm font-black text-indigo-600">
+                            {{ vendor.count }}
+                        </span>
+                    </div>
+                </div>
+                <div *ngIf="topVendors.length === 0" class="px-6 py-10 text-center text-gray-300 text-sm">
+                    Belum ada data
+                </div>
+            </div>
+
+            <!-- Grid: Top Spare Parts -->
+            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Inventory</p>
+                        <h2 class="text-base font-black text-gray-900">Suku Cadang Paling Sering Diganti</h2>
+                    </div>
+                    <div class="w-7 h-7 rounded-lg bg-orange-600 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="white"
+                            stroke-width="2.5" viewBox="0 0 24 24">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                    </div>
+                </div>
+                <!-- Table header -->
+                <div
+                    class="grid grid-cols-12 px-6 py-2.5 bg-gray-50 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                    <span class="col-span-1">#</span>
+                    <span class="col-span-8">Nama Suku Cadang</span>
+                    <span class="col-span-3 text-right">Qty</span>
+                </div>
+                <div *ngFor="let part of topSpareParts; let i = index"
+                    class="grid grid-cols-12 px-6 py-3.5 items-center border-b border-gray-50 last:border-0 hover:bg-gray-50/60 transition-colors">
+                    <div class="col-span-1">
+                        <span
+                            class="inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-black bg-gray-100 text-gray-500">
+                            {{ i + 1 }}
+                        </span>
+                    </div>
+                    <div class="col-span-8">
+                        <p class="text-sm font-semibold text-gray-900 truncate">{{ part.item_name }}</p>
+                    </div>
+                    <div class="col-span-3 text-right">
+                        <span class="inline-flex items-center gap-1 text-sm font-black text-orange-600">
+                            {{ part.qty }} Unit
+                        </span>
+                    </div>
+                </div>
+                <div *ngIf="topSpareParts.length === 0" class="px-6 py-10 text-center text-gray-300 text-sm">
+                    Belum ada data
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ROW 5: DATA GRIDS ===== -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 pb-2">
+
+            <!-- Grid: Top 5 Most Serviced -->
+            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Data Grid</p>
+                        <h2 class="text-base font-black text-gray-900">Top 5 AC Paling Sering Service</h2>
+                    </div>
+                    <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="white"
+                            stroke-width="2.5" viewBox="0 0 24 24">
+                            <path
+                                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                        </svg>
+                    </div>
+                </div>
+                <!-- Table header -->
+                <div
+                    class="grid grid-cols-12 px-6 py-2.5 bg-gray-50 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                    <span class="col-span-1">#</span>
+                    <span class="col-span-7">AC / Lokasi</span>
+                    <span class="col-span-4 text-right">Jumlah Service</span>
+                </div>
+                <div *ngFor="let asset of topServicedAssets; let i = index"
+                    class="grid grid-cols-12 px-6 py-3.5 items-center border-b border-gray-50 last:border-0 hover:bg-gray-50/60 transition-colors">
+                    <div class="col-span-1">
+                        <span class="inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-black"
+                            [class]="i === 0 ? 'bg-indigo-600 text-white' : i === 1 ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-500'">
+                            {{ i + 1 }}
+                        </span>
+                    </div>
+                    <div class="col-span-7">
+                        <p class="text-sm font-semibold text-gray-900 truncate">{{ asset.name }}</p>
+                        <p class="text-xs text-gray-400 truncate">{{ asset.location }} · {{ asset.sku }}</p>
+                    </div>
+                    <div class="col-span-4 text-right">
+                        <span class="inline-flex items-center gap-1 text-sm font-black text-indigo-600">
+                            {{ asset.serviceCount }}
+                            <span class="text-xs font-medium text-gray-400">kali</span>
+                        </span>
+                        <!-- Mini progress bar -->
+                        <div class="mt-1 h-1 bg-gray-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-400 rounded-full transition-all"
+                                [style.width.%]="(asset.serviceCount / (topServicedAssets[0]?.serviceCount || 1)) * 100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="topServicedAssets.length === 0" class="px-6 py-10 text-center text-gray-300 text-sm">
+                    Belum ada data service
+                </div>
+            </div>
+
+            <!-- Grid: Top 5 Cost -->
+            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Data Grid</p>
+                        <h2 class="text-base font-black text-gray-900">Top 5 AC Biaya Tertinggi</h2>
+                    </div>
+                    <div class="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="white"
+                            stroke-width="2.5" viewBox="0 0 24 24">
+                            <line x1="12" y1="1" x2="12" y2="23" />
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                    </div>
+                </div>
+                <!-- Table header -->
+                <div
+                    class="grid grid-cols-12 px-6 py-2.5 bg-gray-50 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                    <span class="col-span-1">#</span>
+                    <span class="col-span-7">AC / Lokasi</span>
+                    <span class="col-span-4 text-right">Total Biaya</span>
+                </div>
+                <div *ngFor="let asset of topCostAssets; let i = index"
+                    class="grid grid-cols-12 px-6 py-3.5 items-center border-b border-gray-50 last:border-0 hover:bg-gray-50/60 transition-colors">
+                    <div class="col-span-1">
+                        <span class="inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-black"
+                            [class]="i === 0 ? 'bg-emerald-600 text-white' : i === 1 ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'">
+                            {{ i + 1 }}
+                        </span>
+                    </div>
+                    <div class="col-span-7">
+                        <p class="text-sm font-semibold text-gray-900 truncate">{{ asset.name }}</p>
+                        <p class="text-xs text-gray-400 truncate">{{ asset.location }} · {{ asset.sku }}</p>
+                    </div>
+                    <div class="col-span-4 text-right">
+                        <p class="text-sm font-black text-emerald-600">{{ asset.totalCost | currency:'IDR':'Rp ':'1.0-0'
+                            }}</p>
+                        <div class="mt-1 h-1 bg-gray-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-emerald-400 rounded-full transition-all"
+                                [style.width.%]="(asset.totalCost / (topCostAssets[0]?.totalCost || 1)) * 100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="topCostAssets.length === 0" class="px-6 py-10 text-center text-gray-300 text-sm">
+                    Belum ada data biaya
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== ROW 6: UPCOMING MAINTENANCE ===== -->
+        <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden pb-2 mb-6">
+            <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Schedule</p>
+                    <h2 class="text-base font-black text-gray-900">Antrean Maintenance Terdekat</h2>
+                </div>
+                <div class="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="white"
+                        stroke-width="2.5" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                </div>
+            </div>
+            <!-- Table header -->
+            <div
+                class="grid grid-cols-12 px-6 py-2.5 bg-gray-50 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                <span class="col-span-4">Tanggal</span>
+                <span class="col-span-5">AC / Lokasi</span>
+                <span class="col-span-3 text-right">Status</span>
+            </div>
+            <div *ngFor="let m of upcomingMaintenance"
+                class="grid grid-cols-12 px-6 py-3.5 items-center border-b border-gray-50 last:border-0 hover:bg-gray-50/60 transition-colors">
+                <div class="col-span-4">
+                    <span class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        {{ m.scheduled_date | date:'dd MMM yyyy' }}
+                    </span>
+                </div>
+                <div class="col-span-5">
+                    <p class="text-sm font-semibold text-gray-900 truncate">{{ m.assets?.name }}</p>
+                    <p class="text-xs text-gray-400 truncate">{{ m.assets?.location }}</p>
+                </div>
+                <div class="col-span-3 text-right flex justify-end">
+                    <span
+                        class="px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wider bg-orange-100 text-orange-700">Scheduled</span>
+                </div>
+            </div>
+            <div *ngIf="upcomingMaintenance.length === 0" class="px-6 py-10 text-center text-gray-300 text-sm">
+                Belum ada antrean maintenance
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== FULL SCREEN LOADING OVERLAY ===== -->
+    <div *ngIf="loading" class="absolute inset-0 bg-white/60 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-white rounded-2xl shadow-xl px-8 py-6 flex items-center gap-4 border border-gray-100">
+            <div class="w-6 h-6 border-[3px] border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+            <p class="text-sm font-semibold text-gray-700">Memuat data analitik...</p>
         </div>
     </div>
+
 </div>

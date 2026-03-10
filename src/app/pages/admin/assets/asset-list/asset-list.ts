@@ -370,24 +370,63 @@ export class AssetListComponent implements OnInit {
   }
 
   getAssetType(asset: Asset): 'split' | 'cassette' | 'standing' {
-    const category = (asset.category || '').toLowerCase();
-    if (category.includes('standing')) return 'standing';
-    if (category.includes('cassette') || category.includes('casset') || category.includes('ceiling')) return 'cassette';
-
-    const text = (asset.brand + ' ' + asset.name).toLowerCase();
-    if (text.includes('standing') || text.includes('floor')) return 'standing';
-
-    if (text.includes('cassette') || text.includes('casset') || text.includes('kaset') ||
-      text.includes('ceiling') || text.includes('sentral') || text.includes('central') ||
-      text.includes('ducting') || text.includes('chiller') || text.includes('aicool')) {
-      return 'cassette';
-    }
-
-    if (asset.pk) {
-      const pkValue = parseFloat(asset.pk.replace(',', '.').replace(/[^\d.]/g, ''));
-      if (!isNaN(pkValue) && pkValue >= 2.5) return 'cassette';
-    }
-
+    const category = (asset.category || '').toUpperCase();
+    if (category.includes('STANDING') || category.includes('PORTABLE')) return 'standing';
+    if (category.includes('CASSETTE') || category.includes('CASSET') || category.includes('CEILING')) return 'cassette';
     return 'split';
+  }
+
+  // Warranty methods
+  isUnderWarranty(asset: Asset): boolean {
+    if (!asset.warranty_expiry_date) return false;
+    return new Date(asset.warranty_expiry_date) > new Date();
+  }
+
+  isWarrantyExpired(asset: Asset): boolean {
+    if (!asset.warranty_expiry_date) return false;
+    return new Date(asset.warranty_expiry_date) <= new Date();
+  }
+
+  getWarrantyLabel(asset: Asset): string {
+    if (!asset.warranty_expiry_date) return 'NO WARRANTY';
+
+    const expiry = new Date(asset.warranty_expiry_date);
+    const now = new Date();
+    const diffDays = Math.ceil((expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return `EXPIRED (${Math.abs(diffDays)}d)`;
+    } else if (diffDays <= 30) {
+      return `${diffDays}d LEFT`;
+    } else {
+      return `${Math.floor(diffDays / 30)}mo LEFT`;
+    }
+  }
+
+  // Calculate Asset Age
+  getAssetAgeLabel(asset: Asset): string {
+    if (!asset.purchase_date) return '-';
+
+    const purchaseDate = new Date(asset.purchase_date);
+    const now = new Date();
+
+    // Check if future date (invalid data)
+    if (purchaseDate > now) return 'Baru';
+
+    let years = now.getFullYear() - purchaseDate.getFullYear();
+    let months = now.getMonth() - purchaseDate.getMonth();
+
+    if (months < 0 || (months === 0 && now.getDate() < purchaseDate.getDate())) {
+      years--;
+      months += 12;
+    }
+
+    if (years > 0) {
+      return `${years} Tahun${months > 0 ? ` ${months} Bulan` : ''}`;
+    } else if (months > 0) {
+      return `${months} Bulan`;
+    } else {
+      return 'Baru (< 1 Bulan)';
+    }
   }
 }

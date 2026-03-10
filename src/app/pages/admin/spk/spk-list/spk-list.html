@@ -1,0 +1,124 @@
+<div class="h-[calc(100vh-88px)] flex flex-col font-sans bg-gray-50/50">
+    <!-- Header -->
+    <div class="flex-shrink-0 bg-white border-b border-gray-100 z-10 px-8 py-6 flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-black text-gray-900 tracking-tight">Daftar Surat Perintah Kerja</h1>
+            <p class="text-xs text-gray-500 font-medium mt-1">Kelola dan pantau SPK untuk vendor teknisi AC.</p>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 overflow-y-auto px-8 py-8 scrollbar-thin">
+        <!-- Filters -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-6 relative z-0">
+            <div class="relative flex-1 max-w-md group">
+                <div
+                    class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+                <input type="text" [(ngModel)]="searchQuery" (input)="applyFilters()"
+                    placeholder="Cari SPK atau Aset..."
+                    class="w-full h-11 pl-11 pr-4 text-sm bg-white border-none rounded-xl ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-blue-600 shadow-sm transition-all duration-200" />
+            </div>
+
+            <div class="relative">
+                <select [(ngModel)]="statusFilter" (change)="applyFilters()"
+                    class="h-11 pl-4 pr-10 text-sm bg-white border-0 rounded-xl ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-blue-600 shadow-sm appearance-none font-medium text-gray-700">
+                    <option value="all">Semua Status</option>
+                    <option value="assigned">Assigned</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative">
+            <div *ngIf="isLoading"
+                class="absolute inset-0 z-10 bg-white/50 backdrop-blur-sm flex items-center justify-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-100 bg-gray-50/50">
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">No SPK</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Tiket Terkait
+                            </th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Vendor</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">
+                                Biaya (Estimasi)</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                            <th
+                                class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right w-32">
+                                Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr *ngFor="let spk of filteredSpks" class="hover:bg-gray-50/80 transition-colors group">
+                            <td class="px-6 py-4 text-sm text-gray-900 font-bold font-mono tracking-tight">
+                                {{ spk.spk_number }}
+                                <div *ngIf="spk.is_warranty_claim" class="mt-1">
+                                    <span
+                                        class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold text-pink-700 bg-pink-100 uppercase tracking-wider">
+                                        Klaim Garansi
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm font-bold text-gray-900">#{{ spk.ticket_id }}</p>
+                                <p class="text-xs text-gray-500 mt-0.5 max-w-[150px] truncate"
+                                    title="{{ spk.ticket?.asset?.name }}">
+                                    {{ spk.ticket?.asset?.name || 'Aset tidak ditemukan' }}
+                                </p>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm text-gray-900 font-medium">{{ spk.vendor?.name || 'Belum diatur' }}
+                                </p>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-900 font-bold text-right font-mono tracking-tight">
+                                {{ spk.is_warranty_claim ? 'Rp 0' : formatRupiah(spk.total_cost) }}
+                                <div *ngIf="spk.is_warranty_claim" class="mt-1">
+                                    <span class="text-xs text-gray-400 line-through">{{ formatRupiah(spk.total_cost)
+                                        }}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider {{ getStatusClass(spk.status) }}">
+                                    {{ spk.status.replace('_', ' ') }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a [routerLink]="['/admin/spk', spk.id]"
+                                    class="inline-flex items-center justify-center h-8 px-3 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+                                    Detail
+                                </a>
+                            </td>
+                        </tr>
+                        <tr *ngIf="filteredSpks.length === 0">
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500 text-sm">
+                                <div class="flex flex-col items-center">
+                                    <svg class="w-12 h-12 text-gray-300 mb-3" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <p class="font-medium text-gray-900">Tidak ada data SPK</p>
+                                    <p class="mt-1">Belum ada Surat Perintah Kerja yang diterbitkan atau cocok dengan
+                                        filter.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

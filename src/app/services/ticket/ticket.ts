@@ -9,18 +9,35 @@ import { NotificationService } from '../notification/notification.service';
 export interface Ticket {
   id?: number;
   created_at?: string;
+  updated_at?: string;
   asset_id: number;
   reporter_nik?: string;
   reporter_name?: string;
   issue_category: string;
   description?: string;
-  status: 'pending_validation' | 'open' | 'assigned' | 'in_progress' | 'pending_verification' | 'resolved' | 'closed' | 'cancelled' | 'false_alarm' | 'vendor_prep';
+  status: 'pending_validation' | 'open' | 'assigned' | 'in_progress' | 'pending_verification' | 'resolved' | 'closed' | 'cancelled' | 'false_alarm' | 'vendor_prep' | 'vendor_assigned' | 'completed';
   photo_url?: string;
 
   // Flowchart Specifics
   is_damage_confirmed?: boolean; // Rusak / Perlu Perbaikan?
-  action_type?: 'internal' | 'vendor'; // Siapa yang kerja?
+  action_type?: 'internal' | 'vendor' | 'internal_repair' | 'needs_vendor'; // Siapa yang kerja?
   vendor_name?: string; // If 'vendor'
+
+  // New workflow fields
+  assigned_technician_id?: number;
+  assigned_technician_name?: string;
+  assigned_vendor_id?: number;
+  assigned_vendor_name?: string;
+  priority?: string;
+  target_date?: string;
+  initial_diagnosis?: string;
+  issue_description?: string;
+  urgency?: string;
+  repair_cost?: number;
+  completion_notes?: string;
+  validation_notes?: string;
+  verified_by_id?: number;
+  date_resolved?: string;
 
   // Maker-Checker Fields
   technician_id?: string; // UUID/String
@@ -32,6 +49,8 @@ export interface Ticket {
   verification_notes?: string;
 
   assets?: any; // To hold joined asset info
+  spk?: any; // To hold related spk
+  spks?: any[]; // Array form of spk
 }
 
 @Injectable({
@@ -70,9 +89,9 @@ export class TicketService {
     }
   }
 
-  async getTickets() {
+  async getTickets(params?: any) {
     try {
-      const data = await firstValueFrom(this.http.get<Ticket[]>(this.apiUrl));
+      const data = await firstValueFrom(this.http.get<Ticket[]>(this.apiUrl, { params }));
       return { data, error: null };
     } catch (error: any) {
       this.errorHandler.handleError(error, 'Gagal mengambil daftar tiket');

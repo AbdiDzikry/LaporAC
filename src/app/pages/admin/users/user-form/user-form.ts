@@ -17,6 +17,7 @@ export class UserFormComponent implements OnInit {
     isEditing = false;
     loading = false;
     saving = false;
+    hidePassword = true;
 
     // Form Data
     userData: any = {

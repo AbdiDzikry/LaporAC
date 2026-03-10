@@ -11,7 +11,7 @@ export interface UserProfile {
   name?: string;
   full_name?: string; // Kept for compatibility if used elsewhere
   nik?: string;
-  role: 'super_admin' | 'admin' | 'technician' | 'staff' | 'dept_head';
+  role: 'super_admin' | 'admin' | 'technician' | 'staff' | 'dept_head' | 'vendor';
   avatar_url?: string;
   created_at?: string;
 }
@@ -129,6 +129,7 @@ export class AuthService {
 
     const roleHierarchy: { [key: string]: number } = {
       'staff': 1,
+      'vendor': 1,
       'technician': 2,
       'dept_head': 3,
       'admin': 4,

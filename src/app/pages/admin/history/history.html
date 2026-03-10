@@ -1,0 +1,177 @@
+<div class="max-w-7xl mx-auto font-sans p-4">
+    <!-- Header -->
+    <div class="bg-white rounded-3xl p-8 mb-8 border border-gray-100 shadow-sm relative overflow-hidden">
+        <div class="relative z-10 flex justify-between items-center">
+            <div>
+                <h2 class="text-3xl font-black text-gray-900 mb-2">Histori & Laporan Global</h2>
+                <p class="text-gray-500 font-medium">Rekam jejak seluruh penyelesaian tiket perbaikan dan maintenance
+                    rutin.
+                </p>
+            </div>
+            <button (click)="exportGlobalReport()"
+                class="px-5 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-bold transition-all shadow-sm flex items-center gap-2 text-sm z-20 relative">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Export Rekap PDF
+            </button>
+        </div>
+        <!-- Decorative bg -->
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-50 rounded-full blur-3xl opacity-60"></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-4 mb-6 border-b border-gray-100 pb-2">
+        <button (click)="setTab('tickets')" [class.text-blue-600]="activeTab === 'tickets'"
+            [class.border-blue-600]="activeTab === 'tickets'" [class.border-transparent]="activeTab !== 'tickets'"
+            [class.text-gray-500]="activeTab !== 'tickets'"
+            class="px-6 py-3 font-bold text-sm border-b-2 transition-all hover:text-blue-600">
+            Histori Tiket (Keluhan)
+        </button>
+        <button (click)="setTab('maintenance')" [class.text-amber-600]="activeTab === 'maintenance'"
+            [class.border-amber-600]="activeTab === 'maintenance'"
+            [class.border-transparent]="activeTab !== 'maintenance'" [class.text-gray-500]="activeTab !== 'maintenance'"
+            class="px-6 py-3 font-bold text-sm border-b-2 transition-all hover:text-amber-600">
+            Histori Maintenance
+        </button>
+    </div>
+
+    <!-- TICKETS TAB -->
+    <div *ngIf="activeTab === 'tickets'" class="animate-fade-in">
+        <div *ngIf="loadingTickets" class="text-center py-12">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
+            <p class="text-sm text-gray-500 mt-4 font-medium">Memuat histori tiket...</p>
+        </div>
+
+        <div *ngIf="!loadingTickets && tickets.length === 0"
+            class="text-center py-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+            <div class="text-4xl mb-4">📝</div>
+            <p class="text-gray-500 font-bold mb-1">Belum ada tiket yang selesai.</p>
+        </div>
+
+        <div *ngIf="!loadingTickets && tickets.length > 0"
+            class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead
+                        class="bg-gray-50 text-gray-500 text-xs uppercase font-extrabold tracking-wider border-b border-gray-100">
+                        <tr>
+                            <th class="px-6 py-5">Info Tiket</th>
+                            <th class="px-6 py-5">Aset AC</th>
+                            <th class="px-6 py-5">Tanggal Selesai</th>
+                            <th class="px-6 py-5">Status Akhir</th>
+                            <th class="px-6 py-5 text-right">Opsi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 text-sm">
+                        <tr *ngFor="let ticket of tickets" class="hover:bg-blue-50/30 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-gray-900 mb-1">#{{ ticket.id }}</p>
+                                <p class="text-xs text-gray-500 truncate max-w-[200px]"
+                                    title="{{ ticket.description }}">{{ ticket.description }}</p>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-gray-900">{{ ticket.assets?.name }}</p>
+                                <p class="text-xs text-gray-500 mt-1">{{ ticket.assets?.location }}</p>
+                            </td>
+                            <td class="px-6 py-4 font-mono text-xs text-gray-600">
+                                {{ ticket.completed_at ? (ticket.completed_at | date:'dd MMM yyyy') : (ticket.updated_at
+                                | date:'dd MMM yyyy') }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider"
+                                    [class.bg-green-100]="ticket.status === 'resolved'"
+                                    [class.text-green-700]="ticket.status === 'resolved'"
+                                    [class.bg-gray-100]="ticket.status === 'closed'"
+                                    [class.text-gray-700]="ticket.status === 'closed'">
+                                    {{ ticket.status.replace('_', ' ') }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a [routerLink]="['/admin/tickets', ticket.id]"
+                                    class="w-8 h-8 inline-flex items-center justify-center rounded-xl text-blue-600 hover:bg-blue-100 transition-colors flex-shrink-0"
+                                    title="Lihat Detail">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+                                        stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAINTENANCE TAB -->
+    <div *ngIf="activeTab === 'maintenance'" class="animate-fade-in">
+        <div *ngIf="loadingMaintenance" class="text-center py-12">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-amber-600 mx-auto"></div>
+            <p class="text-sm text-gray-500 mt-4 font-medium">Memuat histori jadwal...</p>
+        </div>
+
+        <div *ngIf="!loadingMaintenance && maintenance.length === 0"
+            class="text-center py-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+            <div class="text-4xl mb-4">📅</div>
+            <p class="text-gray-500 font-bold mb-1">Belum ada histori jadwal maintenance.</p>
+        </div>
+
+        <div *ngIf="!loadingMaintenance && maintenance.length > 0"
+            class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead
+                        class="bg-gray-50 text-gray-500 text-xs uppercase font-extrabold tracking-wider border-b border-gray-100">
+                        <tr>
+                            <th class="px-6 py-5">Jadwal Untuk</th>
+                            <th class="px-6 py-5">Tgl Target</th>
+                            <th class="px-6 py-5">Tgl Realisasi</th>
+                            <th class="px-6 py-5">Status</th>
+                            <th class="px-6 py-5 text-right">Opsi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 text-sm">
+                        <tr *ngFor="let maint of maintenance" class="hover:bg-amber-50/30 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-gray-900 mb-1 text-sm">{{ maint.asset?.name ||
+                                    maint.assets?.name }}</p>
+                                <p class="text-xs text-gray-500 font-mono">{{ maint.asset?.sku || maint.assets?.sku }} -
+                                    {{ maint.asset?.location || maint.assets?.location }}</p>
+                            </td>
+                            <td class="px-6 py-4 font-mono text-xs text-gray-500">
+                                {{ maint.scheduled_date | date:'dd MMM yyyy' }}
+                            </td>
+                            <td class="px-6 py-4 font-mono text-xs text-gray-900 font-semibold">
+                                {{ maint.completed_date ? (maint.completed_date | date:'dd MMM yyyy') : '-' }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider"
+                                    [class.bg-green-100]="maint.status === 'completed'"
+                                    [class.text-green-700]="maint.status === 'completed'"
+                                    [class.bg-red-100]="maint.status === 'missed'"
+                                    [class.text-red-700]="maint.status === 'missed'"
+                                    [class.bg-gray-100]="maint.status === 'skipped'"
+                                    [class.text-gray-700]="maint.status === 'skipped'">
+                                    {{ maint.status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a [routerLink]="['/admin/maintenance']"
+                                    class="text-blue-600 hover:text-blue-800 text-xs font-bold hover:underline">
+                                    Lihat Jadwal
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,8 @@
+http://localhost:4200/admin/assets
+
+di samping ini beri button untuk cetak QR code, konsep nya nanti 
+dia akan menunjukan QR code dari asset yang di pilih ada menu filter nya juga
+
+dan juga memakai checkbox jadi kita bisa memilih unit ac mana saja yang mau di di download batch QR codenya
+
+jadi tidak perlu repot repot lagi

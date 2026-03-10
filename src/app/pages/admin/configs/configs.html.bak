@@ -1,0 +1,49 @@
+<div class="h-[calc(100vh-88px)] flex flex-col font-sans bg-gray-50/50">
+    <!-- Header -->
+    <div class="flex-shrink-0 bg-white border-b border-gray-100 z-10 px-8 py-6">
+        <h1 class="text-2xl font-black text-gray-900 tracking-tight">App Configs</h1>
+        <p class="text-xs text-gray-500 font-medium mt-1">Atur konfigurasi sistem aplikasi LaporAC</p>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 overflow-y-auto px-8 py-8 scrollbar-thin">
+        <div class="max-w-2xl bg-white rounded-2xl border border-gray-100 shadow-sm p-6 overflow-hidden relative">
+
+            <div *ngIf="isLoading"
+                class="absolute inset-0 z-10 bg-white/50 backdrop-blur-sm flex items-center justify-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+            </div>
+
+            <h2 class="text-lg font-bold text-gray-900 mb-6">Pengaturan Umum</h2>
+
+            <div class="space-y-6">
+                <!-- Warranty Duration -->
+                <div class="group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Masa Garansi SPK (Bulan)</label>
+                    <div class="relative max-w-xs">
+                        <input type="number" [(ngModel)]="warrantyDuration" min="0" step="1"
+                            class="w-full h-11 pl-4 pr-12 text-sm bg-gray-50 border-0 rounded-xl ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-blue-600 focus:bg-white transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400">
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                            <span class="text-gray-500 text-sm font-medium">bln</span>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-xs text-gray-500">Durasi ini otomatis menandai tiket dalam masa garansi vendor
+                        terkait.</p>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-100 flex justify-end">
+                <button (click)="saveConfig()" [disabled]="isLoading"
+                    class="h-11 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2">
+                    <svg *ngIf="!isLoading" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+                        stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    <span>Simpan Pengaturan</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

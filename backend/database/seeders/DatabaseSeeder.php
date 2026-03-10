@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         // 1. Roles & Permissions
         $adminRole = Role::create(['name' => 'admin', 'description' => 'Administrator System']);
         $techRole = Role::create(['name' => 'technician', 'description' => 'Field Technician']);
+        $vendorRole = Role::create(['name' => 'vendor', 'description' => 'External Vendor']);
 
         $perm1 = Permission::create(['code' => 'manage_users', 'description' => 'Can manage users']);
         $perm2 = Permission::create(['code' => 'manage_assets', 'description' => 'Can manage assets']);
@@ -39,6 +40,14 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password123'),
             'nik' => 'TECH001',
             'role' => 'technician',
+        ]);
+
+        $vendor = User::create([
+            'name' => 'Vendor CV Maju Jaya',
+            'email' => 'vendor@majujaya.com',
+            'password' => bcrypt('vendor123'),
+            'nik' => 'VEND001',
+            'role' => 'vendor',
         ]);
 
         // 3. Assets

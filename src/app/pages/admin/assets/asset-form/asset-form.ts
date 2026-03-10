@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AssetService } from '../../../../services/asset/asset';
+import { TicketService } from '../../../../services/ticket/ticket';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
@@ -30,28 +31,27 @@ export class AssetFormComponent implements OnInit {
   loading = false;
   maintenanceDays: number[] = Array.from({ length: 31 }, (_, i) => i + 1); // 1-31
 
+  ticketHistory: any[] = [];
+  isLoadingHistory = false;
+
   constructor(
     private fb: FormBuilder,
     private assetService: AssetService,
+    private ticketService: TicketService,
     private route: ActivatedRoute,
     private router: Router
   ) {
     this.assetForm = this.fb.group({
       sku: ['', Validators.required],
-      name: [''], // Name is optional, will auto-gen
-      brand: ['', Validators.required], // Merk AC
+      brand: ['-'], // Merk AC
       category: ['', Validators.required], // Jenis AC (SPLITE, CASSET, etc)
       location: ['', Validators.required],
       pk: ['', Validators.required],
       status: ['good', Validators.required],
-      next_maintenance_date: [''], // Next scheduled maintenance date
+      purchase_date: [''], // NEW FIELD
 
       // Lifecycle Fields
-      vendor_name: [''],
-      purchase_price: [0],
-      warranty_expiry_date: [null],
-      useful_life_years: [5],
-      residual_value: [0]
+      vendor_name: ['']
     });
   }
 
@@ -67,13 +67,31 @@ export class AssetFormComponent implements OnInit {
     this.loading = true;
     const { data, error } = await this.assetService.getAssetById(id);
     if (data) {
+      // Format purchase_date for HTML date input (YYYY-MM-DD)
+      let formattedDate = '';
+      if (data.purchase_date) {
+        const d = new Date(data.purchase_date);
+        formattedDate = d.toISOString().split('T')[0];
+      }
+
       this.assetForm.patchValue({
         ...data,
-        warranty_expiry_date: data.warranty_expiry_date ? new Date(data.warranty_expiry_date) : null,
-        next_maintenance_date: data.next_maintenance_date ? new Date(data.next_maintenance_date) : null
+        purchase_date: formattedDate
       });
     }
     this.loading = false;
+
+    // Fetch History
+    this.loadHistory(id);
+  }
+
+  async loadHistory(id: number) {
+    this.isLoadingHistory = true;
+    const { data } = await this.ticketService.getTickets({ asset_id: id });
+    if (data) {
+      this.ticketHistory = data;
+    }
+    this.isLoadingHistory = false;
   }
 
   async onSubmit() {
@@ -81,12 +99,11 @@ export class AssetFormComponent implements OnInit {
 
     this.loading = true;
     try {
-      const formVal = this.assetForm.value;
+      const formVal = { ...this.assetForm.value };
+      if (!formVal.brand) formVal.brand = '-';
 
-      // Auto-generate name if empty: "AC [Jenis] [PK] [Brand] [Location] [SKU]"
-      if (!formVal.name) {
-        formVal.name = `AC ${formVal.category || ''} ${formVal.pk || ''} ${formVal.brand || ''} ${formVal.location || ''}`.replace(/\s+/g, ' ').trim();
-      }
+      // Auto-generate absolute name: "AC [Jenis] [PK] [Brand] [Location] - [SKU]"
+      formVal.name = `AC ${formVal.category || ''} ${formVal.pk || ''} ${formVal.brand === '-' ? '' : formVal.brand} ${formVal.location || ''} - ${formVal.sku || ''}`.replace(/\s+/g, ' ').trim();
 
       if (this.isEditMode && this.assetId) {
         await this.assetService.updateAsset(this.assetId, formVal);
@@ -98,6 +115,32 @@ export class AssetFormComponent implements OnInit {
       console.error(error);
     } finally {
       this.loading = false;
+    }
+  }
+
+  getAssetAge(): string {
+    const purchaseDateVal = this.assetForm.get('purchase_date')?.value;
+    if (!purchaseDateVal) return '-';
+
+    const purchaseDate = new Date(purchaseDateVal);
+    const now = new Date();
+
+    if (purchaseDate > now) return 'Baru';
+
+    let years = now.getFullYear() - purchaseDate.getFullYear();
+    let months = now.getMonth() - purchaseDate.getMonth();
+
+    if (months < 0 || (months === 0 && now.getDate() < purchaseDate.getDate())) {
+      years--;
+      months += 12;
+    }
+
+    if (years > 0) {
+      return `${years} Tahun${months > 0 ? ` ${months} Bulan` : ''}`;
+    } else if (months > 0) {
+      return `${months} Bulan`;
+    } else {
+      return 'Baru (< 1 Bulan)';
     }
   }
 }

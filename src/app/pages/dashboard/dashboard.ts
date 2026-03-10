@@ -3,8 +3,11 @@ import { CommonModule } from '@angular/common';
 import { AssetService } from '../../services/asset/asset';
 import { TicketService } from '../../services/ticket/ticket';
 import { SessionService } from '../../services/session/session.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { LoadingService } from '../../services/loading/loading.service';
-import { RouterLink } from '@angular/router';
+import { SweetAlertService } from '../../services/sweet-alert/sweet-alert.service';
+import { RouterLink, Router } from '@angular/router';
+import { SpkService } from '../../services/spk/spk.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,15 +27,29 @@ export class DashboardComponent implements OnInit {
     recentTickets: [] as any[],
     upcomingMaintenance: [] as any[] // Assets with upcoming maintenance
   };
+
+  vendorData = {
+    activeSpks: 0,
+    completedSpks: 0,
+    pendingSpks: [] as any[],
+    activeSpkList: [] as any[]
+  };
+
   today = new Date();
   isAdmin = false;
+  isVendor = false;
   userRole: string | null = null;
+  userName: string | null = null;
 
   constructor(
     private assetService: AssetService,
     private ticketService: TicketService,
     private sessionService: SessionService,
-    private loadingService: LoadingService
+    private authService: AuthService,
+    private loadingService: LoadingService,
+    private spkService: SpkService,
+    private sweetAlert: SweetAlertService,
+    private router: Router
   ) { }
 
   async ngOnInit() {
@@ -42,65 +59,86 @@ export class DashboardComponent implements OnInit {
 
   async checkUser() {
     this.userRole = this.sessionService.getCurrentUserRole();
+    const user = await this.authService.getCurrentUser();
+    if (user) {
+      this.userName = user.name || null;
+    }
+
     if (!this.userRole) {
       // Refresh session if not set
       await this.sessionService.checkAuthStatus();
       this.userRole = this.sessionService.getCurrentUserRole();
+      const refUser = await this.authService.getCurrentUser();
+      if (refUser) this.userName = refUser.name || null;
     }
     this.isAdmin = this.userRole === 'admin' || this.userRole === 'super_admin';
+    this.isVendor = this.userRole === 'vendor';
   }
 
   async loadStats() {
     this.loadingService.show();
     try {
-      const { data: assets } = await this.assetService.getAssets();
-      if (assets) {
-        this.analytics.totalAssets = assets.length;
-        this.analytics.maintenanceAssets = assets.filter((a: any) => a.status === 'maintenance').length;
-        this.analytics.brokenAssets = assets.filter((a: any) => a.status === 'broken').length;
+      if (this.isVendor) {
+        // --- VENDOR DASHBOARD LOGIC ---
+        const { data: spks, error } = await this.spkService.getSpks();
+        if (spks) {
+          this.vendorData.activeSpks = spks.filter((s: any) => s.status === 'assigned' || s.status === 'in_progress').length;
+          this.vendorData.completedSpks = spks.filter((s: any) => s.status === 'completed').length;
 
-        // Get upcoming maintenance (next 7 days)
-        const today = new Date();
-        const nextWeek = new Date();
-        nextWeek.setDate(today.getDate() + 7);
+          this.vendorData.pendingSpks = spks.filter((s: any) => s.status === 'draft' || s.status === 'sent');
+          this.vendorData.activeSpkList = spks.filter((s: any) => s.status === 'assigned' || s.status === 'in_progress');
+        }
+      } else {
+        // --- ADMIN DASHBOARD LOGIC ---
+        const { data: assets } = await this.assetService.getAssets();
+        if (assets) {
+          this.analytics.totalAssets = assets.length;
+          this.analytics.maintenanceAssets = assets.filter((a: any) => a.status === 'maintenance').length;
+          this.analytics.brokenAssets = assets.filter((a: any) => a.status === 'broken').length;
 
-        this.analytics.upcomingMaintenance = assets
-          .filter((asset: any) => {
-            if (!asset.next_maintenance_date) return false;
-            const maintenanceDate = new Date(asset.next_maintenance_date);
-            return maintenanceDate >= today && maintenanceDate <= nextWeek;
-          })
-          .sort((a: any, b: any) => {
-            return new Date(a.next_maintenance_date).getTime() - new Date(b.next_maintenance_date).getTime();
-          })
-          .slice(0, 5); // Top 5 upcoming
-      }
+          // Get upcoming maintenance (next 7 days)
+          const today = new Date();
+          const nextWeek = new Date();
+          nextWeek.setDate(today.getDate() + 7);
 
-      const { data: tickets, error } = await this.ticketService.getTickets();
-      if (error) console.error('Error fetching tickets:', error);
+          this.analytics.upcomingMaintenance = assets
+            .filter((asset: any) => {
+              if (!asset.next_maintenance_date) return false;
+              const maintenanceDate = new Date(asset.next_maintenance_date);
+              return maintenanceDate >= today && maintenanceDate <= nextWeek;
+            })
+            .sort((a: any, b: any) => {
+              return new Date(a.next_maintenance_date).getTime() - new Date(b.next_maintenance_date).getTime();
+            })
+            .slice(0, 5); // Top 5 upcoming
+        }
 
-      if (tickets) {
-        console.log('Dashboard Tickets:', tickets); // Debug log
-        this.analytics.recentTickets = tickets.slice(0, 5);
+        const { data: tickets, error } = await this.ticketService.getTickets();
+        if (error) console.error('Error fetching tickets:', error);
 
-        // Calculate Stats
-        let openCount = 0;
-        let resolvedCount = 0;
-        let cost = 0;
+        if (tickets) {
+          console.log('Dashboard Tickets:', tickets); // Debug log
+          this.analytics.recentTickets = tickets.slice(0, 5);
 
-        tickets.forEach((t: any) => {
-          // Check status carefully
-          if (t.status === 'open' || t.status === 'in_progress' || t.status === 'pending_validation' || t.status === 'assigned') {
-            openCount++;
-          }
-          if (t.status === 'resolved' || t.status === 'closed') resolvedCount++;
-          if (t.repair_cost) cost += Number(t.repair_cost);
-        });
+          // Calculate Stats
+          let openCount = 0;
+          let resolvedCount = 0;
+          let cost = 0;
 
-        console.log('Calculated Open Tickets:', openCount); // Debug log
-        this.analytics.openTickets = openCount;
-        this.analytics.resolvedTickets = resolvedCount;
-        this.analytics.maintenanceCost = cost;
+          tickets.forEach((t: any) => {
+            // Check status carefully
+            if (t.status === 'open' || t.status === 'in_progress' || t.status === 'pending_validation' || t.status === 'assigned' || t.status === 'vendor_assigned' || t.status === 'vendor_prep') {
+              openCount++;
+            }
+            if (t.status === 'resolved' || t.status === 'closed') resolvedCount++;
+            if (t.repair_cost) cost += Number(t.repair_cost);
+          });
+
+          console.log('Calculated Open Tickets:', openCount); // Debug log
+          this.analytics.openTickets = openCount;
+          this.analytics.resolvedTickets = resolvedCount;
+          this.analytics.maintenanceCost = cost;
+        }
       }
     } catch (error) {
       console.error(error);
@@ -115,5 +153,33 @@ export class DashboardComponent implements OnInit {
     const maintenanceDate = new Date(dateString);
     const diffTime = maintenanceDate.getTime() - today.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  // Vendor Action: Accept SPK
+  async acceptSpk(spk: any) {
+    const confirm = await this.sweetAlert.confirm(
+      'Konfirmasi Penerimaan',
+      `Apakah Anda yakin akan menerima SPK ${spk.spk_number}? Vendor setuju untuk menyelesaikan perbaikan ini.`,
+      'Ya, Terima Pekerjaan'
+    );
+
+    if (confirm) {
+      this.loadingService.show();
+      const { data, error } = await this.spkService.updateSpk(spk.id, { status: 'assigned' });
+      this.loadingService.hide();
+
+      if (error) {
+        this.sweetAlert.error('Gagal', 'Terjadi kesalahan saat menyimpan respons: ' + error);
+      } else {
+        this.sweetAlert.success('Berhasil', 'SPK telah disetujui. Silakan tinjau rincian biaya atau mulai bekerja bila siap.');
+        this.loadStats(); // reload board
+      }
+    }
+  }
+
+  // Action: Navigate to detail to update costs/items
+  goToSpkDetail(spk: any) {
+    // Note: Assuming there is a detail view for vendor, redirect. If not exist, will need to create.
+    this.router.navigate(['/admin/spk', spk.id]);
   }
 }

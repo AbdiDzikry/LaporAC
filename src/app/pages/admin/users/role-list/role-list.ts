@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { RoleService, Role, Permission } from '../../../../services/role/role';
 import { ToastService } from '../../../../services/toast/toast';
+import { RolePermissionsComponent } from '../role-permissions/role-permissions';
 
 @Component({
     selector: 'app-role-list',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, RolePermissionsComponent],
     templateUrl: './role-list.html',
 })
 export class RoleListComponent implements OnInit {
@@ -21,6 +23,9 @@ export class RoleListComponent implements OnInit {
     currentRole: Partial<Role> = { name: '', description: '' };
     selectedPermissionIds: Set<string | number> = new Set();
     saving = false;
+
+    // Role Permissions Sub-Modal State
+    managingRoleId: number | string | null = null;
 
     constructor(
         private roleService: RoleService,

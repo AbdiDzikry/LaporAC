@@ -1,0 +1,158 @@
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Manajemen Permission Role</h1>
+            <p class="text-sm text-gray-500 mt-1">Atur akses menu untuk role <span
+                    class="font-semibold text-blue-600">{{ roleName }}</span></p>
+        </div>
+        <button (click)="goBack()"
+            class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Kembali
+        </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- Content -->
+    <div *ngIf="!loading" class="space-y-6">
+        <!-- Role Info Card -->
+        <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">{{ roleName }}</h3>
+                    <p class="text-sm text-gray-600 mt-1">{{ roleDescription }}</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-blue-600">{{ selectedMenus.length }}</div>
+                    <div class="text-xs text-blue-700">Menu Aktif</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Menus -->
+        <div class="border border-gray-200 rounded-xl overflow-hidden">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <h3 class="text-sm font-semibold text-gray-700">Daftar Menu Tersedia</h3>
+                <p class="text-xs text-gray-500 mt-1">Centang menu yang ingin diaktifkan untuk role ini</p>
+            </div>
+
+            <div class="divide-y divide-gray-100">
+                <!-- Principal Section -->
+                <div class="p-6">
+                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Principal</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div *ngFor="let menu of getMenusBySection('principal')" (click)="toggleMenu(menu.route)"
+                            class="flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-sm"
+                            [class.border-blue-500]="isMenuSelected(menu.route)"
+                            [class.bg-blue-50]="isMenuSelected(menu.route)"
+                            [class.border-gray-200]="!isMenuSelected(menu.route)"
+                            [class.bg-white]="!isMenuSelected(menu.route)">
+                            <div class="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors"
+                                [ngClass]="{
+                                    'border-blue-500 bg-blue-500': isMenuSelected(menu.route),
+                                    'border-gray-300 bg-white': !isMenuSelected(menu.route)
+                                }">
+                                <svg *ngIf="isMenuSelected(menu.route)" xmlns="http://www.w3.org/2000/svg" width="14"
+                                    height="14" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-semibold text-gray-900">{{ menu.label }}</div>
+                                <div class="text-xs text-gray-500">{{ menu.route }}</div>
+                            </div>
+                            <span class="text-xs text-gray-400">{{ menu.icon }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operational Section -->
+                <div class="p-6">
+                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Operational</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div *ngFor="let menu of getMenusBySection('operational')" (click)="toggleMenu(menu.route)"
+                            class="flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-sm"
+                            [class.border-green-500]="isMenuSelected(menu.route)"
+                            [class.bg-green-50]="isMenuSelected(menu.route)"
+                            [class.border-gray-200]="!isMenuSelected(menu.route)"
+                            [class.bg-white]="!isMenuSelected(menu.route)">
+                            <div class="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors"
+                                [ngClass]="{
+                                    'border-green-500 bg-green-500': isMenuSelected(menu.route),
+                                    'border-gray-300 bg-white': !isMenuSelected(menu.route)
+                                }">
+                                <svg *ngIf="isMenuSelected(menu.route)" xmlns="http://www.w3.org/2000/svg" width="14"
+                                    height="14" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-semibold text-gray-900">{{ menu.label }}</div>
+                                <div class="text-xs text-gray-500">{{ menu.route }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Administration Section -->
+                <div class="p-6">
+                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Administration</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div *ngFor="let menu of getMenusBySection('administration')" (click)="toggleMenu(menu.route)"
+                            class="flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-sm"
+                            [class.border-purple-500]="isMenuSelected(menu.route)"
+                            [class.bg-purple-50]="isMenuSelected(menu.route)"
+                            [class.border-gray-200]="!isMenuSelected(menu.route)"
+                            [class.bg-white]="!isMenuSelected(menu.route)">
+                            <div class="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors"
+                                [ngClass]="{
+                                    'border-purple-500 bg-purple-500': isMenuSelected(menu.route),
+                                    'border-gray-300 bg-white': !isMenuSelected(menu.route)
+                                }">
+                                <svg *ngIf="isMenuSelected(menu.route)" xmlns="http://www.w3.org/2000/svg" width="14"
+                                    height="14" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-semibold text-gray-900">{{ menu.label }}</div>
+                                <div class="text-xs text-gray-500">{{ menu.route }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+            <div class="flex gap-2">
+                <button (click)="selectAll()"
+                    class="px-4 py-2 text-sm text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 font-medium">
+                    Select All
+                </button>
+                <button (click)="selectNone()"
+                    class="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium">
+                    Select None
+                </button>
+                <button (click)="resetToDefaults()"
+                    class="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium">
+                    Reset to Defaults
+                </button>
+            </div>
+            <button (click)="savePermissions()" [disabled]="saving"
+                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                <span *ngIf="saving" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                {{ saving ? 'Menyimpan...' : 'Simpan Permission' }}
+            </button>
+        </div>
+    </div>
+</div>

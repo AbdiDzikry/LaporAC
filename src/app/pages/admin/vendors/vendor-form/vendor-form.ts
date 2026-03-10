@@ -20,6 +20,7 @@ export class VendorFormComponent implements OnInit {
   vendorId: number | null = null;
   specialties: string[] = [];
   newSpecialty = '';
+  hidePassword = true;
 
   constructor(
     private fb: FormBuilder,
@@ -37,6 +38,12 @@ export class VendorFormComponent implements OnInit {
     if (id) {
       this.isEditMode = true;
       this.vendorId = parseInt(id, 10);
+
+      // Remove required validator for password in edit mode
+      this.vendorForm.get('password')?.clearValidators();
+      this.vendorForm.get('password')?.setValidators([Validators.minLength(8)]);
+      this.vendorForm.get('password')?.updateValueAndValidity();
+
       this.loadVendor(this.vendorId);
     }
   }
@@ -45,7 +52,7 @@ export class VendorFormComponent implements OnInit {
     return this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.minLength(8)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
       nik: [''],
       company_name: [''],
       company_address: [''],
@@ -135,13 +142,13 @@ export class VendorFormComponent implements OnInit {
         status: formValue.status
       };
 
-      // Add vendor email if different from login email
+      // Add vendor email if different from login email (for both create and update)
       if (formValue.vendor_email) {
-        (vendorData as any).email = formValue.vendor_email;
+        (vendorData as any).vendor_email = formValue.vendor_email;
       }
 
-      // Add password only for new vendor
-      if (!this.isEditMode && formValue.password) {
+      // Add password conditionally
+      if (formValue.password) {
         vendorData.password = formValue.password;
       }
 

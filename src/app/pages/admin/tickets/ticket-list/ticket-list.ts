@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TicketService } from '../../../../services/ticket/ticket';
 import { ToastService } from '../../../../services/toast/toast'; // Import Toast
+import { VendorService } from '../../../../services/vendor/vendor.service'; // Import VendorService
+import { AuthService } from '../../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-ticket-list',
@@ -16,14 +18,21 @@ export class TicketListComponent implements OnInit {
   tickets: any[] = [];
   loading = false;
   today = new Date();
+  isAdminOrStaff = false;
 
   constructor(
     private ticketService: TicketService,
-    private toast: ToastService // Add Toast
+    private toast: ToastService, // Add Toast
+    private vendorService: VendorService, // Add VendorService
+    private authService: AuthService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.loadTickets();
+    const user = await this.authService.getCurrentUser();
+    if (user) {
+      this.isAdminOrStaff = ['super_admin', 'admin', 'staff', 'technician', 'dept_head'].includes(user.role);
+    }
   }
 
   async loadTickets() {
@@ -153,6 +162,104 @@ export class TicketListComponent implements OnInit {
       case 'closed': return 'status-closed';
       case 'false_alarm': return 'status-false_alarm';
       default: return 'bg-gray-50 text-gray-800 border-gray-200';
+    }
+  }
+
+  // --- GA Validation Modal Logic ---
+  selectedTicket: any = null;
+  validationAction: 'internal' | 'vendor' | 'false_alarm' | null = null;
+  validationNotes: string = '';
+
+  // Selection data
+  vendors: any[] = [];
+  technicians: any[] = []; // In a real app, this should be fetched from UserService/RoleService
+
+  selectedVendorId: number | null = null;
+  selectedTechnicianId: number | null = null;
+  selectedTechnicianName: string = '';
+
+  openValidationModal(ticket: any) {
+    this.selectedTicket = ticket;
+    this.validationAction = null;
+    this.validationNotes = '';
+    this.selectedVendorId = null;
+    this.selectedTechnicianId = null;
+    this.selectedTechnicianName = '';
+    this.loadVendors();
+    // Simulate loading internal technicians (usually those with role 'technician')
+    this.technicians = [
+      { id: 2, name: 'Teknisi Internal 1' },
+      { id: 3, name: 'Teknisi Internal 2' }
+    ];
+  }
+
+  closeValidationModal() {
+    this.selectedTicket = null;
+  }
+
+  async loadVendors() {
+    try {
+      const { data, error } = await this.vendorService.getActiveVendors();
+      if (data) {
+        this.vendors = data;
+      } else if (error) {
+        console.error('Failed to load active vendors:', error);
+      }
+    } catch (e) {
+      console.error('Failed to load vendors', e);
+    }
+  }
+
+  async submitValidation() {
+    if (!this.selectedTicket || !this.validationAction) return;
+
+    this.loading = true;
+    try {
+      let updatePayload: any = {
+        status: '',
+        action_type: this.validationAction,
+        validation_notes: this.validationNotes
+      };
+
+      if (this.validationAction === 'false_alarm') {
+        updatePayload.status = 'false_alarm';
+        updatePayload.completion_date = new Date().toISOString();
+        updatePayload.completion_notes = this.validationNotes;
+      } else if (this.validationAction === 'internal') {
+        if (!this.selectedTechnicianId) {
+          this.toast.show('Pilih teknisi internal terlebih dahulu', 'warning');
+          this.loading = false;
+          return;
+        }
+        updatePayload.status = 'assigned';
+        updatePayload.assigned_technician_id = this.selectedTechnicianId;
+
+        const tech = this.technicians.find(t => t.id == this.selectedTechnicianId);
+        if (tech) updatePayload.assigned_technician_name = tech.name;
+
+      } else if (this.validationAction === 'vendor') {
+        if (!this.selectedVendorId) {
+          this.toast.show('Pilih vendor terlebih dahulu', 'warning');
+          this.loading = false;
+          return;
+        }
+        updatePayload.status = 'vendor_assigned'; // or vendor_prep
+        // Note: Assuming Your Ticket Model handles assigned_vendor_id (needs to be added if not present)
+        updatePayload.assigned_vendor_id = this.selectedVendorId;
+      }
+
+      const { error } = await this.ticketService.updateTicket(this.selectedTicket.id, updatePayload);
+
+      if (error) throw error;
+
+      this.toast.show('Penerusan Laporan Berhasil!', 'success');
+      this.closeValidationModal();
+      this.loadTickets(); // Reload
+    } catch (e) {
+      console.error(e);
+      this.toast.show('Gagal memproses validasi', 'error');
+    } finally {
+      this.loading = false;
     }
   }
 }

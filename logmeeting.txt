@@ -1,22 +1,289 @@
--Top kategori yang sering rusak pada aplikasi (ac rusak karna apa)
--Vendor performance
-Garansi apakah perlu di reset tiap 3 bulan
-Kasih notif WA
-Nanti juga perlu ditambahkan karena kira kira ada 2 vendor pada saat create jdwl maintenance kita bisa milih vendor mana yang handle unit ini
-lalu perlu di konfim
-
-update UI
-
-bedakan proses antara perlisisan dokumen SPK, BAP, dan Invoice yang pelaporan dan maintenance
-
-lalu juga pada dokumen ini nanti musti dipastikan rilisnya itu pada saat di proses apa
-
-pokoknya nanti perlu dipastikan lagi kepada GA terkait vendor itu bagaimana
-
-analitik nya nanti betulkan
-
-history perbaikan per unit juga nanti ditunjukkan pada detail unit
-
-
-
-
+		DATA  SERVICE DAN PERBAIKAN AC 2026														
+																
+																
+PT DHARMA POLIMETAL Tbk																
+NO	RUANGAN / LOKASI	NO AC	JENIS	PK	TAHUN 2025											
+					JAN	FEB	MAR	APR	MAY	JUN	JUL	AUG	SEP	OCT	NOV	DEC
+1	AUDITORIUM	RA 001	SPLITE	2 PK												
+2	AUDITORIUM	RA 002	SPLITE	2 PK												
+3	AUDITORIUM	RA 003	SPLITE	2 PK												
+4	AUDITORIUM	RA 004	SPLITE	2 PK												
+5	AUDITORIUM	RA 005	SPLITE	2 PK												
+6	AUDITORIUM	RA 006	SPLITE	2 PK												
+7	AUDITORIUM	RA 007	SPLITE	2 PK												
+8	AUDITORIUM	RA 008	CASSET	4 PK												
+9	AUDITORIUM	RA 009	CASSET	4 PK												
+10	AUDITORIUM	RA 010	CASSET	4 PK												
+11	AUDITORIUM	RA 011	CASSET	4 PK												
+12	KORIDOR	RA 012	CASSET	2 PK												
+13	KORIDOR	RA 013	CASSET	2 PK												
+14	R. TRAINING	RA 014	SPLITE	2 PK												
+15	R. TRAINING	RA 015	SPLITE	2 PK												
+16	R. ARJUNO	RA 016	SPLITE	2 PK												
+17	R. MERBABU	RA 017	SPLITE	2 PK												
+18	R. MERBABU	RA 018	SPLITE	2 PK												
+19	R. RAUNG	RA 019	SPLITE	2.5 PK												
+20	R. KENCANA	RA 020	CASSET	2 PK												
+21	R. SINDORO	RA 021	CASSET	2 PK												
+22	SERVER	RA 022	CASSET	2 PK												
+23	SERVER	RA 023	CASSET	2 PK												
+24	SERVER	RA 024	CASSET	2 PK												
+25	DIV. HRGA	RA 025	SPLITE	2 PK												
+26	DIV. HRGA	RA 026	SPLITE	2 PK												
+27	DIV ACCT	RA 027	SPLITE	2 PK												
+28	DIV ACCT	RA 028	SPLITE	2 PK												
+29	DIV ACCT	RA 029	SPLITE	2 PK												
+30	DIV. MKT	RA 030	SPLITE	2 PK												
+31	DIV. MKT	RA 031	SPLITE	2 PK												
+32	R. ZOOM	RA 032	SPLITE	2 PK												
+33	R. ZOOM	RA 033	SPLITE	2 PK												
+34	R. ZOOM	RA 034	SPLITE	2 PK												
+35	OFFICE	RA 035	SPLITE	2 PK												
+36	OFFICE	RA 036	CASSET	2 PK												
+37	OFFICE	RA 037	CASSET	2 PK												
+38	OFFICE	RA 038	CASSET	2 PK												
+39	OFFICE	RA 039	CASSET	2 PK												
+40	OFFICE	RA 040	CASSET	2 PK												
+41	OFFICE	RA 041	CASSET	2 PK												
+42	SEKCOR	RA 042	SPLITE	2 PK												
+43	SEKERTARIS	RA 043	SPLITE	2 PK												
+44	DIREKTUR 1	RA 044	CASSET	2 PK												
+45	DIREKTUR 2	RA 045	CASSET	2 PK												
+46	DIREKTUR 3	RA 046	CASSET	2 PK												
+47	DIREKTUR 4	RA 047	SPLITE	2 PK												
+48	PRESDIR	RA048	CASSET	2 PK												
+49	R. MEETING EXC	RA 049	CASSET	3 PK												
+50	R. MEETING EXC	RA 050	CASSET	3 PK												
+51	R. MEETING EXC	RA 051	CASSET	3 PK												
+52	DIV. HRGA	RA 052	SPLITE	2 PK												
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+	RUANG BAWAH															
+53	R. MUSIK	RB001	SPLITE	2 PK												
+54	R. SPSI	RB002	SPLITE	2 PK												
+55	R. KLINIK	RB003	CASSET	2 PK												
+56	R. KERINCI	RB004	CASSET	2 PK												
+57	R. LAKTASI	RB005	CASSET	2 PK												
+58	R. KELUD	RB006	SPLITE	2 PK												
+59	R. PAPANDAYAN	RB007	SPLITE	2 PK												
+60	R. GYM	RB008	CASSET	3 PK												
+61	R. PERSONALIA	RB009	SPLITE	2 PK												
+62	R. INVOICE	RB010	SPLITE	1,5												
+63	LOBBY UTAMA	RB011	CASSET	3 PK												
+64	R. RINJANI	RB012	CASSET	2 PK												
+65	R. SEMERU	RB013	CASSET	2 PK												
+66	R. SEMERU	RB014	CASSET	2 PK												
+67	R. SHOWROOM	RB015	SPLITE	2 PK												
+68	R. SHOWROOM	RB016	SPLITE	2 PK												
+69	OFFICE PURCH	RB017	SPLITE	2 PK												
+70	OFFICE PURCH	RB018	SPLITE	2 PK												
+71	OFFICE PURCH	RB019	SPLITE	2 PK												
+72	OFFICE PURCH	RB020	SPLITE	2 PK												
+73	R. MERAPI	RB021	SPLITE	1 PK												
+74	R. CEREMAI	RB022	SPLITE	1 PK												
+75	R. GALUNGGUNG	RB023	SPLITE	1 PK												
+76	R. GUDANG PURCH	RB024	SPLITE	1 PK												
+77	POS 2	RB025	SPLITE	1.5 PK												
+																
+																
+																
+																
+																
+																
+																
+																
+																
+	GEDUNG A															
+78	DOCKING MUFLER ( R. Meet )	GA001	SPLITE	2 PK												
+79	DOCKING MUFLER	GA002	SPLITE	2 PK												
+80	PAINTING 3	GA003	SPLITE	2 PK												
+81	PAINTING 3	GA004	SPLITE	2 PK												
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+																
+	GEDUNG B															
+82	MAINTENANCE	GB001	SPLITE	1 PK												
+83	MAINTENANCE	GB002	SPLITE	1 PK												
+84	ASSET MANAGEMENT	GB003	SPLITE	2 PK												
+85	GUDANG ATK	GB004	SPLITE	1,5 PK												
+86	DOJO	GB005	CASSET	2 PK												
+87	DOJO	GB006	CASSET	2 PK												
+88	DOJO	GB007	SPLITE	1,5 PK												
+89	DOJO	GB008	SPLITE	1 PK												
+90	KOPERASI	GB009	SPLITE	1 PK												
+91	KOPERASI	GB010	SPLITE	2 PK												
+92	MANUFACTUR	GB011	SPLITE	1 PK												
+93	MANUFACTUR	GB012	SPLITE	1 PK												
+94	MANUFACTUR	GB013	SPLITE	2 PK												
+95	MANUFACTUR	GB014	SPLITE	2 PK												
+96	R. QA	GB015	SPLITE	2 PK												
+97	R. QA	GB016	SPLITE	1 PK												
+98	R. QA	GB017	SPLITE	1 PK												
+99	R. QA	GB018	SPLITE	2 PK												
+100	R. CMM	GB019	SPLITE	2 PK												
+101	R. CMM	GB020	SPLITE	2 PK												
+102	R LAB METALURGI	GB021	CASETE	2 PK												
+103	R. LAB METALURGI	GB022	CASETE	2 PK												
+104	R. LAB METALURGI	GB023	CASETE	2 PK												
+105	R. LAB METALURGI	GB024	CASETE	2 PK												
+106	R. LAB METALURGI	GB025	SPLITE	1,5 PK												
+107	R. LAB METALURGI	GB026	SPLITE	1,5 PK												
+108	R. ENG 2W	GB027	CASETE	2 PK												
+109	R. ENG 2W	GB028	SPLITE	1,5 PK												
+110	R. ENG 2W	GB029	CASETE	2 PK												
+111	R. ENG 2W	GB030	SPLITE	1 PK												
+112	R. ENG 2W	GB031	SPLITE	2 PK												
+113	R. ENG 2W	GB032	SPLITE	1 PK												
+114	OFFICE 4W	GB033	SPLITE	1,5 PK												
+115	OFFICE 4W	GB034	SPLITE	1 PK												
+116	OFFICE 4W	GB035	SPLITE	2 PK												
+117	OFFICE 4 W	GB036	SPLITE	2 PK												
+118	SAP ( INVENTORY )	GB037	SPLITE	2 PK												
+119	DOJO MTC	GB038	SPLITE	2 PK												
+120	DOJO 	GB039	SPLITE	2 PK												
+121	OFFICE QUALITY BARU	GB040	SPLITE	2 PK												
+122	OFFICE QUALITY BARU	GB041	SPLITE	2 PK												
+123	OFFICE QUALITY BARU	GB042	SPLITE	1 PK												
+124	OFFICE QUALITY BARU	GB043	SPLITE	1 PK												
+																
+																
+																
+																
+																
+																
+																
+																
+	GEDUNG C															
+125	OFFICE 4W FG	GC001	CASETE	3 PK												
+126	OFFICE 4W FG	GC002	SPLITE	2 PK												
+127	R. GR ( INVENTORY )	GC003	SPLITE	2 PK												
+128	R. PLATING CED	GC004	SPLITE	1 PK												
+129	R. PLATING CED	GC005	SPLITE	2 PK												
+130	R. PLATING CED	GC006	SPLITE	2 PK												
+131	R. CHEMICAL ( CED )	GC007	SPLITE	2 PK												
+132	R. INCOMING ( CED )	GC008	SPLITE	1 PK												
+133	R. PANEL GEDUNG PLATTING	GC009	SPLITE	2 PK												
+134	PANEL CED	GC010	SPLITE	2 PK												
+135	KOPERASI GEDUNG BARU	GC011	SPLITE	2 PK												
+136	R. CHEMICAL ( CED )	GC012	SPLITE	2 PK												
+137	R. CHEMICAL ( CED )	GC013	SPLITE	2 PK												
+																
+																
+																
+																
+																
+																
+																
+																
+	GEDUNG D															
+138	R. OBEYA ( ENG 4W )	GD001	SPLITE	2 PK												
+139	R. OBEYA ( ENG 4W )	GD002	SPLITE	2 PK												
+140	SERVER ENG 4W	GD003	SPLITE	1 PK												
+141	R. OBEYA ( ENG 4W )	GD004	SPLITE	1 PK												
+142	R. OFFICE ENG 4W	GD005	SPLITE	1 PK												
+143	DESIGN ENG 4W	GD006	SPLITE	1 PK												
+144	PP MEMBER ENG 4W	GD007	SPLITE	1 PK												
+145	QC ENG 4W	GD008	CASETE	5 PK												
+146	TOOLING DEV ENG 4W	GD009	CASETE	5 PK												
+147	FAST ENG 4W	GD010	CASETE	5 PK												
+148	R. ENG 4W	GD011	SPLITE	1,5 PK												
+149	R. ENG 4W	GD012	SPLITE	2 PK												
+150	R. ENG 4W	GD013	SPLITE	1 PK												
+151	R. ENG 4W	GD014	SPLITE	2 PK												
+152	R. PE FAST	GD015	SPLITE	2 PK												
+153	OFFICE PE FAST	GD016	SPLITE	2 PK												
+154	R. OFFICE FAST DOKING	GD017	SPLITE	2 PK												
+155	R. OFFICE FAST DOKING	GD018	SPLITE	1 PK												
+156	R. OFFICE FAST DOKING	GD019	SPLITE	1 PK												
+157	R. OFFICE FAST DOKING	GD020	SPLITE	2 PK												
+158	R. PANEL PLATTING FAST	GD021	SPLITE	1 PK												
+159	R. PANEL PLATTING FAST	GD022	SPLITE	1 PK												
+160	R. LAB PLATTING FAST	GD023	SPLITE	1,5 PK												
+161	R. PANEL TREATMENT ( FAST )	GD024	SPLITE	2 PK												
+162	R. PANEL TREATMENT ( FAST )	GD025	SPLITE	1 PK												
+163	R. PANEL TREATMENT ( FAST )	GD026	SPLITE	1 PK												
+164	R. PANEL TREATMENT ( FAST )	GD027	SPLITE	2 PK												
+165	R. PANEL TREATMENT ( FAST )	GD028	SPLITE	2 PK												
+166	R. PANEL TREATMENT ( FAST )	GD029	SPLITE	2 PK												
+167	R. PANEL CHILLER BATRE PAC	GD030	SPLITE	1 PK												
+168	PENDINGIN DUCTING HT 01	GD031	SPLITE	2 PK												
+169	R. ENG 4W	GD032	SPLITE	2 PK												
+																
+																
+																
+																
+																
+	GEDUNG E															
+170	R. OFFICE AZP	GE001	SPLITE	2 PK												
+171	R. OFFICE AZP	GE002	SPLITE	2 PK												
+172	PANEL AZP	GE003	SPLITE	2 PK												
+173	OFFICE LAB AZP	GE004	SPLITE	1 PK												
+174	OFFICE AZP	GE005	SPLITE	1 PK												
+175	OFFICE HYUNDAI	GF001	SPLITE	2 PK												
+176	OFFICE HYUNDAI	GF002	SPLITE	1 PK												
+177	OFFICE HYUNDAI	GF003	SPLITE	1 PK												
+178	OFFICE D 03	GG001	SPLITE	2 PK												
+179	OFFICE D 03	GG002	SPLITE	2 PK												
+180	OFFICE ATAS	3W001	SPLITE	2 PK												
+181	OFFICE ATAS	3W002	SPLITE	2 PK												
+182	OFFICE ATAS	3W003	SPLITE	2 PK												
+183	OFFICE ATAS	3W004	SPLITE	2 PK												
+184	OFFICE ATAS	3W005	SPLITE	2 PK												
+185	GEDUNG C	AICOOL1		15 PK												
+186	GEDUNG C	AICOOL2		15 PK												
+187	GEDUNG C	AICOOL3		15 PK												
+188	OFFICE DCI	DC01	SPLITE	2 PK												
+189	OFFICE DCI	DC02	SPLITE	2 PK												
+190	OFFICE DCI	DC03	SPLITE	2 PK												
+191	OFFICE DCI	DC04	SPLITE	2 PK												
+																
+																
+																
+																
+																
+	TOTAL				 -   	 -   	 -   	 -   	 -   	 -   	 -   	 -   	 -   	 -   	 -   	 -   
