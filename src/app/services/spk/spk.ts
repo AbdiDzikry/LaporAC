@@ -27,6 +27,11 @@ export interface Spk {
   vendor?: any;
   ticket?: any;
   items?: SpkItem[];
+  proposed_visit_date?: string;
+  vendor_response_notes?: string;
+  vendor_responded_at?: string;
+  admin_schedule_notes?: string;
+  work_start_date?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -104,5 +109,32 @@ export class SpkService {
     } catch (error: any) {
       return { success: false, error: error.message || 'Gagal menghapus SPK' };
     }
+  }
+
+  async verifyCompletion(id: number, verificationNotes?: string): Promise<{ data: any; error: any }> {
+    try {
+      const data = await firstValueFrom(
+        this.http.post<any>(`${this.apiUrl}/${id}/verify-completion`, { verification_notes: verificationNotes || '' })
+      );
+      return { data, error: null };
+    } catch (error: any) {
+      return { data: null, error: error?.error?.error || error.message };
+    }
+  }
+
+  async getResolvedSpks(from?: string, to?: string): Promise<{ data: Spk[] | null; error: any }> {
+    try {
+      let params: any = {};
+      if (from) params.from = from;
+      if (to) params.to = to;
+      const data = await firstValueFrom(this.http.get<Spk[]>(`${this.apiUrl}/resolved`, { params }));
+      return { data, error: null };
+    } catch (error: any) {
+      return { data: null, error: error.message || 'Gagal mengambil SPK resolved' };
+    }
+  }
+
+  generateBeritaAcaraUrl(): string {
+    return `${environment.apiUrl}/berita-acara/generate`;
   }
 }

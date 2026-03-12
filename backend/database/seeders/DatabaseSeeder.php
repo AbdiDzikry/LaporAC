@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Roles & Permissions
         $adminRole = Role::create(['name' => 'admin', 'description' => 'Administrator System']);
+        $sectionHeadRole = Role::create(['name' => 'section_head', 'description' => 'Section Head']);
         $techRole = Role::create(['name' => 'technician', 'description' => 'Field Technician']);
         $vendorRole = Role::create(['name' => 'vendor', 'description' => 'External Vendor']);
 
@@ -34,20 +35,37 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
+        $sectionHead = User::create([
+            'name' => 'Section Head User',
+            'email' => 'sectionhead123',
+            'password' => bcrypt('password'),
+            'nik' => 'SH001',
+            'role' => 'section_head',
+        ]);
+
         $tech = User::create([
             'name' => 'Technician User',
-            'email' => 'tech@dharma.com',
-            'password' => bcrypt('password123'),
+            'email' => 'tech123',
+            'password' => bcrypt('password'),
             'nik' => 'TECH001',
             'role' => 'technician',
         ]);
 
         $vendor = User::create([
             'name' => 'Vendor CV Maju Jaya',
-            'email' => 'vendor@majujaya.com',
-            'password' => bcrypt('vendor123'),
+            'email' => 'vendor123',
+            'password' => bcrypt('password'),
             'nik' => 'VEND001',
             'role' => 'vendor',
+        ]);
+
+        \App\Models\VendorProfile::create([
+            'user_id' => $vendor->id,
+            'company_name' => 'Vendor CV Maju Jaya',
+            'name' => 'Bpk. Vendor Manager',
+            'address' => 'Jl. Kebon Jeruk No. 12',
+            'phone' => '081234567890',
+            'status' => 'active'
         ]);
 
         // 3. Assets
@@ -1768,6 +1786,10 @@ class DatabaseSeeder extends Seeder
             'period_id' => $period1->id,
         ]);
 
+
+        $this->call([
+            MenuPermissionSeeder::class,
+        ]);
 
         $this->command->info('Dummy and Real data seeded successfully! Login with admin123 / admin123');
     }

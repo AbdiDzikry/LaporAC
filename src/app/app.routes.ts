@@ -86,6 +86,11 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/admin/spk/spk-detail/spk-detail').then(m => m.SpkDetailComponent)
             },
             {
+                path: 'admin/berita-acara',
+                loadComponent: () => import('./pages/admin/berita-acara/berita-acara-generator').then(m => m.BeritaAcaraGeneratorComponent),
+                title: 'Generate Berita Acara'
+            },
+            {
                 path: 'admin/assets',
                 loadComponent: () => import('./pages/admin/assets/asset-list/asset-list').then(m => m.AssetListComponent)
             },
@@ -109,6 +114,16 @@ export const routes: Routes = [
             {
                 path: 'admin/tickets/:id',
                 loadComponent: () => import('./pages/admin/tickets/ticket-detail/ticket-detail').then(m => m.TicketDetailComponent)
+            },
+            {
+                path: 'vendor/analytics',
+                loadComponent: () => import('./pages/vendor/vendor-analytics/vendor-analytics').then(m => m.VendorAnalyticsComponent),
+                title: 'Analitik Vendor'
+            },
+            {
+                path: 'vendor/maintenance',
+                loadComponent: () => import('./pages/vendor/vendor-maintenance/vendor-maintenance').then(m => m.VendorMaintenanceComponent),
+                title: 'Jadwal Maintenance'
             },
             {
                 path: 'vendor/tickets',

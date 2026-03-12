@@ -32,6 +32,7 @@ export class TicketDetailComponent implements OnInit {
   vendors: UserProfile[] = [];
   currentUserRole: string | null = null;
   selectedPhotos: string[] = []; // For photo preview
+  lightboxPhoto: string | null = null; // For lightbox overlay
 
   constructor(
     private route: ActivatedRoute,
@@ -285,10 +286,10 @@ export class TicketDetailComponent implements OnInit {
         action_type: 'vendor',
         issue_description: formValue.issue_description,
         urgency: formValue.urgency,
-        status: 'vendor_assigned'
+        status: 'waiting_for_spk_approval'
       });
 
-      this.sweetAlert.success('Berhasil', 'SPK berhasil dibuat dan dikirim ke vendor');
+      this.sweetAlert.success('Berhasil', 'SPK dibuat dan menunggu persetujuan Section Head');
       await this.loadTicket(this.ticket.id);
     } catch (error: any) {
       this.sweetAlert.error('Gagal', error.message || 'Gagal membuat SPK');
@@ -364,6 +365,7 @@ export class TicketDetailComponent implements OnInit {
       'open': 'bg-blue-100 text-blue-700',
       'assigned': 'bg-green-100 text-green-700',
       'in_progress': 'bg-yellow-100 text-yellow-700',
+      'waiting_for_spk_approval': 'bg-amber-100 text-amber-700',
       'vendor_assigned': 'bg-purple-100 text-purple-700',
       'completed': 'bg-orange-100 text-orange-700',
       'resolved': 'bg-blue-100 text-blue-700',

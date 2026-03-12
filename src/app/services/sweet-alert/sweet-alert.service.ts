@@ -77,4 +77,26 @@ export class SweetAlertService {
             confirmButtonColor: '#3B82F6' // blue-500
         });
     }
+    /**
+     * Show a prompt dialog for text input.
+     * Returns an object with `value` if confirmed, or `isDismissed` if cancelled.
+     */
+    async prompt(title: string, text: string = '', inputPlaceholder: string = ''): Promise<{ value?: string, isDismissed?: boolean }> {
+        const result = await Swal.fire({
+            title: title,
+            text: text,
+            input: 'textarea',
+            inputPlaceholder: inputPlaceholder,
+            showCancelButton: true,
+            confirmButtonText: 'Konfirmasi',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#3B82F6',
+            cancelButtonColor: '#9CA3AF'
+        });
+
+        if (result.isConfirmed) {
+            return { value: result.value };
+        }
+        return { isDismissed: true };
+    }
 }

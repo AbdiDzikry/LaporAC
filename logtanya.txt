@@ -1,43 +1,9 @@
-kita akan ada perombakan sedikit.
+http://localhost:4200/vendor/maintenance halaman ini bisakah dibuat menggunakan kalender seperti di halaman http://localhost:4200/admin/maintenance/periods/1
 
-jadi pada aplikasi ini itu nanti ada 3 roles inti
-
-role super admin, Role admin, Role vendor
-
-role super admin dapat mengakses segala nya.  tambah user, tambah role, tambah permission.
-role admin hampir sama seperti sekarang bisa tambah user, tambah asset, tambah maintenance, tambah laporan.
-role vendor ya untuk vendor.
-
-dan juga nanti kemungkinan kita akan pakai hak akses untuk akses menu pada side bar nya. super admin dapat mengakses semua halaman menu yak. dan untuk role lain itu perlu di assign duluhak akses nya.
+dan juga pada halaman http://localhost:4200/admin/maintenance/periods/1
+kan itu hijau saat admin checklist manual yak, apakah itu bisa dibuat saat vendor sudah selesai saat meng submit form dan nanti otomatis ya g selesai itu nanti sudah jadi hijau pada kalender nya 
 
 
-jadi nanti alurnya kira kira seperti ini
+====================
 
-1. staf biasa melaporkan ac menggunakan qr code yang terdaftar pada ac dan ada identitas nya masing masing
-2. laporan masuk ke halaman admin
-3. admin dapat melihat laporan dan dapat menugaskan laporan tersebut ke admin 2 (teknisi internal)
-4. admin 2 mengecek ac tersebut, jika ac tersebut memang harus perlukan perbaikan ringan maka dia bisa lakukan sendiri, tetpai jika dia tdak sanggup maka pada aplikasi dia akan menghubungi vendor
-dan sekaligus merilis SPK (surat perintah kerja) ke vendor tersebut.
-5. vendor menerima spk tersebut dan melakukan perbaikan
-6. vendor melaporkan hasil perbaikan ke aplikasi dengan melampirkan bukti seperti foto dll. (dari sisi vendor mereka nanti dapat memilih apa saja kerusakan pada ac dan biaya nya otomatis karena sudah diinputkan dari awal pada sisi vendor atau sisi super admin)
-7. jika sudah benar maka laporan selesai
-8. lalu status ac tersebut dalam 3 bulan masuk ke dalam status garansi, jadi selama 3 bulan jika terjadi erusakan kembali maka kita dapat memanggil vendor kembali untuk melakukan perbaikan tanpa biaya.
-9. lanjut lagi setelah ac dilakukan perbaikan/masa garansi 3 bulan maka aplikasi dapat merilis dokumen berita acara gunanya nanti untuk tagihan serta bukti dan juga mengetahui apa saja perbaikan nya serta biaya nya
-
-
-note tambahan: 
- 1. disana ada pricelist kerusakan ac nanti bisa tolong diinputkan sekalian @pricelist_ac.pdf
- 2. lalu dari sisi admin mereka bisa menambahkan vendor juga
- 3. vendor dapat mengisi pricelist kerusakan ac juga, admin juga. tetapi dengan catatan nanti ada log history edit atau penambahan nya.
- 
- inti nya setiap ada output pasti selalu ada input, mksdnya dimana ada output pasti ada field untuk input itu. tolong dipahami
-
- owh iya sedikit tambahan, jika dalam masa 3 bulan garansi itu ada perbaikan lalu dari sisi kita mengeluhkan ada kerusakan lagi, maka itu nanti akan mengirimkan spk lagi tapi nanti spk nya tolong ditandai ya jika itu status nya pada masa garansi dibuatnya atau bukan.
-
-dan juga nanti anda menu history perbaikan dan maintenance ac dan juga report pdf serta bisa melihat detail nya dari sisi admin.
-
-dan juga dari tiap ac itu nanti ada halaman history perbaikan nya.
-
-dan juga seperti yang saya bilang tadi tidak ada output jika tidak ada input, setiap setting yang saya bilang itu masuknya di config 
-
-pakai email smtp juga
+@pricelist_ac.docx bisakah anda cek ini. ini merupakan pricelist dari vendor synergi dan saya ingin tampilan pada halaman http://localhost:4200/admin/pricelist field nya lebih rapih agar semua data masuk

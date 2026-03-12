@@ -31,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('maintenance', [MaintenanceController::class, 'store']);
     Route::put('maintenance/{id}', [MaintenanceController::class, 'update']);
     Route::post('maintenance/{id}/complete', [MaintenanceController::class, 'markComplete']);
+    Route::delete('maintenance/{id}', [MaintenanceController::class, 'destroy']);
+    Route::post('maintenance/{id}/generate-spk', [MaintenanceController::class, 'generateSpk']);
 
     // Admin Settings Routes
     Route::apiResource('roles', RoleController::class);
@@ -59,7 +61,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('pricelists', PricelistItemController::class);
 
     // SPK Routes
+    Route::get('spks/resolved', [SpkController::class, 'getResolved']);
     Route::get('spks/{id}/download', [SpkController::class, 'downloadSpk']);
+    Route::post('spks/{id}/approve-by-section-head', [SpkController::class, 'approveBySectionHead']);
+    Route::post('spks/{id}/reject-by-section-head', [SpkController::class, 'rejectBySectionHead']);
+    Route::post('spks/{id}/verify-completion', [SpkController::class, 'verifyCompletion']);
+    Route::post('berita-acara/generate', [SpkController::class, 'generateBeritaAcara']);
     Route::apiResource('spks', SpkController::class);
 
     // Menu Permission Routes

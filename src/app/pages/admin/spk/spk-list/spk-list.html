@@ -29,6 +29,7 @@
                 <select [(ngModel)]="statusFilter" (change)="applyFilters()"
                     class="h-11 pl-4 pr-10 text-sm bg-white border-0 rounded-xl ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-blue-600 shadow-sm appearance-none font-medium text-gray-700">
                     <option value="all">Semua Status</option>
+                    <option value="pending_approval">Menunggu Persetujuan</option>
                     <option value="assigned">Assigned</option>
                     <option value="in_progress">In Progress</option>
                     <option value="completed">Completed</option>
@@ -94,12 +95,26 @@
                                     class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider {{ getStatusClass(spk.status) }}">
                                     {{ spk.status.replace('_', ' ') }}
                                 </span>
+                                <div *ngIf="spk.status === 'assigned'"
+                                    class="mt-1.5">
+                                    <span class="text-[10px] text-red-600 font-bold">Max 1 Hari</span>
+                                </div>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <a [routerLink]="['/admin/spk', spk.id]"
-                                    class="inline-flex items-center justify-center h-8 px-3 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
-                                    Detail
-                                </a>
+                                <div class="flex items-center justify-end gap-2">
+                                    <button *ngIf="spk.status === 'pending_approval' && userRole === 'section_head'" (click)="approveBySectionHead(spk)"
+                                        class="h-8 px-3 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-bold transition-colors shadow-sm">
+                                        Setujui
+                                    </button>
+                                    <button *ngIf="spk.status === 'pending_approval' && userRole === 'section_head'" (click)="rejectBySectionHead(spk)"
+                                        class="h-8 px-3 rounded-lg bg-red-100 border border-red-200 text-red-700 text-xs font-bold hover:bg-red-200 transition-colors">
+                                        Tolak
+                                    </button>
+                                    <a [routerLink]="['/admin/spk', spk.id]"
+                                        class="inline-flex items-center justify-center h-8 px-3 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+                                        Detail
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         <tr *ngIf="filteredSpks.length === 0">

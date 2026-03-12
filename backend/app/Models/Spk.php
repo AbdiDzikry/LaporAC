@@ -26,6 +26,13 @@ class Spk extends Model
         'work_start_date',
         'work_end_date',
         'spk_type',
+        'proposed_visit_date',
+        'vendor_response_notes',
+        'vendor_responded_at',
+        'admin_schedule_notes',
+        'admin_verification_notes',
+        'verified_by_id',
+        'verified_at',
     ];
 
     protected $casts = [
@@ -33,8 +40,11 @@ class Spk extends Model
         'is_warranty_claim' => 'boolean',
         'approved_at' => 'datetime',
         'vendor_signed_at' => 'datetime',
+        'vendor_responded_at' => 'datetime',
+        'verified_at' => 'datetime',
         'work_start_date' => 'date',
         'work_end_date' => 'date',
+        'proposed_visit_date' => 'date',
         'total_cost' => 'decimal:2',
     ];
 

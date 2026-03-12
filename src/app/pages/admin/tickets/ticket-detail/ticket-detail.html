@@ -27,46 +27,67 @@
     <!-- Ticket Info -->
     <div *ngIf="!loading && ticket" class="space-y-6">
 
-        <!-- Reporter Info -->
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 class="text-sm font-bold text-blue-900 mb-2">Informasi Pelapor</h3>
-            <div class="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                    <span class="text-blue-700">Nama:</span>
-                    <span class="ml-2 font-medium text-gray-900">{{ ticket?.reporter_name }}</span>
+        <!-- Informasi AC - Enhanced -->
+        <div class="bg-gradient-to-br from-slate-50 to-blue-50/30 border border-slate-200 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-center gap-2 mb-4">
+                <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <path
+                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                        </path>
+                    </svg>
                 </div>
-                <div>
-                    <span class="text-blue-700">NIK:</span>
-                    <span class="ml-2 font-medium text-gray-900">{{ ticket?.reporter_nik }}</span>
+                <h3 class="text-sm font-black text-gray-900 uppercase tracking-wide">Informasi Unit AC</h3>
+            </div>
+
+            <!-- AC Details Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                <div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Kode AC (SKU)</p>
+                    <p class="text-sm font-black text-gray-900">{{ ticket?.assets?.sku || '-' }}</p>
                 </div>
-                <div class="col-span-2">
-                    <span class="text-blue-700">Keluhan:</span>
-                    <p class="mt-1 text-gray-900">{{ ticket?.description }}</p>
+                <div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Lokasi</p>
+                    <p class="text-sm font-bold text-gray-900 flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24" class="text-blue-500 flex-shrink-0">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        {{ ticket?.assets?.location || '-' }}
+                    </p>
+                </div>
+                <div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Kategori</p>
+                    <p class="text-sm font-bold text-gray-900">{{ ticket?.assets?.category || '-' }}</p>
+                </div>
+                <div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Merek</p>
+                    <p class="text-sm font-bold text-gray-900">{{ ticket?.assets?.brand && ticket?.assets?.brand !== '-'
+                        ? ticket?.assets?.brand : 'N/A' }}</p>
+                </div>
+                <div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Kapasitas (PK)</p>
+                    <p class="text-sm font-bold text-gray-900">{{ ticket?.assets?.pk || '-' }}</p>
+                </div>
+                <div class="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Status Garansi</p>
+                    <span class="text-xs font-bold px-2 py-0.5 rounded-full" [class]="getWarrantyClass(ticket?.assets)">
+                        {{ getWarrantyLabel(ticket?.assets) }}
+                    </span>
                 </div>
             </div>
-        </div>
 
-        <!-- Asset Info -->
-        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <h3 class="text-sm font-bold text-gray-900 mb-2">Informasi AC</h3>
-            <div class="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                    <span class="text-gray-700">Nama AC:</span>
-                    <span class="ml-2 font-medium text-gray-900">{{ ticket?.asset?.name }}</span>
+            <!-- Keluhan & Kategori Masalah -->
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-red-50/50 rounded-xl p-3 border border-red-100">
+                    <p class="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">Kategori Masalah</p>
+                    <p class="text-sm font-bold text-red-700 capitalize">{{ ticket?.issue_category || '-' }}</p>
                 </div>
-                <div>
-                    <span class="text-gray-700">Lokasi:</span>
-                    <span class="ml-2 font-medium text-gray-900">{{ ticket?.asset?.location }}</span>
-                </div>
-                <div>
-                    <span class="text-gray-700">SKU:</span>
-                    <span class="ml-2 font-medium text-gray-900">{{ ticket?.asset?.sku }}</span>
-                </div>
-                <div>
-                    <span class="text-gray-700">Status Warranty:</span>
-                    <span class="ml-2" [class]="getWarrantyClass(ticket?.asset)">
-                        {{ getWarrantyLabel(ticket?.asset) }}
-                    </span>
+                <div class="bg-amber-50/50 rounded-xl p-3 border border-amber-100">
+                    <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">Keluhan</p>
+                    <p class="text-sm text-gray-800">{{ ticket?.description || 'Tidak ada deskripsi' }}</p>
                 </div>
             </div>
         </div>
@@ -218,7 +239,7 @@
         </div>
 
         <!-- STEP 4: VENDOR COMPLETION (For Vendor role) -->
-        <div *ngIf="isVendor && ticket?.status === 'vendor_assigned'" class="border border-gray-200 rounded-lg p-4">
+        <div *ngIf="isVendor && (ticket?.status === 'assigned' || ticket?.status === 'in_progress')" class="border border-gray-200 rounded-lg p-4">
             <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <span
                     class="w-8 h-8 rounded-full bg-orange-600 text-white flex items-center justify-center text-sm font-bold">4</span>
@@ -237,18 +258,24 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                     <p class="text-xs text-gray-500 mt-1">Maksimal 5 foto (JPG, PNG)</p>
 
-                    <!-- Photo Preview -->
-                    <div *ngIf="selectedPhotos.length > 0" class="mt-3 grid grid-cols-3 gap-2">
-                        <div *ngFor="let photo of selectedPhotos; let i = index" class="relative">
-                            <img [src]="photo" class="w-full h-24 object-cover rounded-lg border border-gray-200">
+                    <!-- Photo Preview - Enhanced -->
+                    <div *ngIf="selectedPhotos.length > 0" class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div *ngFor="let photo of selectedPhotos; let i = index"
+                            class="relative group/photo rounded-2xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-md transition-all">
+                            <img [src]="photo"
+                                class="w-full h-40 object-cover cursor-pointer transition-transform duration-300 group-hover/photo:scale-105"
+                                (click)="lightboxPhoto = photo">
                             <button type="button" (click)="removePhoto(i)"
-                                class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 shadow-sm p-0 transition-all z-10">
+                                class="absolute top-2 right-2 w-7 h-7 bg-red-500/90 backdrop-blur-sm text-white rounded-full flex items-center justify-center hover:bg-red-600 shadow-lg p-0 transition-all opacity-0 group-hover/photo:opacity-100 z-10">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none"
-                                    stroke="currentColor" stroke-width="2.5">
+                                    stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                     <line x1="18" y1="6" x2="6" y2="18"></line>
                                     <line x1="6" y1="6" x2="18" y2="18"></line>
                                 </svg>
                             </button>
+                            <div
+                                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/40 to-transparent h-8 pointer-events-none">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -315,8 +342,29 @@
                         <p class="text-xs text-gray-500">{{ ticket?.completed_at | date:'dd MMM yyyy, HH:mm' }}</p>
                     </div>
                 </div>
+                <div *ngIf="ticket?.status === 'waiting_for_spk_approval'" class="flex items-start gap-3">
+                    <div class="w-2 h-2 rounded-full bg-amber-500 mt-2 animate-pulse"></div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-900">Menunggu Persetujuan SPK</p>
+                        <p class="text-xs text-gray-500">SPK sedang direview oleh Section Head</p>
+                    </div>
+                </div>
             </div>
         </div>
 
+    </div>
+
+    <!-- Lightbox Overlay -->
+    <div *ngIf="lightboxPhoto" (click)="lightboxPhoto = null"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 cursor-zoom-out animate-fade-in">
+        <img [src]="lightboxPhoto" class="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl">
+        <button (click)="lightboxPhoto = null"
+            class="absolute top-6 right-6 w-10 h-10 bg-white/20 backdrop-blur-sm text-white rounded-full flex items-center justify-center hover:bg-white/30 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                stroke-width="2" viewBox="0 0 24 24">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
     </div>
 </div>

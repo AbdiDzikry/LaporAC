@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { SpkService, Spk } from '../../../../services/spk/spk';
+import { SpkService as SpkApiService } from '../../../../services/spk/spk.service';
 import { SweetAlertService } from '../../../../services/sweet-alert/sweet-alert.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 
@@ -24,6 +25,7 @@ export class SpkListComponent implements OnInit {
 
   constructor(
     private spkService: SpkService,
+    private spkApiService: SpkApiService,
     private swal: SweetAlertService,
     private auth: AuthService
   ) { }
@@ -58,6 +60,7 @@ export class SpkListComponent implements OnInit {
   getStatusClass(status: string): string {
     switch (status) {
       case 'draft': return 'bg-gray-100 text-gray-700 ring-gray-600/20';
+      case 'pending_approval': return 'bg-amber-50 text-amber-700 ring-amber-600/20';
       case 'assigned': return 'bg-blue-50 text-blue-700 ring-blue-600/20';
       case 'in_progress': return 'bg-amber-50 text-amber-700 ring-amber-600/20';
       case 'completed': return 'bg-emerald-50 text-emerald-700 ring-emerald-600/20';
@@ -69,5 +72,45 @@ export class SpkListComponent implements OnInit {
   formatRupiah(amount: number | undefined): string {
     if (amount === undefined || amount === null) return '-';
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+  }
+
+  async approveBySectionHead(spk: Spk) {
+    const confirm = await this.swal.confirm(
+      'Setujui SPK?',
+      `Anda akan menyetujui SPK ${spk.spk_number}. SPK akan diteruskan ke vendor dan admin. Vendor wajib datang maksimal 1 hari.`,
+      'Ya, Setujui'
+    );
+    if (!confirm) return;
+
+    this.isLoading = true;
+    const { data, error } = await this.spkApiService.approveBySectionHead(spk.id!);
+    this.isLoading = false;
+
+    if (error) {
+      this.swal.error('Gagal', error);
+    } else {
+      this.swal.success('Berhasil', 'SPK telah disetujui dan diterbitkan!');
+      this.loadSpks();
+    }
+  }
+
+  async rejectBySectionHead(spk: Spk) {
+    const { value: rejectNotes } = await this.swal.prompt(
+      'Tolak SPK',
+      `Masukkan alasan penolakan untuk SPK ${spk.spk_number}:`
+    );
+
+    if (!rejectNotes) return; // User cancelled
+
+    this.isLoading = true;
+    const { data, error } = await this.spkApiService.rejectBySectionHead(spk.id!, rejectNotes);
+    this.isLoading = false;
+
+    if (error) {
+      this.swal.error('Gagal', error);
+    } else {
+      this.swal.success('Berhasil', 'SPK telah ditolak dan dikembalikan ke admin.');
+      this.loadSpks();
+    }
   }
 }

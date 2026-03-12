@@ -36,6 +36,8 @@ export class AssetListComponent implements OnInit {
   categories: string[] = [];
   brands: string[] = [];
 
+  visualLocations: string[] = []; // Property to store creatively sorted locations for the Visual Tab
+
   selectedLocation: string = 'Semua';
   selectedCategory: string = 'Semua';
   selectedBrand: string = 'Semua';
@@ -203,6 +205,32 @@ export class AssetListComponent implements OnInit {
 
     this.filteredAssets = result;
     this.currentPage = 1;
+
+    this.updateVisualLocations();
+  }
+
+  // Visual Map specific logic
+  updateVisualLocations() {
+    const locs = this.selectedLocation === 'Semua' ? this.locations : [this.selectedLocation];
+    this.visualLocations = [...locs].sort((a, b) => {
+      // 1. Locations with tickets
+      const aHasTicket = this.locationHasTickets(a) ? 1 : 0;
+      const bHasTicket = this.locationHasTickets(b) ? 1 : 0;
+      if (aHasTicket !== bHasTicket) return bHasTicket - aHasTicket;
+
+      // 2. Locations with Maintenance assets
+      const aHasMaint = this.getAssetsByLocation(a).some(asset => asset.status === 'maintenance') ? 1 : 0;
+      const bHasMaint = this.getAssetsByLocation(b).some(asset => asset.status === 'maintenance') ? 1 : 0;
+      if (aHasMaint !== bHasMaint) return bHasMaint - aHasMaint;
+
+      // 3. Locations with Broken assets
+      const aHasBroken = this.getAssetsByLocation(a).some(asset => asset.status === 'broken') ? 1 : 0;
+      const bHasBroken = this.getAssetsByLocation(b).some(asset => asset.status === 'broken') ? 1 : 0;
+      if (aHasBroken !== bHasBroken) return bHasBroken - aHasBroken;
+
+      // 4. Fallback: Alphabetical
+      return a.localeCompare(b);
+    });
   }
 
   // Ticket helpers
@@ -217,11 +245,17 @@ export class AssetListComponent implements OnInit {
   getTicketStatusLabel(status: string): string {
     const labels: Record<string, string> = {
       pending_validation: 'Menunggu Validasi',
-      open: 'Terbuka',
+      open: 'Baru Lapor',
       assigned: 'Ditugaskan',
-      in_progress: 'Dikerjakan',
+      internal_assigned: 'Ditugaskan (Internal)',
+      vendor_assigned: 'Menunggu Vendor',
+      vendor_prep: 'Persiapan Vendor',
+      in_progress: 'Sedang Dikerjakan',
       pending_verification: 'Menunggu Verifikasi',
-      vendor_prep: 'Vendor Disiapkan'
+      resolved: 'Selesai / Menunggu Penutupan',
+      closed: 'Selesai (Ditutup)',
+      cancelled: 'Dibatalkan',
+      declined: 'Ditolak'
     };
     return labels[status] || status;
   }

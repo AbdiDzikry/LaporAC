@@ -34,6 +34,15 @@
                 class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold transition-colors shadow-sm">
                 Tandai Selesai
             </button>
+            <button *ngIf="spk.status === 'completed' && (userRole === 'admin' || userRole === 'super_admin')" (click)="verifyAndClose()"
+                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition-colors shadow-sm flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                Verifikasi & Tutup SPK
+            </button>
             <button *ngIf="spk.status === 'completed' && !hasBeritaAcara" (click)="generateBeritaAcara()"
                 class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors shadow-sm flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
@@ -277,13 +286,21 @@
                             </p>
                             <p class="text-sm font-bold text-gray-900 mt-0.5">Mulai Dikerjakan</p>
                         </div>
-                        <div *ngIf="spk.status === 'completed'" class="relative">
+                        <div *ngIf="spk.status === 'completed' || spk.status === 'resolved'" class="relative">
                             <div
                                 class="absolute w-3 h-3 bg-emerald-500 rounded-full -left-[29px] top-1 ring-4 ring-white">
                             </div>
                             <p class="text-xs text-gray-400 font-mono">{{ spk.updated_at | date:'dd MMM yyyy, HH:mm' }}
                             </p>
-                            <p class="text-sm font-bold text-gray-900 mt-0.5">Selesai</p>
+                            <p class="text-sm font-bold text-gray-900 mt-0.5">Selesai Dikerjakan</p>
+                        </div>
+                        <div *ngIf="spk.status === 'resolved'" class="relative">
+                            <div
+                                class="absolute w-3 h-3 bg-indigo-500 rounded-full -left-[29px] top-1 ring-4 ring-white">
+                            </div>
+                            <p class="text-xs text-gray-400 font-mono">{{ spk.updated_at | date:'dd MMM yyyy, HH:mm' }}
+                            </p>
+                            <p class="text-sm font-bold text-gray-900 mt-0.5">Diverifikasi Admin & Ditutup</p>
                         </div>
                     </div>
                 </div>

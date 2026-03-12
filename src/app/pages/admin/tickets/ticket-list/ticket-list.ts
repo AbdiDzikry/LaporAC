@@ -19,6 +19,8 @@ export class TicketListComponent implements OnInit {
   loading = false;
   today = new Date();
   isAdminOrStaff = false;
+  isVendor = false;
+  currentUserId: number | null = null;
 
   constructor(
     private ticketService: TicketService,
@@ -32,6 +34,8 @@ export class TicketListComponent implements OnInit {
     const user = await this.authService.getCurrentUser();
     if (user) {
       this.isAdminOrStaff = ['super_admin', 'admin', 'staff', 'technician', 'dept_head'].includes(user.role);
+      this.isVendor = user.role === 'vendor';
+      this.currentUserId = Number(user.id);
     }
   }
 
@@ -54,6 +58,13 @@ export class TicketListComponent implements OnInit {
 
   get filteredTickets() {
     let filtered = this.tickets;
+
+    // Vendor only sees tickets assigned to them
+    if (this.isVendor) {
+      filtered = filtered.filter(t =>
+        ['assigned', 'in_progress', 'pending_verification', 'resolved', 'closed'].includes(t.status)
+      );
+    }
 
     // Status Filter
     if (this.activeTab !== 'all') {
@@ -154,9 +165,9 @@ export class TicketListComponent implements OnInit {
     switch (status) {
       case 'pending_validation': return 'status-pending_validation';
       case 'open': return 'status-open';
+      case 'waiting_for_spk_approval': return 'bg-amber-50 text-amber-700 border-amber-200';
       case 'assigned': return 'status-assigned';
       case 'in_progress': return 'status-in_progress';
-      case 'vendor_prep': return 'bg-purple-50 text-purple-700 border-purple-200';
       case 'pending_verification': return 'bg-teal-50 text-teal-700 border-teal-200';
       case 'resolved': return 'status-resolved';
       case 'closed': return 'status-closed';
@@ -243,7 +254,7 @@ export class TicketListComponent implements OnInit {
           this.loading = false;
           return;
         }
-        updatePayload.status = 'vendor_assigned'; // or vendor_prep
+        updatePayload.status = 'waiting_for_spk_approval'; // Waiting for Section Head
         // Note: Assuming Your Ticket Model handles assigned_vendor_id (needs to be added if not present)
         updatePayload.assigned_vendor_id = this.selectedVendorId;
       }

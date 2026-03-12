@@ -27,6 +27,7 @@ class MenuPermissionSeeder extends Seeder
             ['route' => '/admin/configs', 'label' => 'Konfigurasi', 'icon' => 'configs'],
             ['route' => '/admin/pricelist', 'label' => 'Pricelist', 'icon' => 'pricelist'],
             ['route' => '/admin/spk', 'label' => 'Daftar SPK', 'icon' => 'spk'],
+            ['route' => '/admin/berita-acara', 'label' => 'Berita Acara', 'icon' => 'berita-acara'],
             ['route' => '/admin/vendors', 'label' => 'Manajemen Vendor', 'icon' => 'vendors'],
         ];
 
@@ -34,6 +35,7 @@ class MenuPermissionSeeder extends Seeder
         $roles = [
             'super_admin' => null,
             'admin' => null,
+            'section_head' => null,
             'technician' => null,
             'vendor' => null,
             'staff' => null,
@@ -50,9 +52,8 @@ class MenuPermissionSeeder extends Seeder
         // Super Admin - All menus
         $this->createPermissions($roles['super_admin'], $menus, true);
 
-        // Admin - Most menus except vendor management
-        $adminMenus = array_filter($menus, fn($m) => $m['route'] !== '/admin/vendors');
-        $this->createPermissions($roles['admin'], $adminMenus, true);
+        // Admin - Most menus (now including vendor management)
+        $this->createPermissions($roles['admin'], $menus, true);
 
         // Technician - Limited access
         $technicianMenus = array_filter($menus, fn($m) => in_array($m['route'], [
@@ -70,6 +71,16 @@ class MenuPermissionSeeder extends Seeder
             '/admin/tickets', // For SPK
         ]));
         $this->createPermissions($roles['vendor'], $vendorMenus, true);
+
+        // Section Head - SPK approval + Berita Acara
+        $sectionHeadMenus = array_filter($menus, fn($m) => in_array($m['route'], [
+            '/dashboard',
+            '/admin/spk',
+            '/admin/berita-acara',
+            '/admin/tickets',
+            '/admin/history',
+        ]));
+        $this->createPermissions($roles['section_head'], $sectionHeadMenus, true);
 
         // Staff - Only report form (no admin access)
         // No menu permissions needed as staff uses public report form

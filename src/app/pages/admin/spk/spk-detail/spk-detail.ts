@@ -165,6 +165,25 @@ export class SpkDetailComponent implements OnInit {
     }
   }
 
+  async verifyAndClose() {
+    const confirm = await this.swal.confirm(
+      'Verifikasi & Tutup SPK?',
+      'Anda akan memverifikasi penyelesaian pekerjaan vendor dan menutup SPK ini. Status SPK akan menjadi "Resolved" dan siap untuk digenerate menjadi Berita Acara.'
+    );
+    if (!confirm) return;
+
+    this.isLoading = true;
+    const { error } = await this.spkService.verifyCompletion(this.spkId);
+    this.isLoading = false;
+
+    if (error) {
+      this.swal.error('Error', error);
+    } else {
+      this.swal.success('SPK Ditutup', 'SPK telah diverifikasi dan ditutup. Anda bisa generate Berita Acara dari menu Berita Acara.');
+      this.loadSpkDetail();
+    }
+  }
+
   async downloadPdf() {
     try {
       this.isLoading = true;
@@ -223,9 +242,11 @@ export class SpkDetailComponent implements OnInit {
   getStatusClass(status: string): string {
     switch (status) {
       case 'draft': return 'bg-gray-100 text-gray-700 ring-gray-600/20';
+      case 'pending_approval': return 'bg-purple-50 text-purple-700 ring-purple-600/20';
       case 'assigned': return 'bg-blue-50 text-blue-700 ring-blue-600/20';
       case 'in_progress': return 'bg-amber-50 text-amber-700 ring-amber-600/20';
       case 'completed': return 'bg-emerald-50 text-emerald-700 ring-emerald-600/20';
+      case 'resolved': return 'bg-indigo-50 text-indigo-700 ring-indigo-600/20';
       case 'cancelled': return 'bg-red-50 text-red-700 ring-red-600/20';
       default: return 'bg-gray-50 text-gray-700 ring-gray-600/20';
     }

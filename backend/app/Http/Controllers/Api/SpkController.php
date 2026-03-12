@@ -48,12 +48,14 @@ class SpkController extends Controller
 
         $spk = Spk::create(array_merge($validated, [
             'spk_number' => 'SPK-' . date('Ymd') . '-' . rand(1000, 9999),
-            'status' => $validated['status'] ?? 'draft',
+            'status' => $validated['status'] ?? 'pending_approval',
             'is_warranty_claim' => $isWarranty,
         ]));
 
+        // Set ticket to waiting_for_spk_approval
         $ticket->update([
             'assigned_vendor_id' => $spk->vendor_id,
+            'status' => 'waiting_for_spk_approval',
         ]);
 
         $spkWithVendor = $spk->load(['vendor', 'ticket']);
@@ -72,6 +74,69 @@ class SpkController extends Controller
     public function show(string $id)
     {
         return response()->json(Spk::with(['vendor', 'ticket.asset', 'items.pricelistItem'])->findOrFail($id));
+    }
+
+    /**
+     * Section Head approves SPK
+     */
+    public function approveBySectionHead(Request $request, string $id)
+    {
+        $spk = Spk::with('ticket')->findOrFail($id);
+        $user = auth()->user();
+
+        if (!$user || $user->role !== 'section_head') {
+            return response()->json(['error' => 'Hanya Section Head yang berhak menyetujui SPK'], 403);
+        }
+
+        if ($spk->status !== 'pending_approval') {
+            return response()->json(['error' => 'SPK tidak dalam status pending_approval'], 422);
+        }
+
+        $spk->update([
+            'status' => 'assigned',
+            'approved_by_id' => $user->id,
+            'approved_at' => now(),
+            // Remove proposed date logic, assume immediate work
+            'work_start_date' => now()->toDateString(),
+        ]);
+
+        if ($spk->ticket) {
+            $spk->ticket->update(['status' => 'vendor_assigned']);
+        }
+
+        return response()->json(['message' => 'SPK disetujui', 'spk' => $spk->load(['vendor', 'ticket.asset'])], 200);
+    }
+
+    /**
+     * Section Head rejects SPK
+     */
+    public function rejectBySectionHead(Request $request, string $id)
+    {
+        $spk = Spk::with('ticket')->findOrFail($id);
+        $user = auth()->user();
+
+        if (!$user || $user->role !== 'section_head') {
+            return response()->json(['error' => 'Hanya Section Head yang berhak menolak SPK'], 403);
+        }
+
+        if ($spk->status !== 'pending_approval') {
+            return response()->json(['error' => 'SPK tidak dalam status pending_approval'], 422);
+        }
+
+        $validated = $request->validate([
+            'admin_schedule_notes' => 'required|string|max:500', // using this field as rejection notes
+        ]);
+
+        $spk->update([
+            'status' => 'draft', // or appropriate rejected status back to admin
+            'admin_schedule_notes' => 'Ditolak Section Head: ' . $validated['admin_schedule_notes'],
+        ]);
+
+        if ($spk->ticket) {
+            $spk->ticket->update(['status' => 'validated']); // back to validated pool
+        }
+
+        return response()->json(['message' => 'SPK ditolak', 'spk' => $spk->load(['vendor', 'ticket.asset'])], 200);
     }
 
     public function update(Request $request, string $id)
@@ -157,5 +222,86 @@ class SpkController extends Controller
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.spk', compact('spk'));
 
         return $pdf->download("SPK_{$spk->spk_number}.pdf");
+    }
+
+    /**
+     * Admin verifies completed SPK work → status becomes 'resolved'
+     */
+    public function verifyCompletion(Request $request, string $id)
+    {
+        $spk = Spk::with('ticket')->findOrFail($id);
+        $user = auth()->user();
+
+        if (!$user || !in_array($user->role, ['admin', 'super_admin'])) {
+            return response()->json(['error' => 'Hanya Admin yang berhak memverifikasi penyelesaian SPK'], 403);
+        }
+
+        if ($spk->status !== 'completed') {
+            return response()->json(['error' => 'SPK belum berstatus completed'], 422);
+        }
+
+        $validated = $request->validate([
+            'verification_notes' => 'nullable|string|max:1000',
+        ]);
+
+        $spk->update([
+            'status' => 'resolved',
+            'admin_verification_notes' => $validated['verification_notes'] ?? null,
+            'verified_by_id' => $user->id,
+            'verified_at' => now(),
+        ]);
+
+        if ($spk->ticket) {
+            $spk->ticket->update([
+                'status' => 'resolved',
+                'date_resolved' => now(),
+            ]);
+        }
+
+        return response()->json(['message' => 'SPK diverifikasi dan ditutup', 'spk' => $spk->load(['vendor', 'ticket.asset'])], 200);
+    }
+
+    /**
+     * Get resolved SPKs for Berita Acara generation (with optional date range filter)
+     */
+    public function getResolved(Request $request)
+    {
+        $query = Spk::with(['vendor', 'ticket.asset', 'items.pricelistItem'])
+            ->where('status', 'resolved');
+
+        if ($request->has('from')) {
+            $query->whereDate('updated_at', '>=', $request->from);
+        }
+        if ($request->has('to')) {
+            $query->whereDate('updated_at', '<=', $request->to);
+        }
+
+        return response()->json($query->orderBy('updated_at', 'desc')->get());
+    }
+
+    /**
+     * Generate collective Berita Acara PDF for selected SPKs
+     */
+    public function generateBeritaAcara(Request $request)
+    {
+        $validated = $request->validate([
+            'spk_ids' => 'required|array|min:1',
+            'spk_ids.*' => 'exists:spks,id',
+        ]);
+
+        $spks = Spk::with(['vendor', 'ticket.asset', 'items.pricelistItem'])
+            ->whereIn('id', $validated['spk_ids'])
+            ->where('status', 'resolved')
+            ->orderBy('updated_at', 'asc')
+            ->get();
+
+        if ($spks->isEmpty()) {
+            return response()->json(['error' => 'Tidak ada SPK resolved yang dipilih'], 422);
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.berita-acara', compact('spks'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->stream('Berita_Acara_' . now()->format('Ymd_His') . '.pdf');
     }
 }

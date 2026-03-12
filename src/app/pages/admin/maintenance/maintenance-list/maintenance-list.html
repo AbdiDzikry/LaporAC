@@ -41,13 +41,13 @@
             </div>
         </div>
 
-        <a routerLink="/admin/maintenance/generate"
+        <a *ngIf="!isVendor" routerLink="/admin/maintenance/generate"
             class="inline-flex items-center px-6 py-3 rounded-xl bg-purple-600 text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-purple-700 transition-all shadow-lg shadow-purple-600/20 active:scale-95">
             <span class="mr-2 text-base">⚡</span>
             Generate Rutin
         </a>
 
-        <button (click)="openCreateModal(currentMonth)"
+        <button *ngIf="!isVendor" (click)="openCreateModal(currentMonth)"
             class="inline-flex items-center px-6 py-3 rounded-xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-95">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
                 stroke-width="3" viewBox="0 0 24 24" class="mr-2.5">
@@ -410,7 +410,7 @@
                             unit/hari</p>
                     </div>
                     <!-- Checklist Mode Toggle -->
-                    <div *ngIf="selectedDate && getSchedulesForDate(selectedDate).length > 0" class="mt-4">
+                    <div *ngIf="selectedDate && getSchedulesForDate(selectedDate).length > 0 && !isVendor" class="mt-4">
                         <button (click)="toggleChecklistMode()" [class.bg-blue-50]="!checklistMode"
                             [class.text-blue-600]="!checklistMode" [class.bg-blue-600]="checklistMode"
                             [class.text-white]="checklistMode"
@@ -457,7 +457,7 @@
                         class="text-center py-16 text-gray-400 bg-white rounded-xl border border-dashed border-gray-200">
                         <p class="text-xs font-bold text-gray-500">Kosong</p>
                         <p class="text-[10px] text-gray-400 mt-1">Tidak ada jadwal untuk tanggal ini.</p>
-                        <button (click)="openCreateModal(selectedDate)"
+                        <button *ngIf="!isVendor" (click)="openCreateModal(selectedDate)"
                             class="mt-3 px-4 py-2 bg-blue-600 text-white text-[10px] font-bold uppercase rounded-lg hover:bg-blue-700 transition-all">
                             + Buat Jadwal
                         </button>
@@ -498,9 +498,9 @@
 
                             <!-- Individual AC Units -->
                             <div *ngFor="let schedule of group.schedules; let last = last"
-                                class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50/50 transition-colors cursor-pointer"
+                                class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50/50 transition-colors cursor-pointer group"
                                 [class.border-b]="!last" [class.border-gray-50]="!last"
-                                (click)="checklistMode && schedule.status !== 'completed' ? toggleScheduleCheck(schedule.id!) : null">
+                                (click)="handleScheduleClick(schedule)">
 
                                 <!-- CHECKBOX (Checklist Mode) -->
                                 <div *ngIf="checklistMode && schedule.status !== 'completed'"
@@ -545,12 +545,15 @@
                                     <span
                                         class="text-green-500 flex-shrink-0 font-bold text-[10px] uppercase">Selesai</span>
                                 </div>
+                                <div *ngIf="isVendor && schedule.status !== 'completed'" class="opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="text-blue-600 flex-shrink-0 font-bold text-[10px] uppercase bg-blue-50 px-2 py-1 rounded">Tandai Selesai</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Create Schedule Button -->
-                    <button *ngIf="selectedDate && getSchedulesForDate(selectedDate).length > 0 && !checklistMode"
+                    <button *ngIf="selectedDate && getSchedulesForDate(selectedDate).length > 0 && !checklistMode && !isVendor"
                         (click)="openCreateModal(selectedDate)"
                         class="w-full py-3 border-2 border-dashed border-blue-200 rounded-xl text-blue-600 text-[10px] font-bold uppercase tracking-wide hover:bg-blue-50 hover:border-blue-400 transition-all">
                         + Tambah Jadwal
@@ -656,19 +659,27 @@
                 <!-- Asset List -->
                 <div class="space-y-2">
                     <div *ngFor="let asset of filteredAssets" (click)="toggleAssetSelection(asset.id)"
-                        class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-green-50 cursor-pointer transition-all"
+                        class="flex items-center gap-3 p-3 border rounded-xl hover:bg-green-50 cursor-pointer transition-all"
                         [class.bg-green-50]="selectedAssetIds.has(asset.id)"
                         [class.border-green-500]="selectedAssetIds.has(asset.id)"
+                        [class.border-gray-200]="!selectedAssetIds.has(asset.id)"
                         [class.bg-gray-50]="isAssetScheduled(asset.id) && !selectedAssetIds.has(asset.id) && getAssetScheduleDate(asset.id) !== getSelectedDateString()"
                         [class.opacity-60]="isAssetScheduled(asset.id) && !selectedAssetIds.has(asset.id) && getAssetScheduleDate(asset.id) !== getSelectedDateString()"
                         [class.bg-green-100]="isAssetScheduled(asset.id) && getAssetScheduleDate(asset.id) === getSelectedDateString()">
 
                         <input type="checkbox" [checked]="selectedAssetIds.has(asset.id)"
-                            class="w-4 h-4 text-green-500 rounded" (click)="$event.stopPropagation()">
+                            class="w-4 h-4 text-green-500 rounded flex-shrink-0" (click)="$event.stopPropagation()">
 
-                        <div class="ml-3 flex-1">
-                            <div class="flex items-center gap-2">
-                                <p class="text-sm font-bold text-gray-900">{{ asset.name }}</p>
+                        <div class="flex-1 min-w-0">
+                            <!-- Row 1: SKU + Badges -->
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <p class="text-sm font-black text-gray-900">{{ asset.sku }}</p>
+                                <span *ngIf="asset.category"
+                                    class="px-1.5 py-0.5 bg-blue-50 text-blue-700 text-[9px] font-bold rounded uppercase">{{
+                                    asset.category }}</span>
+                                <span *ngIf="asset.pk"
+                                    class="px-1.5 py-0.5 bg-indigo-50 text-indigo-700 text-[9px] font-bold rounded">{{
+                                    asset.pk }}</span>
 
                                 <!-- Scheduled on OTHER date badge -->
                                 <span
@@ -685,14 +696,22 @@
                                 </span>
                             </div>
 
-                            <p class="text-xs text-gray-500">
-                                {{ asset.location }} • {{ asset.sku }}
+                            <!-- Row 2: Location, Brand -->
+                            <div class="flex items-center gap-1.5 mt-1 text-xs text-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none"
+                                    stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="flex-shrink-0">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                <span class="font-semibold text-gray-700">{{ asset.location }}</span>
+                                <span class="text-gray-300">·</span>
+                                <span>{{ asset.brand && asset.brand !== '-' ? asset.brand : 'Merek N/A' }}</span>
                                 <span
                                     *ngIf="isAssetScheduled(asset.id) && getAssetScheduleDate(asset.id) === getSelectedDateString()"
                                     class="font-bold text-green-600 ml-1">
                                     • Sudah dipilih
                                 </span>
-                            </p>
+                            </div>
                         </div>
                     </div>
 

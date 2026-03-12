@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use App\Models\MaintenanceSchedule;
 use App\Models\Asset;
+use App\Models\Spk;
+use App\Models\AppConfig;
 
 class MaintenanceController extends Controller
 {
@@ -101,5 +103,42 @@ class MaintenanceController extends Controller
         $schedule = MaintenanceSchedule::findOrFail($id);
         $schedule->delete();
         return response()->json(['message' => 'Deleted successfully']);
+    }
+
+    /**
+     * Generate SPK for a maintenance schedule (manual trigger by admin)
+     */
+    public function generateSpk(Request $request, string $id)
+    {
+        $schedule = MaintenanceSchedule::with('asset')->findOrFail($id);
+
+        $validated = $request->validate([
+            'vendor_id' => 'required|exists:users,id',
+        ]);
+
+        // Check if SPK already exists for this schedule
+        $existingSpk = Spk::where('ticket_id', $schedule->ticket_id)
+            ->where('spk_type', 'maintenance')
+            ->first();
+
+        if ($existingSpk) {
+            return response()->json(['error' => 'SPK maintenance sudah pernah diterbitkan untuk jadwal ini'], 422);
+        }
+
+        // Create maintenance SPK
+        $spk = Spk::create([
+            'spk_number' => 'SPK-MT-' . date('Ymd') . '-' . rand(1000, 9999),
+            'ticket_id' => $schedule->ticket_id,
+            'vendor_id' => $validated['vendor_id'],
+            'status' => 'pending_vendor_response',
+            'is_warranty_claim' => false,
+            'spk_type' => 'maintenance',
+            'work_start_date' => $schedule->scheduled_date,
+        ]);
+
+        return response()->json([
+            'message' => 'SPK maintenance berhasil diterbitkan',
+            'spk' => $spk->load(['vendor', 'ticket.asset']),
+        ], 201);
     }
 }

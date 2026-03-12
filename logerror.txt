@@ -1,8 +1,33 @@
-http://localhost:4200/admin/assets
+jadi flow nya seperti ini . 
 
-di samping ini beri button untuk cetak QR code, konsep nya nanti 
-dia akan menunjukan QR code dari asset yang di pilih ada menu filter nya juga
+FLOW PELAPORAN AC DAN JIKA MENGHUBUNGI VENDOR 
 
-dan juga memakai checkbox jadi kita bisa memilih unit ac mana saja yang mau di di download batch QR codenya
+staff lapor ac rusak > 
 
-jadi tidak perlu repot repot lagi
+laporan masuk halaman admin > 
+
+admin memvalidasi laporan dan otomatis laporan
+terkirim ke vendor >
+
+laporan masuk di vendor dan proses 
+
+lalu ketika admin proses laporan tersebut dan menggangp laporan itu valid maka laporan itu perlu divalidasi lagi untuk generate SPK dan nantinya ini masuk ke halaman yang berbeda dan harus di aprove oleh section head (buat role baru) dan juga setelah di aprove akan generate SPK Terbit dan masuk ke halaman admin serta vendor dan jg section head>
+
+setelah itu vendor proses dan harus datang maksimal 1 hari setelah SPK terbit
+
+
+=======================================================
+
+flow ke dua 
+
+pada sidebar ini seharusnya juga ada surat perintah kerja untuk pelaporan ac kan? karna perbedaan dari pelaporan ac dan maintenance ac itu hanya berbeda pada 
+
+jika pelaporan ac itu dadakan tetpai untuk maintenance ac itu dia sudah terjadwal. tetapi yaa bentuk form dari spk serta berita acara nya itu sama saja kan harusnya mah? 
+
+dan jga berita acara itu ter generate ketika section head serta admin validasi laporan yang sudah diinputkan oleh vendor terkait pelaporan dan juga maintenance ac dengan mengirimkan bukti seperti pada form yang telah kita buat sebelumnya. disitu seharusnya setelah di validasi oleh admin serta section head maka berita acara boleh di generate.
+
+dan juga saya ingin dokumen berita acara itu di generate nya itu bisa custom. contohnya seperti ini 
+
+kita klik filter tanggal 1-5 lalu, terus checkbox pilih yang mana saja yang mau di generate (pastikan informasi terkait unit yang diperbaiki itu informatif ya), klik button generate berita acara, maka nanti berita acara akan tergenerate di new tab dan menampilkan data yang informatif yang juga membandingkan dengan data SPK.
+
+tujuan dokumen berita acara dibuat juga itu adalah sebagai pembanding apakah SPK dan berita acara itu valid? karna kan SPK itu sebagai surat perinta apa yang dikerjakan serta berita acara adalah dokumen pekerjaan yang sudah di selesaikan.

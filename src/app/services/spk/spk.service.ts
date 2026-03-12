@@ -38,12 +38,21 @@ export class SpkService {
         }
     }
 
-    async updateSpk(id: number, data: any) {
+    async approveBySectionHead(id: number) {
         try {
-            const response = await firstValueFrom(this.http.put<any>(`${this.apiUrl}/${id}`, data));
+            const response = await firstValueFrom(this.http.post<any>(`${this.apiUrl}/${id}/approve-by-section-head`, {}));
             return { data: response, error: null };
         } catch (error: any) {
-            return { data: null, error: error.message };
+            return { data: null, error: error?.error?.error || error.message };
+        }
+    }
+
+    async rejectBySectionHead(id: number, admin_schedule_notes: string) {
+        try {
+            const response = await firstValueFrom(this.http.post<any>(`${this.apiUrl}/${id}/reject-by-section-head`, { admin_schedule_notes }));
+            return { data: response, error: null };
+        } catch (error: any) {
+            return { data: null, error: error?.error?.error || error.message };
         }
     }
 

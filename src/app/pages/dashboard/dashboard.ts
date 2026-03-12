@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AssetService } from '../../services/asset/asset';
 import { TicketService } from '../../services/ticket/ticket';
 import { SessionService } from '../../services/session/session.service';
@@ -12,7 +13,7 @@ import { SpkService } from '../../services/spk/spk.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
@@ -31,7 +32,7 @@ export class DashboardComponent implements OnInit {
   vendorData = {
     activeSpks: 0,
     completedSpks: 0,
-    pendingSpks: [] as any[],
+    pendingApprovalSpks: [] as any[], // SPKs waiting for section head approval
     activeSpkList: [] as any[]
   };
 
@@ -85,7 +86,7 @@ export class DashboardComponent implements OnInit {
           this.vendorData.activeSpks = spks.filter((s: any) => s.status === 'assigned' || s.status === 'in_progress').length;
           this.vendorData.completedSpks = spks.filter((s: any) => s.status === 'completed').length;
 
-          this.vendorData.pendingSpks = spks.filter((s: any) => s.status === 'draft' || s.status === 'sent');
+          this.vendorData.pendingApprovalSpks = spks.filter((s: any) => s.status === 'pending_approval');
           this.vendorData.activeSpkList = spks.filter((s: any) => s.status === 'assigned' || s.status === 'in_progress');
         }
       } else {
@@ -155,31 +156,9 @@ export class DashboardComponent implements OnInit {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }
 
-  // Vendor Action: Accept SPK
-  async acceptSpk(spk: any) {
-    const confirm = await this.sweetAlert.confirm(
-      'Konfirmasi Penerimaan',
-      `Apakah Anda yakin akan menerima SPK ${spk.spk_number}? Vendor setuju untuk menyelesaikan perbaikan ini.`,
-      'Ya, Terima Pekerjaan'
-    );
-
-    if (confirm) {
-      this.loadingService.show();
-      const { data, error } = await this.spkService.updateSpk(spk.id, { status: 'assigned' });
-      this.loadingService.hide();
-
-      if (error) {
-        this.sweetAlert.error('Gagal', 'Terjadi kesalahan saat menyimpan respons: ' + error);
-      } else {
-        this.sweetAlert.success('Berhasil', 'SPK telah disetujui. Silakan tinjau rincian biaya atau mulai bekerja bila siap.');
-        this.loadStats(); // reload board
-      }
-    }
-  }
 
   // Action: Navigate to detail to update costs/items
   goToSpkDetail(spk: any) {
-    // Note: Assuming there is a detail view for vendor, redirect. If not exist, will need to create.
     this.router.navigate(['/admin/spk', spk.id]);
   }
 }

@@ -596,7 +596,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                <ng-container *ngFor="let loc of (selectedLocation === 'Semua' ? locations : [selectedLocation])">
+                <ng-container *ngFor="let loc of visualLocations">
                     <div *ngIf="getAssetsByLocation(loc).length > 0"
                         class="rounded-xl p-5 shadow-sm border flex flex-col hover:shadow-md transition-shadow"
                         [ngClass]="locationHasTickets(loc) 

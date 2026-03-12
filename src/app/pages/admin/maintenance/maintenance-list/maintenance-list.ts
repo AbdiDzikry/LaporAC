@@ -17,6 +17,7 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
     @Input() periodId: number | null = null;
     @Input() initialMonth: number | null = null; // 1-12
     @Input() initialYear: number | null = null;
+    @Input() isVendor: boolean = false;
 
     // Maintenance rules
     readonly MAX_UNITS_PER_DAY = 8;
@@ -379,17 +380,29 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
     }
 
     async markComplete(id: number) {
-        const notes = prompt('Technician Notes (Optional):');
+        const notes = prompt('Catatan Pekerjaan (Opsional):');
         if (notes === null) return;
 
         try {
             const { error } = await this.maintenanceService.completeMaintenance(id, notes || '');
             if (error) throw error;
 
-            this.toast.show('Maintenance marked as completed', 'success');
+            this.toast.show('Maintenance berhasil ditandai selesai', 'success');
             this.loadSchedules();
         } catch (err) {
-            this.toast.show('Failed to complete maintenance', 'error');
+            this.toast.show('Gagal menyelesaikan maintenance', 'error');
+        }
+    }
+
+    handleScheduleClick(schedule: MaintenanceSchedule) {
+        if (this.checklistMode && schedule.status !== 'completed') {
+            this.toggleScheduleCheck(schedule.id!);
+            return;
+        }
+
+        // For Vendors: Clicking an incomplete schedule allows them to complete it directly
+        if (this.isVendor && schedule.status !== 'completed' && schedule.id) {
+            this.markComplete(schedule.id);
         }
     }
 
