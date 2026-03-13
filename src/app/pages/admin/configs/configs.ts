@@ -13,6 +13,7 @@ import { SweetAlertService } from '../../../services/sweet-alert/sweet-alert.ser
 })
 export class ConfigsComponent implements OnInit {
   warrantyDuration: number = 3; // Default
+  frontendUrl: string = 'https://lapor-ac.vercel.app'; // Default fallback
 
   // SMTP Settings
   smtpHost: string = '';
@@ -54,6 +55,7 @@ export class ConfigsComponent implements OnInit {
       this.smtpUsername = data['smtp_username'] || '';
       this.smtpFromEmail = data['smtp_from_address'] || '';
       this.smtpFromName = data['smtp_from_name'] || 'LaporAC System';
+      this.frontendUrl = data['frontend_url'] || 'https://lapor-ac.vercel.app';
       // Don't load password for security
       if (data['smtp_password']) {
         this.isSmtpPasswordSaved = true;
@@ -70,7 +72,8 @@ export class ConfigsComponent implements OnInit {
       smtp_port: this.smtpPort.toString(),
       smtp_username: this.smtpUsername,
       smtp_from_address: this.smtpFromEmail,
-      smtp_from_name: this.smtpFromName
+      smtp_from_name: this.smtpFromName,
+      frontend_url: this.frontendUrl
     };
 
     // Only include password if changed

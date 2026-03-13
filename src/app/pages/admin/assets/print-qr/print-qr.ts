@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { AssetService, Asset } from '../../../../services/asset/asset';
+import { AppConfigService } from '../../../../services/app-config/app-config';
 
 @Component({
   selector: 'app-print-qr',
@@ -19,7 +20,8 @@ export class PrintQrComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private assetService: AssetService
+    private assetService: AssetService,
+    private configService: AppConfigService
   ) { }
 
   ngOnInit() {
@@ -31,12 +33,16 @@ export class PrintQrComponent implements OnInit {
 
   async loadAsset(id: number) {
     this.loading = true;
+    
+    // Fetch dynamic frontend URL from config
+    const { data: configData } = await this.configService.getConfigs();
+    const productionUrl = configData ? configData['frontend_url'] : 'https://lapor-ac.vercel.app';
+    
     const { data, error } = await this.assetService.getAssetById(id);
     if (data) {
       this.asset = data as Asset;
       // Generate Deep Link URL
       // Points to the Public Reporting Form with pre-filled SKU
-      const productionUrl = 'https://lapor-ac.vercel.app'; // Change this to your actual production domain
       this.qrData = `${productionUrl}/report/new?sku=${this.asset.sku}`;
     }
     this.loading = false;
