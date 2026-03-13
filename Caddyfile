@@ -1,27 +1,45 @@
 {
-    frankenphp {
-        num_threads 2
-        worker {
-            file /app/public/index.php
-            num 1
-        }
-    }
+    frankenphp
 }
 
-:443 {
-    root * /app/public/
-    tls /app/ssl/sectigo_dharmagroup.co.id_2024_092025.crt /app/ssl/mydomain.key 
-    encode zstd br gzip
-    php_server {
-        try_files {path} index.php
-    }
-}
-
+# HTTP Port (Matches docker-compose 811:80)
 :80 {
-    root * /app/public/
+    root * /app/public
     encode zstd br gzip
-    php_server {
-        try_files {path} index.php
+
+    # API and Laravel Routes
+    handle /api* {
+        php_server
+    }
+    
+    handle /sanctum* {
+        php_server
+    }
+
+    # Serve Angular Frontend (SPA)
+    handle {
+        # Point to the folder where Angular dist was copied
+        root * /app/public/frontend
+        try_files {path} /index.html
+        file_server
     }
 }
+
+# HTTPS Port (Requires SSL certificates in /app/ssl)
+# Uncomment and adjust if certificates are available
+# :443 {
+#     root * /app/public
+#     tls /app/ssl/sectigo_dharmagroup.co.id_2024_092025.crt /app/ssl/mydomain.key 
+#     encode zstd br gzip
+#     
+#     handle /api* {
+#         php_server
+#     }
+#     
+#     handle {
+#         root * /app/public/frontend
+#         try_files {path} /index.html
+#         file_server
+#     }
+# }
 

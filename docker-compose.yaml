@@ -2,23 +2,31 @@ version: '3.7'
 
 services:
     app_she:
-        build: .
+        build:
+            context: .
+            dockerfile: Dockerfile
         restart: unless-stopped
         container_name: app_she
         ports:
-            - "811:80" # HTTP
-            - "8453:443" # HTTPS
+            - "811:80"   # Akses via http://alamat-ip:811
+            - "8453:443"  # Akses via https://alamat-ip:8453
+        env_file:
+            - backend/.env
         volumes:
-            - .:/app
+            - ./backend/storage:/app/storage
             - caddy_data:/data
             - caddy_config:/config
+        # Note: Untuk production, hindari mounting seluruh folder root (.) 
+        # agar tidak menimpa file yang sudah di-build di dalam container.
         networks:
-            - backend
+            - laporac_net
+
+networks:
+    laporac_net:
+        driver: bridge
+
 volumes:
     caddy_data:
     caddy_config:
-networks:
-    backend:
-        driver: bridge
 
 
