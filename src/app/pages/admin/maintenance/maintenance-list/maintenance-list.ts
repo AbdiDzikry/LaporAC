@@ -416,6 +416,19 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
         }
     }
 
+    formatStatus(status: string): string {
+        const statusMap: { [key: string]: string } = {
+            'scheduled': 'Terjadwal',
+            'in_progress': 'Dalam Pengerjaan',
+            'completed': 'Selesai',
+            'missed': 'Terlewat',
+            'pending_approval': 'Menunggu Persetujuan',
+            'assigned': 'Ditugaskan',
+            'cancelled': 'Dibatalkan'
+        };
+        return statusMap[status] || status.replace(/_/g, ' ').toUpperCase();
+    }
+
     // ========== CALENDAR UX HELPERS ==========
 
     /** Check if a date falls on a maintenance day (Selasa=2, Rabu=3, Sabtu=6) */
@@ -778,8 +791,8 @@ export class MaintenanceListComponent implements OnInit, OnChanges {
 
     showConfirmationDialog(acName: string, oldDate: string, newDate: string, onConfirm: () => void) {
         this.confirmDialogData = {
-            title: 'Move Maintenance Schedule',
-            message: 'This AC unit is already scheduled for maintenance on a different date.',
+            title: 'Pindahkan Jadwal Maintenance',
+            message: 'Unit AC ini sudah dijadwalkan untuk maintenance pada tanggal yang berbeda.',
             acName: acName,
             oldDate: oldDate,
             newDate: newDate,

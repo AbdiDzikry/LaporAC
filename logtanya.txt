@@ -1,9 +1,0 @@
-http://localhost:4200/vendor/maintenance halaman ini bisakah dibuat menggunakan kalender seperti di halaman http://localhost:4200/admin/maintenance/periods/1
-
-dan juga pada halaman http://localhost:4200/admin/maintenance/periods/1
-kan itu hijau saat admin checklist manual yak, apakah itu bisa dibuat saat vendor sudah selesai saat meng submit form dan nanti otomatis ya g selesai itu nanti sudah jadi hijau pada kalender nya 
-
-
-====================
-
-@pricelist_ac.docx bisakah anda cek ini. ini merupakan pricelist dari vendor synergi dan saya ingin tampilan pada halaman http://localhost:4200/admin/pricelist field nya lebih rapih agar semua data masuk

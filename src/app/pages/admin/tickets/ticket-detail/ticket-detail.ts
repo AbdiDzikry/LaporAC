@@ -146,6 +146,26 @@ export class TicketDetailComponent implements OnInit {
     }
   }
 
+  formatStatus(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'pending_validation': 'Menunggu Validasi',
+      'valid': 'Valid',
+      'invalid': 'Tidak Valid / False Alarm',
+      'vendor_prep': 'Persiapan Vendor',
+      'assigned': 'Ditugaskan',
+      'vendor_assigned': 'Vendor Ditugaskan',
+      'waiting_for_spk_approval': 'Menunggu Persetujuan SPK',
+      'pending_vendor_response': 'Menunggu Respon Vendor',
+      'in_progress': 'Sedang Dikerjakan',
+      'pending_verification': 'Menunggu Verifikasi',
+      'resolved': 'Terselesaikan',
+      'closed': 'Ditutup',
+      'open': 'Terbuka',
+      'cancelled': 'Dibatalkan'
+    };
+    return statusMap[status] || status.replace(/_/g, ' ').toUpperCase();
+  }
+
   // --- STEP 1: ADMIN ASSIGN TO TECHNICIAN ---
   async assignToTechnician() {
     if (this.assignmentForm.invalid) return;

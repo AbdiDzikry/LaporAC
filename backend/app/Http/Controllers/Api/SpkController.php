@@ -60,14 +60,6 @@ class SpkController extends Controller
 
         $spkWithVendor = $spk->load(['vendor', 'ticket']);
 
-        try {
-            if ($spkWithVendor->vendor && $spkWithVendor->vendor->email) {
-                Mail::to($spkWithVendor->vendor->email)->queue(new SpkNotification($spkWithVendor));
-            }
-        } catch (\Exception $e) {
-            // Log error silently
-        }
-
         return response()->json($spkWithVendor, 201);
     }
 
@@ -104,7 +96,18 @@ class SpkController extends Controller
             $spk->ticket->update(['status' => 'vendor_assigned']);
         }
 
-        return response()->json(['message' => 'SPK disetujui', 'spk' => $spk->load(['vendor', 'ticket.asset'])], 200);
+        $spkWithVendor = $spk->load(['vendor', 'ticket.asset']);
+
+        // Send email to vendor after approval
+        try {
+            if ($spkWithVendor->vendor && $spkWithVendor->vendor->email) {
+                Mail::to($spkWithVendor->vendor->email)->queue(new SpkNotification($spkWithVendor));
+            }
+        } catch (\Exception $e) {
+            // Log error silently, proceed
+        }
+
+        return response()->json(['message' => 'SPK disetujui', 'spk' => $spkWithVendor], 200);
     }
 
     /**

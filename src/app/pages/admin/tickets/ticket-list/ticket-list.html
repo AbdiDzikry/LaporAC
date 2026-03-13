@@ -191,14 +191,26 @@
                             </div>
                         </td>
 
-                        <!-- Status Badge -->
+                        <!-- Status -->
                         <td class="p-5">
-                            <div class="flex items-center">
-                                <span [ngClass]="getStatusClass(ticket.status)"
-                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium uppercase tracking-wider border shadow-sm">
-                                    <span class="w-2 h-2 rounded-full bg-current"
-                                        [class.animate-pulse]="ticket.status !== 'closed' && ticket.status !== 'false_alarm'"></span>
-                                    {{ ticket.status.replace('_', ' ') }}
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full shadow-sm" [ngClass]="{
+                                    'bg-indigo-500 shadow-indigo-200': ticket.status === 'open',
+                                    'bg-amber-500 shadow-amber-200': ticket.status === 'pending_validation',
+                                    'bg-teal-500 shadow-teal-200': ticket.status === 'valid',
+                                    'bg-purple-500 shadow-purple-200': ticket.status === 'vendor_prep',
+                                    'bg-blue-500 shadow-blue-200': ticket.status === 'assigned' || ticket.status === 'vendor_assigned',
+                                    'bg-orange-500 shadow-orange-200': ticket.status === 'waiting_for_spk_approval',
+                                    'bg-cyan-500 shadow-cyan-200': ticket.status === 'pending_vendor_response',
+                                    'bg-sky-500 shadow-sky-200': ticket.status === 'in_progress',
+                                    'bg-violet-500 shadow-violet-200': ticket.status === 'pending_verification',
+                                    'bg-emerald-500 shadow-emerald-200': ticket.status === 'resolved',
+                                    'bg-gray-500 shadow-gray-200': ticket.status === 'closed',
+                                    'bg-red-500 shadow-red-200': ticket.status === 'invalid' || ticket.status === 'cancelled'
+                                }"></span>
+                                <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider shadow-sm ring-1 ring-inset {{ getStatusClass(ticket.status) }}">
+                                    {{ formatStatus(ticket.status) }}
                                 </span>
                             </div>
                         </td>

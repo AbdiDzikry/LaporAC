@@ -69,6 +69,19 @@ export class SpkListComponent implements OnInit {
     }
   }
 
+  formatStatus(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'pending_approval': 'Menunggu Persetujuan',
+      'assigned': 'Ditugaskan',
+      'pending_vendor_response': 'Menunggu Respon Vendor',
+      'in_progress': 'Sedang Dikerjakan',
+      'completed': 'Selesai',
+      'cancelled': 'Dibatalkan',
+      'draft': 'Draf'
+    };
+    return statusMap[status] || status.replace(/_/g, ' ').toUpperCase();
+  }
+
   formatRupiah(amount: number | undefined): string {
     if (amount === undefined || amount === null) return '-';
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);

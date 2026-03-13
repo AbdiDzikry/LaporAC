@@ -17,6 +17,7 @@ import { environment } from '../../../../environments/environment';
 export class PricelistComponent implements OnInit {
   items: PricelistItem[] = [];
   filteredItems: PricelistItem[] = [];
+  tableRows: { index: number, item: PricelistItem, vendorName: string, categoryName: string, vendorRowspan: number, categoryRowspan: number }[] = [];
   logs: PricelistLog[] = [];
 
   isLoading = false;
@@ -85,6 +86,56 @@ export class PricelistComponent implements OnInit {
       const matchType = this.filterType === 'all' || item.type === this.filterType;
       return matchSearch && matchType;
     });
+    this.groupItems();
+  }
+
+  groupItems() {
+    const vendorGroups = new Map<number | string, { vendorName: string, vendorId: number | undefined, items: PricelistItem[] }>();
+
+    for (const item of this.filteredItems) {
+      const vendorKey = item.vendor_id || 'umum';
+      const vendorName = item.vendor?.company_name || item.vendor?.user?.name || 'Umum';
+
+      if (!vendorGroups.has(vendorKey)) {
+        vendorGroups.set(vendorKey, { vendorName, vendorId: item.vendor_id, items: [] });
+      }
+      vendorGroups.get(vendorKey)!.items.push(item);
+    }
+
+    this.tableRows = [];
+    let globalIndex = 1;
+
+    for (const vg of vendorGroups.values()) {
+      const vendorItems = vg.items;
+      
+      const categoryGroups = new Map<string, PricelistItem[]>();
+      for (const item of vendorItems) {
+        const catName = item.category || 'Tanpa Kategori';
+        if (!categoryGroups.has(catName)) {
+          categoryGroups.set(catName, []);
+        }
+        categoryGroups.get(catName)!.push(item);
+      }
+
+      let isFirstItemForVendor = true;
+
+      for (const [catName, catItems] of categoryGroups.entries()) {
+        let isFirstItemForCategory = true;
+
+        for (const item of catItems) {
+          this.tableRows.push({
+            index: globalIndex++,
+            item: item,
+            vendorName: vg.vendorName,
+            categoryName: catName,
+            vendorRowspan: isFirstItemForVendor ? vendorItems.length : 0,
+            categoryRowspan: isFirstItemForCategory ? catItems.length : 0
+          });
+          isFirstItemForVendor = false;
+          isFirstItemForCategory = false;
+        }
+      }
+    }
   }
 
   openAddModal() {

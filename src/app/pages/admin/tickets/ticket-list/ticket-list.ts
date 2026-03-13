@@ -176,6 +176,26 @@ export class TicketListComponent implements OnInit {
     }
   }
 
+  formatStatus(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'pending_validation': 'Menunggu Validasi',
+      'valid': 'Valid',
+      'invalid': 'Tidak Valid / False Alarm',
+      'vendor_prep': 'Persiapan Vendor',
+      'assigned': 'Ditugaskan',
+      'vendor_assigned': 'Vendor Ditugaskan',
+      'waiting_for_spk_approval': 'Menunggu Persetujuan SPK',
+      'pending_vendor_response': 'Menunggu Respon Vendor',
+      'in_progress': 'Sedang Dikerjakan',
+      'pending_verification': 'Menunggu Verifikasi',
+      'resolved': 'Terselesaikan',
+      'closed': 'Ditutup',
+      'open': 'Terbuka',
+      'cancelled': 'Dibatalkan'
+    };
+    return statusMap[status] || status.replace(/_/g, ' ').toUpperCase();
+  }
+
   // --- GA Validation Modal Logic ---
   selectedTicket: any = null;
   validationAction: 'internal' | 'vendor' | 'false_alarm' | null = null;

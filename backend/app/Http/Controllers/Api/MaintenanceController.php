@@ -22,6 +22,16 @@ class MaintenanceController extends Controller
         if ($request->has('period_id')) {
             $query->where('period_id', $request->period_id);
         }
+        
+        // Security logic for Vendor - only see their own APPROVED schedules
+        $user = auth()->user();
+        if ($user && $user->role === 'vendor') {
+            $query->whereHas('ticket.spks', function ($spkQuery) use ($user) {
+                // Ensure SPK belongs to this vendor and has been approved by section head (assigned status)
+                $spkQuery->where('vendor_id', $user->id)
+                         ->whereNotIn('status', ['draft', 'pending_approval', 'rejected']);
+            });
+        }
 
         return response()->json($query->orderBy('scheduled_date', 'asc')->get());
     }
@@ -116,6 +126,22 @@ class MaintenanceController extends Controller
             'vendor_id' => 'required|exists:users,id',
         ]);
 
+        // Auto-create Ticket if not exists
+        if (!$schedule->ticket_id) {
+            $ticket = \App\Models\Ticket::create([
+                'title' => 'Maintenance Rutin: ' . ($schedule->asset->name ?? 'Aset'),
+                'description' => 'Jadwal Pemeliharaan Rutin untuk aset ' . ($schedule->asset->name ?? '') . ' pada ' . $schedule->scheduled_date,
+                'issue_category' => 'AC',
+                'asset_id' => $schedule->asset_id,
+                'status' => 'waiting_for_spk_approval',
+                'action_type' => 'vendor',
+                'assigned_vendor_id' => $validated['vendor_id'],
+            ]);
+            
+            $schedule->update(['ticket_id' => $ticket->id]);
+            $schedule = $schedule->fresh(); // Reload with ticket
+        }
+
         // Check if SPK already exists for this schedule
         $existingSpk = Spk::where('ticket_id', $schedule->ticket_id)
             ->where('spk_type', 'maintenance')
@@ -125,19 +151,19 @@ class MaintenanceController extends Controller
             return response()->json(['error' => 'SPK maintenance sudah pernah diterbitkan untuk jadwal ini'], 422);
         }
 
-        // Create maintenance SPK
+        // Create maintenance SPK as pending_approval
         $spk = Spk::create([
             'spk_number' => 'SPK-MT-' . date('Ymd') . '-' . rand(1000, 9999),
             'ticket_id' => $schedule->ticket_id,
             'vendor_id' => $validated['vendor_id'],
-            'status' => 'pending_vendor_response',
+            'status' => 'pending_approval', // Section Head needs to approve first
             'is_warranty_claim' => false,
             'spk_type' => 'maintenance',
             'work_start_date' => $schedule->scheduled_date,
         ]);
 
         return response()->json([
-            'message' => 'SPK maintenance berhasil diterbitkan',
+            'message' => 'SPK maintenance berhasil dibuat dan menunggu persetujuan',
             'spk' => $spk->load(['vendor', 'ticket.asset']),
         ], 201);
     }

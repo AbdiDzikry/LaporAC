@@ -30,10 +30,10 @@
                     class="h-11 pl-4 pr-10 text-sm bg-white border-0 rounded-xl ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-blue-600 shadow-sm appearance-none font-medium text-gray-700">
                     <option value="all">Semua Status</option>
                     <option value="pending_approval">Menunggu Persetujuan</option>
-                    <option value="assigned">Assigned</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
+                    <option value="assigned">Ditugaskan</option>
+                    <option value="in_progress">Sedang Dikerjakan</option>
+                    <option value="completed">Selesai</option>
+                    <option value="cancelled">Dibatalkan</option>
                 </select>
             </div>
         </div>
@@ -93,7 +93,7 @@
                             <td class="px-6 py-4">
                                 <span
                                     class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider {{ getStatusClass(spk.status) }}">
-                                    {{ spk.status.replace('_', ' ') }}
+                                    {{ formatStatus(spk.status) }}
                                 </span>
                                 <div *ngIf="spk.status === 'assigned'"
                                     class="mt-1.5">

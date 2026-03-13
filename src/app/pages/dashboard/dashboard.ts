@@ -83,11 +83,11 @@ export class DashboardComponent implements OnInit {
         // --- VENDOR DASHBOARD LOGIC ---
         const { data: spks, error } = await this.spkService.getSpks();
         if (spks) {
-          this.vendorData.activeSpks = spks.filter((s: any) => s.status === 'assigned' || s.status === 'in_progress').length;
+          this.vendorData.activeSpks = spks.filter((s: any) => s.status === 'assigned' || s.status === 'in_progress' || s.status === 'pending_vendor_response').length;
           this.vendorData.completedSpks = spks.filter((s: any) => s.status === 'completed').length;
 
           this.vendorData.pendingApprovalSpks = spks.filter((s: any) => s.status === 'pending_approval');
-          this.vendorData.activeSpkList = spks.filter((s: any) => s.status === 'assigned' || s.status === 'in_progress');
+          this.vendorData.activeSpkList = spks.filter((s: any) => s.status === 'assigned' || s.status === 'in_progress' || s.status === 'pending_vendor_response');
         }
       } else {
         // --- ADMIN DASHBOARD LOGIC ---
@@ -160,5 +160,29 @@ export class DashboardComponent implements OnInit {
   // Action: Navigate to detail to update costs/items
   goToSpkDetail(spk: any) {
     this.router.navigate(['/admin/spk', spk.id]);
+  }
+
+  formatStatus(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'pending_validation': 'Menunggu Validasi',
+      'valid': 'Valid',
+      'invalid': 'Tidak Valid / False Alarm',
+      'vendor_prep': 'Persiapan Vendor',
+      'assigned': 'Ditugaskan',
+      'vendor_assigned': 'Vendor Ditugaskan',
+      'waiting_for_spk_approval': 'Menunggu Persetujuan SPK',
+      'pending_vendor_response': 'Menunggu Respon Vendor',
+      'in_progress': 'Sedang Dikerjakan',
+      'pending_verification': 'Menunggu Verifikasi',
+      'resolved': 'Terselesaikan',
+      'closed': 'Ditutup',
+      'open': 'Terbuka',
+      'cancelled': 'Dibatalkan',
+      'pending_approval': 'Menunggu Persetujuan',
+      'completed': 'Selesai',
+      'scheduled': 'Terjadwal',
+      'missed': 'Terlewat'
+    };
+    return statusMap[status] || status.replace(/_/g, ' ').toUpperCase();
   }
 }

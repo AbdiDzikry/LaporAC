@@ -1,0 +1,27 @@
+{
+    frankenphp {
+        num_threads 2
+        worker {
+            file /app/public/index.php
+            num 1
+        }
+    }
+}
+
+:443 {
+    root * /app/public/
+    tls /app/ssl/sectigo_dharmagroup.co.id_2024_092025.crt /app/ssl/mydomain.key 
+    encode zstd br gzip
+    php_server {
+        try_files {path} index.php
+    }
+}
+
+:80 {
+    root * /app/public/
+    encode zstd br gzip
+    php_server {
+        try_files {path} index.php
+    }
+}
+

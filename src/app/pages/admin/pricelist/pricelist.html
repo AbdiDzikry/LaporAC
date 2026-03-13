@@ -76,43 +76,59 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        <tr *ngFor="let item of filteredItems; let i = index"
+                        <tr *ngFor="let row of tableRows"
                             class="hover:bg-gray-50/80 transition-colors group">
-                            <td class="px-6 py-4 text-sm text-gray-500 font-medium text-center">{{ i + 1 }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600 min-w-[200px]" [title]="item.category || '-'">
-                                {{ item.category || '-' }}
+                            <td class="px-6 py-4 text-sm text-gray-500 font-medium text-center">{{ row.index }}</td>
+                            
+                            <!-- Category Column with Rowspan -->
+                            <td *ngIf="row.categoryRowspan > 0" [attr.rowspan]="row.categoryRowspan"
+                                class="px-6 py-4 text-sm text-gray-800 font-bold bg-white border-r border-gray-100 align-top min-w-[200px]"
+                                [title]="row.categoryName">
+                                {{ row.categoryName }}
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-bold max-w-xs truncate">
+                            
+                            <td class="px-6 py-4 text-sm text-gray-900 font-medium max-w-xs truncate">
                                 <div class="flex items-center gap-3">
-                                    <div *ngIf="item.image_path"
+                                    <div *ngIf="row.item.image_path"
                                         class="w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-gray-100 opacity-90 group-hover:opacity-100 transition-opacity">
-                                        <img [src]="backendUrl + '/storage/' + item.image_path" alt="Gambar"
+                                        <img [src]="backendUrl + '/storage/' + row.item.image_path" alt="Gambar"
                                             class="w-full h-full object-cover">
                                     </div>
-                                    <span [title]="item.name">{{ item.name }}</span>
+                                    <span [title]="row.item.name">{{ row.item.name }}</span>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
                                 <span
                                     class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider"
-                                    [ngClass]="item.type === 'jasa' ? 'bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-600/10' : 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/10'">
-                                    {{ item.type }}
+                                    [ngClass]="row.item.type === 'jasa' ? 'bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-600/10' : 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/10'">
+                                    {{ row.item.type }}
                                 </span>
                             </td>
-                            <td *ngIf="userRole === 'super_admin' || userRole === 'admin'"
-                                class="px-6 py-4 text-sm text-gray-600">
-                                {{ item.vendor?.company_name || item.vendor?.user?.name || 'Umum' }}
+                            
+                            <!-- Vendor Column with Rowspan -->
+                            <td *ngIf="(userRole === 'super_admin' || userRole === 'admin') && row.vendorRowspan > 0" 
+                                [attr.rowspan]="row.vendorRowspan"
+                                class="px-6 py-4 text-sm text-gray-600 font-medium align-top bg-white border-l border-r border-gray-100">
+                                {{ row.vendorName }}
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 text-center">{{ item.unit || '-' }}</td>
+                            
+                            <td class="px-6 py-4 text-sm text-gray-500 text-center">{{ row.item.unit || '-' }}</td>
 
-                            <td
-                                class="px-6 py-4 text-sm text-gray-900 font-bold text-right font-mono tracking-tight text-blue-700">
-                                {{
-                                formatRupiah(item.price) }}</td>
+                            <td class="px-6 py-4 text-sm text-right align-middle">
+                                <div class="flex flex-col items-end justify-center">
+                                    <span *ngIf="row.item.old_price && row.item.old_price > 0" class="text-[10px] text-gray-400 font-mono tracking-tight line-through">
+                                        {{ formatRupiah(row.item.old_price) }}
+                                    </span>
+                                    <span class="font-bold font-mono tracking-tight text-blue-700">
+                                        {{ formatRupiah(row.item.price) }}
+                                    </span>
+                                </div>
+                            </td>
+                            
                             <td class="px-6 py-4 text-right">
                                 <div
                                     class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button (click)="viewLogs(item.id!)"
+                                    <button (click)="viewLogs(row.item.id!)"
                                         class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                                         title="Riwayat Harga">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
@@ -122,7 +138,7 @@
                                             <polyline points="12 6 12 12 16 14"></polyline>
                                         </svg>
                                     </button>
-                                    <button (click)="openEditModal(item)"
+                                    <button (click)="openEditModal(row.item)"
                                         class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
                                         title="Edit Item">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
@@ -132,7 +148,7 @@
                                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                         </svg>
                                     </button>
-                                    <button (click)="deleteItem(item.id!)"
+                                    <button (click)="deleteItem(row.item.id!)"
                                         class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                         title="Hapus Item">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
@@ -148,7 +164,7 @@
                             </td>
                         </tr>
                         <tr *ngIf="filteredItems.length === 0">
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-500 text-sm">
+                            <td colspan="8" class="px-6 py-12 text-center text-gray-500 text-sm">
                                 <div class="flex flex-col items-center">
                                     <svg class="w-12 h-12 text-gray-300 mb-3" xmlns="http://www.w3.org/2000/svg"
                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
